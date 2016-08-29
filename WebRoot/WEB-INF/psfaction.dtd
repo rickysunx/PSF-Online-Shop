@@ -1,0 +1,18 @@
+<!ELEMENT psf ((action|filter)*)>
+<!ELEMENT filter EMPTY>
+<!ATTLIST filter url CDATA #REQUIRED>
+<!ATTLIST filter class CDATA #REQUIRED>
+<!ELEMENT action (forward*)>
+<!ATTLIST action url    CDATA #REQUIRED>
+<!ATTLIST action class  CDATA #REQUIRED>
+<!ATTLIST action method CDATA #IMPLIED>
+<!ATTLIST action redirect (true|false) #IMPLIED>
+<!ATTLIST action forward CDATA #IMPLIED>
+<!ATTLIST action result (jsp|json) #IMPLIED>
+<!ATTLIST action trasaction (true|false) #IMPLIED>
+<!ELEMENT forward (#PCDATA)>
+<!ATTLIST forward name   CDATA #REQUIRED>
+<!ATTLIST forward result (jsp|json) #IMPLIED>
+<!ATTLIST forward redirect (true|false) #IMPLIED>
+
+

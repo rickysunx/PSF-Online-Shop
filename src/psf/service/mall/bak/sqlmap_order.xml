@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+	"../../../sql-map-2.dtd">
+<sqlMap>
+
+	<delete id="order.deletePay" parameterClass="java.lang.Integer">
+		delete from t_order_pay where payid = #payid#
+	</delete>
+	
+	<delete id="order.deleteUserAddress" parameterClass="java.lang.Integer">
+		delete from t_user_address where addressid=#addressid#
+	</delete>
+	
+	<select id="order.queryAddressByUid" parameterClass="java.lang.Integer" resultClass="psf.entity.TUserAddress">
+		select * from t_user_address where uid = #uid#
+	</select>
+	
+	<select id="order.queryOrderProductByOrderID" parameterClass="java.lang.Integer" resultClass="psf.entity.TOrderProduct">
+		select * from t_order_product where orderid = #orderid#
+	</select>
+	
+	<select id="order.queryProductByOrderIdAndSupplierId" parameterClass="java.util.Map" resultClass="psf.entity.TOrderProduct">
+		select op.* from t_order_product op, product p where op.pid=p.pid and op.orderid=#orderid# and p.supplierid=#supplierid#
+	</select>
+	
+	<update id="order.updateOrderProduct" parameterClass="psf.entity.TOrderProduct">
+		update t_order_product set(packageid, pcount, price, amount, cost_buy, cost_express, cost_pay) 
+		values (#packageid#,#pcount#,#price#,#amount#,#cost_buy#,#cost_express#,#cost_pay#) 
+		where orderid=#orderid# and pid=#pid#
+	</update>
+	
+</sqlMap>

@@ -1,0 +1,4 @@
+#Sun Oct 30 16:14:40 CST 2011
+eclipse.preferences.version=1
+validator.Checked=WebRoot/js/ueditor/dialogs/insertframe/insertframe.html,WebRoot/js/ueditor/dialogs/video/video.html
+validator.Unchecked=

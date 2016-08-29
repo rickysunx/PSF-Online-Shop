@@ -1,0 +1,9 @@
+<%@ page language="java" session="false" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="/psf/tags" prefix="psf"%>
+<psf:include page="/sns/detail_post_userinfo.jsp"/>
+<psf:include page="/sns/guide/coins_guide_help.jsp"/>
+<psf:include page="/sns/guide/other_guide.jsp"/>
+<psf:include page="/sns/guide/guide_psffriend.jsp"/>
+<psf:include page="/sns/guide/brand_product.jsp"/>
+<psf:include page="/sns/guide/brand_otherguide.jsp"/>

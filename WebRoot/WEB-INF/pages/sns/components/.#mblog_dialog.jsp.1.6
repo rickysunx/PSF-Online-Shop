@@ -1,0 +1,405 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="/psf/tags" prefix="psf"%>
+<script type="text/javascript">
+(function($){
+	$.fn.extend({
+		psfSmiley:function(option){
+			$("#dialog_psfsmiley").hide();
+			this.click(function(){
+				option["init"]() || function(){};
+				$("#dialog_psfsmiley .smiley_items li a").unbind("click").click(function(){
+					option["target"].call($("#dialog_psfsmiley")[0],"["+this.title+"]");//目标处理函数参数是返回
+				});
+				$("#dialog_psfsmiley .normal_smiley_items li a").unbind("click").click(function(){
+					option["target"].call($("#dialog_psfsmiley")[0],"["+this.title+"]");//目标处理函数参数是返回
+				});
+				$("#dialog_psfsmiley").psfDialog({
+					top:$(this).position().top+this.offsetHeight,
+					left:$(this).position().left,
+					width:463,
+					openAnimate:300,
+					arrow:true,
+					arrowdirection:"up",
+					arrowstyle:"1",
+					arrowpos:20
+				});
+				$("#dialog_psfsmiley .tab03 .layerClose .close").click(function(){
+					$("#dialog_psfsmiley").psfDialogClose();
+					$(this).unbind("click");
+				});
+			});
+		}
+	});
+})(jQuery);
+
+$(document).ready(function(){
+	$("#dialog_psfsmiley .tab03 li").psfTab($("#dialog_psfsmiley .smiley_items,#dialog_psfsmiley .normal_smiley_items"));
+	$("#dialog_uploadimg .tab03 li").psfTab($("#dialog_uploadimg .uploadimg_item,#dialog_uploadimg .uploadvideo_item"));
+	$("#dialog_uploadmusia .tab03 li").psfTab($("#dialog_uploadmusia .uploadvideo_item,#dialog_uploadmusia .uploadvideo_item"));
+});
+</script>
+<div id="dialog_psfsmiley" class="dialog_smiley dialogtitle" style="display:none">
+	<dl class="tab03">
+		<dd>
+			<ul>
+				<li class="current"><a href="javascript:void(0)">品上表情</a></li>
+				<li class=""><a href="javascript:void(0)">常用表情</a></li>
+			</ul>
+		</dd>
+		<dt class="layerClose">
+			<a class="close" href="javascript:void(0)"></a>
+		</dt>
+	</dl>
+	<ul class="smiley_items s_clear">
+		<li>
+			<a title="吃惊" href="javascript:void(0)"><img src="/images/smiley/chijing.png" /></a>
+		</li>
+		<li>
+			<a title="屌" href="javascript:void(0)"><img src="/images/smiley/diao.png" /></a>
+		</li>
+		<li>
+			<a title="尴尬" href="javascript:void(0)"><img src="/images/smiley/ganga.png" /></a>
+		</li>
+		<li>
+			<a title="汗" href="javascript:void(0)"><img src="/images/smiley/han.png" /></a>
+		</li>
+		<li>
+			<a title="怀疑" href="javascript:void(0)"><img src="/images/smiley/huaiyi.png" /></a>
+		</li>
+		<li>
+			<a title="休息喝咖啡" href="javascript:void(0)"><img src="/images/smiley/kafei.png" /></a>
+		</li>
+		<li>
+			<a title="可爱" href="javascript:void(0)"><img src="/images/smiley/keai.png" /></a>
+		</li>
+		<li>
+			<a title="哭" href="javascript:void(0)"><img src="/images/smiley/ku.png" /></a>
+		</li>
+		<li>
+			<a title="骂" href="javascript:void(0)"><img src="/images/smiley/ma.png" /></a>
+		</li>
+		<li>
+			<a title="俏皮" href="javascript:void(0)"><img src="/images/smiley/qiaopi.png" /></a>
+		</li>
+		<li>
+			<a title="傻笑" href="javascript:void(0)"><img src="/images/smiley/shaxiao.png" /></a>
+		</li>
+		<li>
+			<a title="生气" href="javascript:void(0)"><img src="/images/smiley/shengqi.png" /></a>
+		</li>
+		<li>
+			<a title="调皮" href="javascript:void(0)"><img src="/images/smiley/tiaopi.png" /></a>
+		</li>
+		<li>
+			<a title="听歌" href="javascript:void(0)"><img src="/images/smiley/tingge.png" /></a>
+		</li>
+		<li>
+			<a title="委屈" href="javascript:void(0)"><img src="/images/smiley/weiqu.png" /></a>
+		</li>
+		<li>
+			<a title="嘘" href="javascript:void(0)"><img src="/images/smiley/xu.png" /></a>
+		</li>
+		<li>
+			<a title="郁闷" href="javascript:void(0)"><img src="/images/smiley/yumen.png" /></a>
+		</li>
+		<li>
+			<a title="眨眼" href="javascript:void(0)"><img src="/images/smiley/zhayan.png" /></a>
+		</li>
+		<li>
+			<a title="吃惊" href="javascript:void(0)"><img src="/images/smiley/zhuanjia.png" /></a>
+		</li>
+		<li>
+			<a title="草泥马" href="javascript:void(0)"><img src="/images/smiley/caonima.png" /></a>
+		</li>
+		<li>
+			<a title="沙发" href="javascript:void(0)"><img src="/images/smiley/shafa.png" /></a>
+		</li>
+		<li>
+			<a title="蛋糕" href="javascript:void(0)"><img src="/images/smiley/dangao.png" /></a>
+		</li>
+		<li>
+			<a title="礼物" href="javascript:void(0)"><img src="/images/smiley/liwu.png" /></a>
+		</li>
+		<li>
+			<a title="鸭梨" href="javascript:void(0)"><img src="/images/smiley/yali.png" /></a>
+		</li>
+		<li>
+			<a title="猪头" href="javascript:void(0)"><img src="/images/smiley/zhutou.png" /></a>
+		</li>
+		<%for(int x=0;x<11;x++){ %>
+		<li>
+			<a></a>
+		</li>
+		<%} %>
+	</ul>
+	<ul class="normal_smiley_items s_clear" style="display:none">
+		<%for(int x=0;x<64;x++){ %>
+		<li><a class="s_clear"></a></li>
+		<%} %>
+	</ul>
+</div>
+<!-- 图片上传 -->
+<script type="text/javascript">
+
+function blog_image_onSwfLoaded() {
+	
+}
+
+function blog_image_upload_next() {
+	var item = $(".blogUploadImgItem[state='0']").first();
+	var fileObjectId = $(item).attr("fileObjectId");
+	this.startUpload(fileObjectId);
+}
+
+function blog_image_onPicSelected(fileObject) {
+	$("#blog_image_upload_swf_div").before("<div id='blogUploadImgItem_"+fileObject.id+
+		"' fileObjectId='"+fileObject.id+
+		"' class='blogUploadImgItem' state='0'>"+fileObject.name+"</div>");
+	this.setButtonText("点击添加第"+$("#blog_image_upload_list").children().length+"张图片");
+}
+
+function blog_image_onFileDialogComplete(nSelected,nQueued,nAllQueued) {
+	if(nSelected>0) {
+		blog_image_upload_next.call(this);
+	}
+}
+
+function blog_image_onPicUploadProgress (fileObject,bytesComplete,totalBytes) {
+	$("#blogUploadImgItem_"+fileObject.id).text(fileObject.name+"("+Math.round(bytesComplete*100/totalBytes)+"%)");
+}
+
+function blog_image_onPicUploadError () {
+	
+}
+
+function blog_image_onPicUploadSuccess (fileObject,serverData,response) {
+	var result = $.parseJSON(serverData);
+	if(result.success==1) {
+		$("#blogUploadImgItem_"+fileObject.id).text(fileObject.name+"(完成)");
+		$("#blogUploadImgItem_"+fileObject.id).attr("state","1");
+		$("#blogUploadImgItem_"+fileObject.id).css("margin",'0 0 5px 0');
+		$("#blogUploadImgItem_"+fileObject.id).removeClass('blogUploadImgItem');
+		$("#blogUploadImgItem_"+fileObject.id).html("<img width='370px' src='/pic/"+result.picFileName+"'/>");
+	} else {
+		$("#blogUploadImgItem_"+fileObject.id).text(fileObject.name+"(出错)");
+		$("#blogUploadImgItem_"+fileObject.id).attr("state","2");
+		alert(result.info);
+	}
+}
+
+function blog_image_onPicUploadComplete (fileObject) {
+	blog_image_upload_next.call(this);
+}
+
+function blog_image_Ok () {
+	$("#dialog_uploadimg").psfDialogClose();
+}
+
+function blog_image_Cancel() {
+	$("#dialog_uploadimg").psfDialogClose();
+}
+
+var blog_image_swf_uploader = null;
+
+$(document).ready(function(){
+	$("#dialog_uploadimg .tab03 li").psfTab($("#psfsmiley .smiley_items,#psfsmiley .normal_smiley_items"));
+	
+});
+
+
+
+</script>
+<div id="dialog_uploadimg" class="dialog_uploadimg dialogtitle" style="display:none">
+	<dl class="tab03">
+		<dd>
+			<ul>
+				<li class="current"><a href="javascript:void(0)">本地上传</a></li>
+				<li class=""><a href="javascript:void(0)">链接</a></li>
+			</ul>
+		</dd>
+		<dt class="layerClose">
+			<a class="close" href="javascript:void(0)"></a>
+		</dt>
+	</dl>
+	<div class="uploadimg_item">
+		<p>按住Ctrl 键一次选中上传多张图片（最多5张）</p>
+		<div class="blogUploadImgList s_clear" id="blog_image_upload_list">
+		<%--
+			<a class="addbor addbor_small" href="javascript:void(0)">
+				<em></em>
+			</a>
+			<span>点击添加第1张图片</span>
+		 --%>
+			<div id="blog_image_upload_swf_div"><div id='blog_image_upload_swf_div1'></div></div>
+		</div>
+		<div class="bottom s_clear">
+			<a class="button11" href="javascript:void(0)" onclick="blog_image_Ok();">确定</a>
+			<a class="button11" href="javascript:void(0)" onclick="blog_image_Cancel();">取消</a>
+		</div>
+	</div>
+	<div class="uploadvideo_item" style="display: none">
+		<p>粘贴图片地址</p>
+		<div class="uploadvideo_item_border">
+		<input type="text" />
+		<a class="button11" href="javascript:void(0)">确定</a>
+		</div>
+		
+	</div>
+</div>
+<!-- 视频上传 -->
+<script type="text/javascript">
+<!--
+function mblogSubmitVideo() {
+	$.post(
+		"/action/sns/blog/get_video_info",
+		$("#blogUploadVideoForm").serialize(),
+		function(data){
+			if(data.success==1) {
+				$("#blogContent").val(data.shorturl);
+				$("#dialog_uploadvideo").psfDialogClose();
+			} else {
+				alert(data.info);
+			}
+		},
+		"json");
+}
+//-->
+</script>
+<div id="dialog_uploadvideo" class="dialog_uploadvideo dialogtitle" style="display:none">
+	<dl class="tab03">
+		<dd>
+			<ul>
+				<li class="current"><a href="javascript:void(0)">视频连接</a></li>
+			</ul>
+		</dd>
+		<dt class="layerClose">
+			<a class="close" href="javascript:void(0)"></a>
+		</dt>
+	</dl>
+	<form id="blogUploadVideoForm" action="/action/sns/blog/get_video_info">
+	<div class="uploadvideo_item">
+		<p>粘贴视频播放地址</p>
+		<div class="uploadvideo_item_border">
+		<input type="text" name="url" />
+		<a class="button11" href="javascript:mblogSubmitVideo();">确定</a>
+		</div>
+	</div>
+	</form>
+</div>
+<!-- 音乐上传 -->
+<div id="dialog_uploadmusia" class="dialog_uploadvideo dialogtitle" style="display:none">
+	<dl class="tab03">
+		<dd>
+			<ul>
+				<li class=""><a href="javascript:void(0)">上传音乐</a></li>
+				<li class="current"><a href="javascript:void(0)">音乐收藏</a></li>
+			</ul>
+		</dd>
+		<dt class="layerClose">
+			<a class="close" href="javascript:void(0)"></a>
+		</dt>
+	</dl>
+	<div class="uploadvideo_item" style="display: none">
+		<div class="uploadvideo_item_border">
+		<input type="text" />
+		<a class="button11" href="javascript:void(0)">上传</a>
+		</div>	
+	</div>
+	<div class="uploadvideo_item" >
+		<div class="uploadvideo_item_border">
+		<input type="text" />
+		<a class="button11" href="javascript:void(0)">搜索</a>
+		</div>	
+	</div>
+</div>
+<!-- 话题 -->
+<!-- 品友 -->
+<div id="dialog_psffriend" class="dialog_psffriend dialogtitle" style="display:none">
+	<dl class="tab03">
+		<dd>
+			<div class="searchbox02">
+				<input type="text">
+				<a class="searchbtn" href="javascript:search_brand()"></a>
+			</div>
+		</dd>
+		<dt class="layerClose">
+			<a class="close" href="javascript:void(0)"></a>
+		</dt>
+	</dl>
+	<div class="psffriend_item">
+		<p>分享就是价值(2342432)</p>
+		<p>瑞瑞(2er42432)</p>
+	</div>
+	<div class="bottom s_clear">
+		<a class="pre" href="javascript:void(0)">上一组</a>
+		<a class="next" href="javascript:void(0)">下一组</a>
+	</div>
+</div>
+<!-- 转发 -->
+<div id="dialog_reproduced" class="dialog_reproduced dialogtitle" style="display:none">
+	<dl class="tab03">
+		<dd>
+			<h4>发现网络热点、分享新鲜生活</h4>
+		</dd>
+		<dt class="layerClose">
+			<a class="close" href="javascript:void(0)"></a>
+		</dt>
+	</dl>
+	<div class="reproduced_item">
+		<p>将你想转载的地址粘贴在这里</p>
+		<div class="reproduced_item_border s_clear">
+		<input type="text" />
+		<a href="javascript:void(0)"></a>
+		</div>	
+		<dl>
+			<dt>
+				标题：
+			</dt>
+			<dd>
+				<input class="input_name">
+			</dd>
+		</dl>
+		<dl>
+			<dt>
+				内容简介：
+			</dt>
+			<dd>
+				<textarea></textarea>
+			</dd>
+		</dl>
+		<dl>
+			<dt>
+				选择图片：<p>(选一张为题图)</p>
+			</dt>
+			<dd>
+				<ul>
+					<!--这里需要比较图片的宽和高，如果宽大于高则指定宽为119px不指定高度，反之则指定高位78px 不指定宽度-->
+					<li><div class="control">
+						<a class="prev" href="javascript:void(0)">
+						<em></em>
+						向左转
+						</a>
+						<a class="next" href="javascript:void(0)">
+						<em></em>
+						向右转
+						</a>
+					</div>
+					<img src="/pic/175.jpg" style="height:78px;width:119px;" />
+					<input type="checkbox" />
+					</li>
+					<li><img src="/pic/175.jpg" style="height:78px;width:119px;" /><input type="checkbox" /></li>
+					<li><img src="/pic/175.jpg" style="height:78px;width:119px;" /><input type="checkbox" /></li>
+					<li><img src="/pic/175.jpg" style="height:78px;width:119px;" /><input type="checkbox" /></li>
+					<li><img src="/pic/175.jpg" style="height:78px;width:119px;" /><input type="checkbox" /></li>
+					<li><img src="/pic/175.jpg" style="height:78px;width:119px;" /><input type="checkbox" /></li>
+				</ul>
+			</dd>
+		</dl>
+		<div class="bottom s_clear">
+			<a class="button11" href="javascript:void(0)">发布</a>
+			<a class="button11" href="javascript:void(0)">取消</a>
+		</div>
+	</div>
+
+</div>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+<!-- 数据源配置请到sqlmap_config.xml里配置
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="url" value="jdbc:mysql://192.168.1.5/psf_new?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull" />
+		<property name="username" value="root" />
+		<property name="password" value="1" />
+		
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+		<property name="minIdle" value="10"/>
+		<property name="initialSize" value="10"/>
+		<property name="maxActive" value="200"/>
+		<property name="maxIdle" value="100"/>
+		<property name="maxWait" value="100"/>
+		<property name="validationQuery" value="select 1"/>
+	</bean>
+ -->	
+<!-- 
+	<bean id="sqlmap" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="configLocation" value="sqlmap_config.xml"/>
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+ -->	
+</beans>

@@ -1,0 +1,235 @@
+package psf.action.common;
+
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.math.BigDecimal;
+import java.sql.Date;
+import java.sql.Timestamp;
+
+import javax.servlet.http.HttpServletResponse;
+
+
+import psf.PsfAction;
+import psf.common.PsfImage;
+import psf.common.PsfTime;
+import psf.entity.EcsUsers;
+import psf.entity.TUser;
+import psf.entity.TUser0;
+import psf.entity.TUserBalance;
+import psf.framework.ActionContext;
+
+public class PassportAction extends PsfAction {
+	public void login() throws Exception {
+		
+	}
+	
+	public void reg() throws Exception {
+		
+	}
+	public void regCheckUsername() throws Exception {
+		try{
+			String username = p("username");
+			Boolean usernameExists = userService.usernameExists(null, username);	
+			if(usernameExists){
+				set("success",0);
+				set("info","该昵称已被占用，请更换");
+			}  else {
+				set("success",1);
+				set("info","昵称可用");
+			}
+		} catch(Exception e){
+			set("success",0);
+			set("info",e.getMessage());
+		}
+	}	
+	public void regCheckEmail() throws Exception {
+		try{
+			String email = p("email");
+			Boolean emailExists = userService.emailExists(null, email);
+			if(emailExists) {
+				set("success",0);
+				set("info","此邮箱已被注册，请更换邮箱");
+			} else {
+				set("success",1);
+				set("info","邮箱可用");
+			}
+		}catch(Exception e){
+			set("success",0);
+			set("info",e.getMessage());
+		}
+	}
+	
+	public void regSave() throws Exception {
+		try{
+			String email = p("email");
+			String password = p("password");
+			String username = p("username");
+			String phone = p("phone");
+
+			Boolean usernameExists = userService.usernameExists(null, username);	
+			Boolean emailExists = userService.emailExists(null, email);
+			
+			if(usernameExists && emailExists){
+				set("success",0);
+				set("info1","该昵称已被占用，请更换");
+				set("info2","此邮箱已被注册，请更换邮箱");
+			} else if(emailExists || usernameExists) {
+				if(usernameExists){
+					set("success",1);
+					set("info","该昵称已被占用，请更换");
+				} else if(emailExists) {
+					set("success",2);
+					set("info","此邮箱已被注册，请更换邮箱");
+				}	
+			} else {
+				EcsUsers users = new EcsUsers();
+				users.setAddress_id(0);
+				users.setAlias("");
+				users.setAnswer("");
+				users.setBirthday(new Date(1970,1,1));
+				users.setCredit_line(new BigDecimal(0));
+				users.setEmail(email);
+				users.setFlag(0);
+				users.setFrozen_money(new BigDecimal(0));
+				users.setHome_phone("");
+				users.setIs_special(0);
+				users.setIs_validated(0);
+				users.setLast_ip(getHexIP());
+				users.setLast_login(new Long(0));
+				users.setLast_time(new Timestamp(new PsfTime().getTimeInSeconds()));
+				users.setMobile_phone(phone);
+				users.setMsn("");
+				users.setOffice_phone("");
+				users.setParent_id(0);
+				users.setPasswd_answer("");
+				users.setPasswd_question("");
+				users.setPassword(password);
+				users.setPay_points(new Long(0));
+				users.setQq("");
+				users.setQuestion("");
+				users.setRank_points(new Long(0));
+				users.setReg_time(new Long(new PsfTime().getTimeInSeconds()));
+				users.setSalt("");
+				users.setSex(1);
+				users.setUser_money(new BigDecimal(0));
+				users.setUser_name(username);
+				users.setUser_rank(0);
+				users.setVisit_count(0);				
+				int uid = userService.addEcsUsers(users);
+				
+				TUser0 user = new TUser0();
+				user.setUid(uid);
+				user.setAp_email(0);
+				user.setAp_industry(0);
+				user.setAp_msg(1);
+				user.setAp_wealth(1);
+				user.setAp_wealthtype(1);
+				user.setRegip(getHexIP());
+				user.setRegtime(new PsfTime().getTimeInSeconds());
+				userService.addTUser(user);
+				
+				TUserBalance balance = new TUserBalance();
+				balance.setBlogcount(0);
+				balance.setCash(new BigDecimal(0));
+				balance.setCoins(new BigDecimal(0));
+				balance.setCoupon(new BigDecimal(0));
+				balance.setExps(new BigDecimal(0));
+				balance.setFans(0);
+				balance.setFollows(0);
+				balance.setFriends(0);
+				balance.setGroupcount(0);
+				balance.setGroupfriends(0);
+				balance.setGuidecount(0);
+				balance.setMedal(0);
+				balance.setPoints(new BigDecimal(0));
+				balance.setShopexpcount(0);
+				balance.setShowcount(0);
+				balance.setVisitcount(0);
+				balance.setUid(uid);
+				userService.addBalance(balance);
+				
+				setLoginUserId(uid);
+				set("success",3);			
+			}		
+		}catch(Exception e){
+			set("success",0);
+			set("info",e.getMessage());
+		}
+	}
+	public void exitLogin() throws Exception {
+		setLoginUserId(null);
+	}
+	
+	protected static char [] captchChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789".toCharArray();
+	
+	protected String getCaptchaText() throws Exception {
+		int len = 4;
+		String text = "";
+		for(int i=0;i<len;i++) {
+			text+= captchChars[getRandom(captchChars.length)];
+		}
+		return text;
+	}
+	
+	public int getRandomSigned(int n) throws Exception {
+		int v = (int)((Math.random()-0.5d)*(double)n+1000.0d)%n;
+		return v;
+	}
+	
+	public int getRandom(int n) throws Exception {
+		int v = (int)(Math.random()*(double)n+1000.0d)%n;
+		return v;
+	}
+	
+	public void captcha() throws Exception {
+		HttpServletResponse response = ActionContext.currentActionContext().getResponse();
+		
+		
+		String text = getCaptchaText();
+		
+		
+		int w = 80;
+		int h = 22;
+		BufferedImage image = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+		Graphics2D g2d = (Graphics2D) image.getGraphics();
+		g2d.setColor(new Color(213,228,253));
+		g2d.fillRect(0, 0, w, h);
+		g2d.setColor(new Color(27,119,225));
+		g2d.setFont(new Font("Arial", Font.BOLD, 16));
+		int len = text.length();
+		for(int i=0;i<len;i++) {
+			Color c = new Color(getRandom(128),getRandom(128),getRandom(128));
+			g2d.setColor(c);
+			int w1 = getRandomSigned(12);
+			int h1 = getRandomSigned(5)+15;
+			g2d.drawString(text.substring(i, i+1), 10+i*15+w1, h1);
+		}
+		
+		
+		PsfImage img = new PsfImage(image);
+		response.setContentType("image/jpeg");
+		response.getOutputStream().write(img.getBytes());
+		
+	}
+	
+	public void loginCheck() throws Exception {
+		String username = p("username");
+		String userpass = p("userpass");
+		set("success",0);
+		
+		TUser theUser = userService.queryUserByName(username);
+		
+		if(theUser==null) {
+			set("info","用户不存在");
+		} else {
+			if(theUser.getUserpass().equals(userpass)) {
+				set("success",1);
+				setLoginUserId(theUser.getUid());
+			} else {
+				set("info","密码不正确");
+			}
+		}
+	}
+}

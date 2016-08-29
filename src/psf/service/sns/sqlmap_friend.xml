@@ -1,0 +1,474 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+	"../../../sql-map-2.dtd">
+<sqlMap>
+
+	<update id="friend.updateAllFriendGroupOrderToZero" parameterClass="java.lang.Integer">
+		update t_friend_group set displayorder = 0 where uid=#uid#
+	</update>
+	<update id="friend.updateFriendGroupOrder" parameterClass="psf.entity.TFriendGroup">
+		update t_friend_group set displayorder = #displayorder# where friendgroupid=#friendgroupid# and uid=#uid#
+	</update>
+	<select id="friend.queryMaxDisplyOrderOfFriendGroup" parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+		select max(displayorder) from t_friend_group where uid=#uid#
+	</select>
+	<select id="friend.queryFriendGroupByFriendId" parameterClass="psf.entity.TFriend" resultClass="psf.entity.TFriendGroup">
+		select * from t_friend_group where friendgroupid in (
+			select friendgroupid from t_friend where uid=#uid# and friendid=#friendid#
+		)
+	</select>
+	<update id="friend.updateFriend" parameterClass="psf.entity.TFriend">
+		update t_friend set friendgroupid=#friendgroupid# where uid=#uid# and friendid=#friendid#
+	</update>
+	<delete id="friend.delFriend" parameterClass="psf.entity.TFriend">
+		delete from t_friend where uid=#uid# and friendid=#friendid#
+	</delete>
+	<update id="friend.updateFriendGroup" parameterClass="java.util.Map">
+		update t_friend_group set friendgroupname=#friendgroupname# where friendgroupid=#friendgroupid# and uid=#uid#
+	</update>
+	<delete id="friend.delFriendGroup" parameterClass="java.lang.Integer">
+		delete from t_friend_group where friendgroupid=#friendgroupid#
+	</delete>
+	<select id="friend.queryFriendByGroupID" resultClass="java.lang.Integer" parameterClass="java.util.Map">
+		select friendid from t_friend where friendgroupid=#friendgroupid# and uid=#uid#
+	</select>
+	<select id="friend.queryFriendIsExist" resultClass="psf.entity.TFriend" parameterClass="java.util.Map"> 
+		select * from t_friend where uid=#uid# and friendid=#friendid#
+	</select>
+	<delete id="friend.delFriendByFriendgroupid" parameterClass="java.util.Map">
+		delete from t_friend where uid=#uid# and friendid=#friendid# and friendgroupid=#friendgroupid#
+	</delete>
+	<update id="friend.updateFriendgroupByFriend" parameterClass="java.util.Map">
+		update t_friend set friendgroupid=#friendgroupid# where uid=#uid# and friendid=#friendid#
+	</update>
+	<select id="friend.queryFriendgroupByUid" resultClass="psf.entity.TFriendGroup">
+		select * from t_friend_group where uid=#uid# order by displayorder
+	</select>
+	<select id="friend.queryFriendgroupByFriendid" parameterClass="java.util.Map" resultClass="psf.vo.sns.FriendVO">
+		select f.*,g.friendgroupname from t_friend f left join t_friend_group g on f.friendgroupid=g.friendgroupid where f.friendid=#friendid# and f.uid=#uid#
+	</select>
+	<!-- 分页查询分组好友  -->
+	<select id="friend.queryFriendCount" resultClass="java.lang.Integer" parameterClass="java.util.Map">
+		select count(distinct(friendid)) from t_friend where uid=#uid#
+			<isNotNull prepend="and" property="friendgroupid">
+				friendgroupid=#friendgroupid#
+			</isNotNull>		
+	</select>
+	<select id="friend.queryFriendByUid" resultClass="psf.vo.sns.FriendVO" parameterClass="java.util.Map">
+		select distinct(f.friendid),u.username,avatarid avatarFileName,sex,snsstatus,nowzoneid zoneid,
+		(select content from t_post where uid=f.friendid and delflag=0 order by addtime desc limit 1) newpost,
+		(select postid from t_post where uid=f.friendid and delflag=0 order by addtime desc limit 1) postid from t_friend f,t_user u
+		where f.uid=#uid# and f.friendid=u.uid
+		<isNotNull prepend="and" property="friendgroupid">
+			f.friendgroupid = #friendgroupid# 
+		</isNotNull>
+		limit #pp.offset#,#pp.pageSize#
+	</select>
+	<!-- 筛选 -->
+	<!-- 最新  -->
+	<select id="friend.queryFriendByNew" resultClass="psf.vo.sns.FriendVO" parameterClass="java.util.Map">
+		select distinct(f.friendid),u.username,
+		(select content from t_post where uid=f.friendid and delflag=0 order by addtime desc limit 1) newpost,
+		(select postid from t_post where uid=f.friendid and delflag=0 order by addtime desc limit 1) postid from t_friend f,t_user u
+		where f.uid=#uid# and f.friendid=u.uid order by f.ts desc limit #pp.offset#,#pp.pageSize#
+	</select>
+	<!-- 最近联系 -->
+	<select id="friend.queryFriendByRelation" resultClass="psf.vo.sns.FriendVO" parameterClass="java.util.Map">
+		select distinct(friendid),t.addtime,
+		(select content from t_post where uid=f.friendid and delflag=0 order by addtime desc limit 1) newpost,
+		(select postid from t_post where uid=f.friendid and delflag=0 order by addtime desc limit 1) postid from t_friend as f left join (
+		select distinct(c.uid ) uid,max(c.addtime) addtime from (
+			select distinct(a.uid),max(a.addtime) addtime from (select msgto uid,addtime from t_msg where msgfrom=#uid# union all select msgfrom uid,addtime from t_msg where msgto=#uid#) a group by a.uid
+			union all
+			select distinct(b.uid),max(b.addtime) addtime from (select uid uid,addtime from t_comment where touid=#uid# union all select touid uid,addtime from t_comment where uid=#uid#) b group by b.uid
+		) c where c.uid in (select friendid from t_friend where uid=#uid#) group by c.uid order by c.addtime desc) as t on t.uid=f.friendid
+		where f.uid=#uid#  order by addtime desc  limit #pp.offset#,#pp.pageSize#
+	</select>	
+	
+	<!-- 筛选 -->
+	<!-- 加入搜索 -->
+	<select id="friend.queryFriendByKeywordCount" resultClass="java.lang.Integer" parameterClass="java.util.Map">
+		select count(distinct(a.fuid)) from (
+			select f.friendid fuid from t_friend f,t_user u where f.uid=#uid# and f.friendid=u.uid and u.username like concat('%',#keyword#,'%')
+			<isNotNull prepend="and" property="friendgroupid">
+			f.friendgroupid = #friendgroupid# 
+			</isNotNull>
+			union all
+			select fr.friendid fuid from t_friend fr,t_remarklist rl where fr.uid=#uid# and rl.uid=#uid# and rl.remarkuid=fr.friendid 
+			and rl.remarkname like concat('%',#keyword#,'%')
+			<isNotNull prepend="and" property="friendgroupid">
+			fr.friendgroupid = #friendgroupid# 
+			</isNotNull>
+		) a
+	</select>
+	<select id="friend.queryFriendByKeyword" resultClass="psf.vo.sns.FriendVO" parameterClass="java.util.Map">
+		select a.fuid friendid,username,avatarid avatarFileName,sex,snsstatus,nowzoneid zoneid,
+		(select content from t_post where uid=a.fuid and delflag=0 order by addtime desc limit 1) newpost,
+		(select postid from t_post where uid=a.fuid and delflag=0 order by addtime desc limit 1) postid from (
+		select f.friendid fuid from t_friend f,t_user u where f.uid=#uid# and f.friendid=u.uid and u.username like concat('%',#keyword#,'%') 
+		<isNotNull prepend="and" property="friendgroupid">
+			f.friendgroupid = #friendgroupid# 
+		</isNotNull>
+		union all
+		select fr.friendid fuid from t_friend fr,t_remarklist rl where fr.uid=#uid# and rl.uid=#uid# and rl.remarkuid=fr.friendid and rl.remarkname like concat('%',#keyword#,'%')
+		<isNotNull prepend="and" property="friendgroupid">
+			fr.friendgroupid = #friendgroupid# 
+		</isNotNull>
+		) a,t_user where a.fuid=t_user.uid limit #pp.offset#,#pp.pageSize#
+	</select>
+	
+	<!-- 分页查询分组好友  -->
+	<!-- 二度好友 -->
+	<select id="friend.queryFriend" resultClass="java.lang.Integer" parameterClass="java.lang.Integer">
+		select distinct(friendid) from t_friend where uid=#uid#
+	</select>
+	<select id="friend.queryFriendOfFriendAllCount" parameterClass="java.util.Map" resultClass="java.lang.Integer" >
+		select count(distinct(f.friendid)) from t_friend f 
+		where f.uid IN <iterate property="fuidList" conjunction="," open="(" close=")">#fuidList[]#</iterate> and f.friendid!=#uid#
+		and f.friendid not in <iterate property="fuidList" conjunction="," open="(" close=")">#fuidList[]#</iterate>
+	</select>
+	<select id="friend.queryFriendOfFriendAll" resultClass="psf.vo.sns.FriendVO" parameterClass="java.util.Map">
+		select distinct(friendid) friendid,username,username,avatarid avatarFileName,sex,snsstatus from t_friend f left join t_user u on  f.friendid = u.uid
+		where f.uid IN <iterate property="fuidList" conjunction="," open="(" close=")">#fuidList[]#</iterate> and f.friendid!=#uid#
+		and f.friendid not in <iterate property="fuidList" conjunction="," open="(" close=")">#fuidList[]#</iterate>
+		limit #pp.offset#, #pp.pageSize#
+	</select>
+	
+	<select id="friend.queryFriendOfFriendClassmateCount" resultClass="java.lang.Integer">
+		select count(distinct(friendid)) from t_friend f,t_user_edu e
+		where f.uid IN <iterate property="fuidList" conjunction="," open="(" close=")">#fuidList[]#</iterate> and f.friendid!=#uid#
+		and f.friendid not in <iterate property="fuidList" conjunction="," open="(" close=")">#fuidList[]#</iterate> and 
+		schoolname in (select schoolname from t_user_edu where uid=#uid#) and e.uid=f.friendid
+	</select>
+	<select id="friend.queryFriendOfFriendClassmate" resultClass="psf.vo.sns.FriendVO" parameterClass="java.util.Map">
+		select distinct(friendid) friendid,username,username,avatarid avatarFileName,sex,snsstatus from t_friend f,t_user u,t_user_edu e
+		where f.uid IN <iterate property="fuidList" conjunction="," open="(" close=")">#fuidList[]#</iterate> and f.friendid = u.uid and f.friendid!=#uid#
+		and f.friendid not in <iterate property="fuidList" conjunction="," open="(" close=")">#fuidList[]#</iterate> and schoolname in 
+		(select schoolname from t_user_edu where uid=#uid#) and e.uid=f.friendid  limit #pp.offset#, #pp.pageSize#
+	</select>
+		
+	<select id="friend.queryFriendOfFriendWorkmateCount" resultClass="java.lang.Integer">
+		select count(distinct(friendid)) from t_friend f,t_user_job j
+		where f.uid IN <iterate property="fuidList" conjunction="," open="(" close=")">#fuidList[]#</iterate> and f.friendid!=#uid#
+		and f.friendid not in <iterate property="fuidList" conjunction="," open="(" close=")">#fuidList[]#</iterate> 
+		and companyname in (select companyname from t_user_job where uid=#uid#) and j.uid=f.friendid
+	</select>
+	<select id="friend.queryFriendOfFriendWorkmate" resultClass="psf.vo.sns.FriendVO" parameterClass="java.util.Map">
+		select distinct(friendid) friendid,username,username,avatarid avatarFileName,sex,snsstatus from t_friend f,t_user u,t_user_job j
+		where f.uid IN <iterate property="fuidList" conjunction="," open="(" close=")">#fuidList[]#</iterate> AND f.friendid = u.uid and f.friendid!=#uid#
+		and f.friendid not in <iterate property="fuidList" conjunction="," open="(" close=")">#fuidList[]#</iterate> and 
+		companyname in (select companyname from t_user_job where uid=#uid#) and j.uid=f.friendid limit #pp.offset#, #pp.pageSize#
+	</select>
+	
+	<select id="friend.queryFriendOfFriendSameHomeTownCount" resultClass="java.lang.Integer">
+		select count(distinct(friendid)) from t_friend f,t_user u
+		where f.uid IN <iterate property="fuidList" conjunction="," open="(" close=")">#fuidList[]#</iterate> and f.friendid!=#uid#
+		and f.friendid not in <iterate property="fuidList" conjunction="," open="(" close=")">#fuidList[]#</iterate> 
+		and f.friendid=u.uid and homezoneid=(select homezoneid from t_user where uid=#uid#)
+	</select>
+	<select id="friend.queryFriendOfFriendSameHomeTown" resultClass="psf.vo.sns.FriendVO" parameterClass="java.util.Map">
+		select distinct(friendid) friendid,username,username,avatarid avatarFileName,sex,snsstatus from t_friend f,t_user u
+		where f.uid IN <iterate property="fuidList" conjunction="," open="(" close=")">#fuidList[]#</iterate> AND f.friendid = u.uid and f.friendid!=#uid#
+		and f.friendid not in <iterate property="fuidList" conjunction="," open="(" close=")">#fuidList[]#</iterate> 
+		and f.friendid=u.uid and homezoneid=(select homezoneid from t_user where uid=#uid#) limit #pp.offset#, #pp.pageSize#
+	</select>
+	
+	<select id="friend.queryFriendOfFriendSameCityCount" resultClass="java.lang.Integer">
+		select count(distinct(friendid)) from t_friend f,t_user u
+		where f.uid IN <iterate property="fuidList" conjunction="," open="(" close=")">#fuidList[]#</iterate> and f.friendid!=#uid#
+		and f.friendid not in <iterate property="fuidList" conjunction="," open="(" close=")">#fuidList[]#</iterate> 
+		and nowzoneid =(select nowzoneid from t_user where uid=#uid#) 
+	</select>
+	<select id="friend.queryFriendOfFriendSameCity" resultClass="psf.vo.sns.FriendVO" parameterClass="java.util.Map">
+		select distinct(friendid) friendid,username,username,avatarid avatarFileName,sex,snsstatus from t_friend f,t_user u
+		where f.uid IN <iterate property="fuidList" conjunction="," open="(" close=")">#fuidList[]#</iterate> AND f.friendid = u.uid and f.friendid!=#uid#
+		and f.friendid not in <iterate property="fuidList" conjunction="," open="(" close=")">#fuidList[]#</iterate> 
+		and nowzoneid =(select nowzoneid from t_user where uid=#uid#) limit #pp.offset#, #pp.pageSize#
+	</select>
+	
+	<select id="friend.queryFriendOfFriendDiffSexCount" resultClass="java.lang.Integer">
+		select count(distinct(friendid)) from t_friend f,t_user u
+		where f.uid IN <iterate property="fuidList" conjunction="," open="(" close=")">#fuidList[]#</iterate> and f.friendid!=#uid#
+		and f.friendid not in <iterate property="fuidList" conjunction="," open="(" close=")">#fuidList[]#</iterate> 
+		and sex != (select sex from t_user where uid=#uid#) and u.uid=f.friendid
+	</select>
+	<select id="friend.queryFriendOfFriendDiffSex" resultClass="psf.vo.sns.FriendVO" parameterClass="java.util.Map">
+		select distinct(friendid) friendid,username,username,avatarid avatarFileName,sex,snsstatus from t_friend f,t_user u
+		where f.uid IN <iterate property="fuidList" conjunction="," open="(" close=")">#fuidList[]#</iterate> AND f.friendid = u.uid and f.friendid!=#uid#
+		and f.friendid not in <iterate property="fuidList" conjunction="," open="(" close=")">#fuidList[]#</iterate> 
+		and sex != (select sex from t_user where uid=#uid#) and u.uid=f.friendid limit #pp.offset#, #pp.pageSize#
+	</select>
+	
+	<select id="friend.queryFriendOfFriend" resultClass="psf.entity.TFriend" parameterClass="java.util.Map">
+		select fuid from t_friend where uid=#fuid# and fuid!=#uid# and fuid not in(select fuid from t_friend where uid=#uid#)
+	</select>
+	
+	<select id="friend.queryHotFriendCount" resultClass="java.lang.Integer" parameterClass="java.util.Map">
+		select count(1) from t_user_balance where uid!=#uid# and uid not in <iterate property="fuidList" conjunction="," open="(" close=")">#fuidList[]#</iterate>
+		and uid not in <iterate property="followuidList" conjunction="," open="(" close=")">#followuidList[]#</iterate> 
+	</select>
+	<select id="friend.queryHotFriend" resultClass="psf.vo.sns.FriendVO" parameterClass="java.util.Map">
+		select b.uid,sum(showcount+guidecount+shopexpcount) count,username,username,avatarid avatarName,sex,snsstatus from t_user_balance b,t_user u
+		where b.uid=u.uid and b.uid!=#uid# and b.uid not in <iterate property="followuidList" conjunction="," open="(" close=")">#followuidList[]#</iterate> 
+	    and b.uid not in <iterate property="fuidList" conjunction="," open="(" close=")">#fuidList[]#</iterate> group by b.uid order by count desc limit #offset#, #pageSize#
+	</select>
+	<!-- 二度好友 -->
+	
+	<!-- 寻找好友-同学 -->
+	<select id="friend.queryMySchool" resultClass="java.lang.String">
+		select schoolname from t_user_edu where uid=#uid#
+	</select>
+	<select id="friend.queryLikeSchoolmateCount" resultClass="java.lang.Integer" parameterClass="java.util.Map">
+		select count(distinct(uid)) from t_user_edu where uid!=#uid# and uid not in(select distinct(followuid) from t_follow where uid=#uid#)
+		<isNotNull prepend="and" property="mySchool">
+			<iterate property="mySchool" open="(" close=")" conjunction="or"> schoolname like concat('%',#mySchool[]#,'%') </iterate>
+		</isNotNull>
+	</select>
+	<select id="friend.queryLikeSchoolmate" resultClass="psf.vo.sns.FriendVO" parameterClass="java.util.Map">
+		select distinct(e.uid),avatarid avatarFileName,schoolname,username from t_user_edu e,t_user u where e.uid!=#uid# and e.uid=u.uid and 
+		e.uid not in(select distinct(followuid) from t_follow f where f.uid=#uid#) 
+		<isNotNull prepend="and" property="mySchool">
+			<iterate property="mySchool" open="(" close=")" conjunction="or"> schoolname like concat('%',#mySchool[]#,'%') </iterate>
+		</isNotNull>
+		limit #pp.offset#,#pp.pageSize#
+	</select>
+	<select id="friend.queryLikeSchoolmateByKeywordCount" resultClass="java.lang.Integer" parameterClass="java.util.Map">
+		select count(distinct(uid)) from t_user_edu where uid!=#uid# and schoolname like concat('%',#keyword#,'%')
+   		and uid not in(select distinct(followuid) from t_follow where uid=#uid#)
+	</select>
+	<select id="friend.queryLikeSchoolmateByKeyword" resultClass="psf.vo.sns.FriendVO" parameterClass="java.util.Map">
+		select distinct(e.uid),avatarid avatarFileName,schoolname,username from t_user_edu e,t_user u where e.uid!=#uid# and e.uid=u.uid and 
+		schoolname like concat('%',#keyword#,'%') and e.uid not in(select distinct(followuid) from t_follow f where f.uid=#uid#) limit #pp.offset#,#pp.pageSize#
+	</select>
+	<!-- 寻找好友-同学 -->
+	<!-- 寻找好友-同事 -->
+	<select id="friend.queryMyCompany" resultClass="java.lang.String">
+		select companyname from t_user_job where uid=#uid#
+	</select>
+	<select id="friend.queryLikeWorkmateCount" resultClass="java.lang.Integer" parameterClass="java.util.Map">
+		select count(distinct(uid)) from t_user_job where uid!=#uid# and uid not in (select distinct(followuid) from t_follow where uid=#uid#)
+		<isNotNull prepend="and" property="myCompany">
+			<iterate property="myCompany" open="(" close=")" conjunction="or"> companyname like concat('%',#myCompany[]#,'%') </iterate>
+		</isNotNull>
+	</select>
+	<select id="friend.queryLikeWorkmate" resultClass="psf.vo.sns.FriendVO" parameterClass="java.util.Map">
+		select distinct(j.uid),avatarid avatarFileName,companyname,username from t_user_job j,t_user u where j.uid!=#uid# and j.uid=u.uid and j.uid not in (select distinct(followuid) from t_follow where uid=#uid#)
+		<isNotNull prepend="and" property="myCompany">
+			<iterate property="myCompany" open="(" close=")" conjunction="or"> companyname like concat('%',#myCompany[]#,'%') </iterate>
+		</isNotNull>
+		limit #pp.offset#,#pp.pageSize#
+	</select>
+	<select id="friend.queryLikeWorkmateByKeywordCount" resultClass="java.lang.Integer" parameterClass="java.util.Map">
+		select count(distinct(uid)) from t_user_job where uid!=#uid# and companyname like concat('%',#keyword#,'%')
+   		and uid not in(select distinct(followuid) from t_follow where uid=#uid#)
+	</select>
+	<select id="friend.queryLikeWorkmateByKeyword" resultClass="psf.vo.sns.FriendVO" parameterClass="java.util.Map">
+		select distinct(j.uid),avatarid avatarFileName,companyname,username from t_user_job j,t_user u where j.uid!=#uid# and j.uid=u.uid and 
+		companyname like concat('%',#keyword#,'%') and j.uid not in(select distinct(followuid) from t_follow f where f.uid=#uid#) limit #pp.offset#,#pp.pageSize#
+	</select>
+	<!-- 寻找好友-同事 -->
+	<!-- 寻找好友-行业 -->
+	<select id="friend.queryLikeSameBusinessCount" resultClass="java.lang.Integer" parameterClass="java.util.Map">
+		select count(distinct(uid)) from t_user where industryid=(select industryid from t_user where uid=#uid#) 
+		and uid not in (select followuid from t_follow where uid=#uid#) and uid!=#uid#
+	</select>
+	<select id="friend.queryLikeSameBusiness" resultClass="psf.vo.sns.FriendVO" parameterClass="java.util.Map">
+		select distinct(u.uid),username,avatarid avatarFileName,industryname from t_user u,t_industry i where
+		u.industryid=(select industryid from t_user where uid=#uid#) and u.uid not in (select followuid from t_follow where uid=#uid#) and uid!=#uid#
+		and u.industryid = i.industryid limit #pp.offset#,#pp.pageSize#
+	</select>
+	<select id="friend.queryLikeSameBusinessByKeywordCount" resultClass="java.lang.Integer" parameterClass="java.util.Map">
+		select count(distinct(uid)) from t_user where uid!=#uid# and uid not in (select followuid from t_follow where uid=#uid#) and industryid in 
+	    (select distinct(a.industryid) from 
+	    	(select industryid from t_industry where industryname like concat('%',#keyword#,'%') and parentid!=0 
+	    	union all 
+	    	select industryid from t_industry where parentid=(select industryid from t_industry where industryname like concat('%',#keyword#,'%') and parentid=0)) a
+	    	)
+	</select>
+	<select id="friend.queryLikeSameBusinessByKeyword" resultClass="psf.vo.sns.FriendVO" parameterClass="java.util.Map">
+		select distinct(uid),username,avatarid avatarFileName,industryname from t_user u,t_industry i where  uid!=#uid# and uid not in (select followuid from t_follow where uid=#uid#)
+		and i.industryid=u.industryid and u.industryid in 
+	    (select distinct(a.industryid) from 
+	    	(select industryid from t_industry where industryname like concat('%',#keyword#,'%') and parentid!=0 
+	    	union all 
+	    	select industryid from t_industry where parentid=(select industryid from t_industry where industryname like concat('%',#keyword#,'%') and parentid=0)) a
+	    	)
+	    limit #pp.offset#,#pp.pageSize#
+	</select>
+	<!-- 寻找好友-行业 -->
+	<!-- 寻找好友-可能喜欢 -->
+	<select id="friend.queryMaybeYouLikeCount" parameterClass="java.lang.Integer" resultClass="java.lang.Integer" >
+		select count(distinct(f.friendid)) from t_friend f 
+		where f.friendid not in (select distinct(a.uid) from 
+		(select followuid uid from t_follow where uid=#uid# union all select friendid uid from t_friend where uid=#uid#) a) 
+		and f.uid IN (select distinct(friendid) from t_friend where uid=#uid#) and f.friendid!=#uid#
+	</select>
+	<select id="friend.queryMaybeYouLike" resultClass="psf.vo.sns.FriendVO" parameterClass="java.util.Map">
+		select distinct(friendid) uid,username,avatarid avatarFileName from t_friend f,t_user u where f.friendid=u.uid
+		and f.friendid not in (select distinct(a.uid) from 
+		(select followuid uid from t_follow where uid=#uid# union all select friendid uid from t_friend where uid=#uid#) a) 
+		and f.uid IN (select distinct(friendid) from t_friend where uid=#uid#) and f.friendid!=#uid#
+		limit #pp.offset#, #pp.pageSize#
+	</select>
+	<select id="friend.queryMaybeYouLikeByKeywordCount" parameterClass="java.util.Map" resultClass="java.lang.Integer" >
+		select count(distinct(uid)) from t_user
+		where uid!=#uid# and uid not in(select followuid from t_follow where uid=#uid#) and username like concat('%',#keyword#,'%')
+	</select>
+	<select id="friend.queryMaybeYouLikeByKeyword" resultClass="psf.vo.sns.FriendVO" parameterClass="java.util.Map">
+		select distinct(uid),username,avatarid avatarFileName from t_user
+		where uid!=#uid# and uid not in(select followuid from t_follow where uid=#uid#) and username like concat('%',#keyword#,'%')
+		limit #pp.offset#, #pp.pageSize#
+	</select>
+	<!-- 寻找好友-可能喜欢 -->
+	<!-- 推送信息 可能喜欢品友  -->
+	<select id="friend.queryMyFollow" resultClass="java.lang.Integer">
+		select distinct(followuid) from t_follow where uid=#uid#
+	</select>
+	<select id="friend.queryMyFans" resultClass="java.lang.Integer">
+		select distinct(uid) from t_follow where followuid=#uid#
+	</select>
+	<select id="friend.queryFriendRecommendByFriendCount" parameterClass="java.util.Map" resultClass="java.lang.Integer" >
+		select count(distinct(f.friendid)) from t_friend f 
+		where f.uid IN <iterate property="fuidList" conjunction="," open="(" close=")">#fuidList[]#</iterate> and f.friendid!=#uid#
+		and f.friendid not in <iterate property="fuidList" conjunction="," open="(" close=")">#fuidList[]#</iterate> and f.friendid not in
+		<iterate property="followuidList" conjunction="," open="(" close=")">#followuidList[]#</iterate>
+	</select>
+	<select id="friend.queryFriendRecommendByFriend" resultClass="psf.vo.sns.FriendVO" parameterClass="java.util.Map">
+		select distinct(friendid) friendid,username,username,avatarid avatarFileName,sex,snsstatus from t_friend f left join t_user u on  f.friendid = u.uid
+		where f.uid IN <iterate property="fuidList" conjunction="," open="(" close=")">#fuidList[]#</iterate> and f.friendid!=#uid#
+		and f.friendid not in <iterate property="fuidList" conjunction="," open="(" close=")">#fuidList[]#</iterate>
+		and f.friendid not in <iterate property="followuidList" conjunction="," open="(" close=")">#followuidList[]#</iterate>
+		limit #pp.offset#, #pp.pageSize#
+	</select>
+	<select id="friend.queryFriendRecommendByFollowCount" resultClass="java.lang.Integer" parameterClass="java.util.Map">
+		select count(u.uid) from t_user u,t_friend f where f.friendid=u.uid and u.uid!=#uid# and
+		f.uid in<iterate property="followuidList" conjunction="," open="(" close=")">#followuidList[]#</iterate> and
+		friendid not in<iterate property="followuidList" conjunction="," open="(" close=")">#followuidList[]#</iterate>
+	</select>
+	<select id="friend.queryFriendRecommendByFollow" resultClass="psf.vo.sns.FriendVO" parameterClass="java.util.Map">
+		select u.uid,username,username,avatarid avatarName from t_user u,t_friend f where f.friendid=u.uid and 
+		f.uid in<iterate property="followuidList" conjunction="," open="(" close=")">#followuidList[]#</iterate> and
+		friendid not in<iterate property="followuidList" conjunction="," open="(" close=")">#followuidList[]#</iterate>
+		limit #pp.offset#,#pp.pageSize#
+	</select>
+	<select id="friend.queryFriendRecommendByFansCount" resultClass="java.lang.Integer" parameterClass="java.util.Map">
+		select count(u.uid) from t_user u,t_friend f where f.friendid=u.uid and u.uid!=#uid# and
+		f.uid in<iterate property="fansList" conjunction="," open="(" close=")">#fansList[]#</iterate> and
+		friendid not in<iterate property="fansList" conjunction="," open="(" close=")">#fansList[]#</iterate>
+	</select>
+	<select id="friend.queryFriendRecommendByFans" resultClass="psf.vo.sns.FriendVO" parameterClass="java.util.Map">
+		select u.uid,username,username,avatarid avatarName from t_user u,t_friend f where f.friendid=u.uid and 
+		f.uid in<iterate property="fansList" conjunction="," open="(" close=")">#fansList[]#</iterate> and
+		friendid not in<iterate property="fansList" conjunction="," open="(" close=")">#fansList[]#</iterate>
+		limit #pp.offset#,#pp.pageSize#
+	</select>
+	<!-- 推送信息 可能喜欢品友  -->
+	
+	<!-- 关注所有的品友的好友(除了已经关注的) -->
+	<select id="friend.queryFriendofFriendAndNotFollow" resultClass="java.lang.Integer">
+		select f.friendid from t_friend f where 
+		f.uid IN (select friendid from t_friend where uid=#uid#) and f.friendid!=#uid# and 
+		f.friendid not in (select friendid from t_friend where uid=#uid#) and 
+		f.friendid not in (select followuid from t_follow where uid=#uid#);
+	</select>
+	
+	<!-- 推荐 引荐 begin -->
+	<select id="friend.queryMyFriendExceptTaCount" resultClass="java.lang.Integer" parameterClass="java.util.Map">
+		select count(distinct(a.friendid)) from 
+		(select f.*,username from t_friend f left join t_user u on f.friendid=u.uid where f.uid=#uid# and f.friendid!=#friendid#) a 
+		left outer join t_remarklist r on a.friendid=r.remarkuid and r.uid=a.uid 
+		<isNotNull prepend="where" property="keyword">
+			a.username like concat('%',#keyword#,'%') or remarkname like concat('%',#keyword#,'%')
+		</isNotNull>
+	</select>
+	<select id="friend.queryMyFriendExceptTa" resultClass="psf.vo.sns.SnsUserInfoVO" parameterClass="java.util.Map">
+		select a.*,remarkname remarkName from 
+		(select distinct(friendid) fuid,f.uid,username,avatarid avatarFileName from t_friend f,t_user u where f.uid=#uid# and f.friendid=u.uid and f.friendid!=#friendid#) a 
+		left outer join t_remarklist r on a.fuid=r.remarkuid and r.uid=a.uid
+		<isNotNull prepend="where" property="keyword">
+			a.username like concat('%',#keyword#,'%') or remarkname like concat('%',#keyword#,'%')
+		</isNotNull>
+		limit #pp.offset#, #pp.pageSize#
+	</select>
+	<select id="friend.queryMyFansExceptTaCount" resultClass="java.lang.Integer" parameterClass="java.util.Map">
+		select count(distinct(a.fuid)) from 
+		(select distinct(f.uid) fuid,f.followuid uid,username,avatarid avatarFileName from t_follow f,t_user u where f.followuid=#uid# and f.uid=u.uid and f.uid!=#friendid#) a 
+		left outer join t_remarklist r on a.fuid=r.remarkuid and r.uid=a.uid
+		<isNotNull prepend="where" property="keyword">
+			a.username like concat('%',#keyword#,'%') or remarkname like concat('%',#keyword#,'%')
+		</isNotNull>
+	</select>
+	<select id="friend.queryMyFansExceptTa" resultClass="psf.vo.sns.SnsUserInfoVO" parameterClass="java.util.Map">
+		select a.*,remarkname remarkName from 
+		(select distinct(f.uid) fuid,f.followuid uid,username,avatarid avatarFileName from t_follow f,t_user u where f.followuid=#uid# and f.uid=u.uid and f.uid!=#friendid#) a 
+		left outer join t_remarklist r on a.fuid=r.remarkuid and r.uid=a.uid
+		<isNotNull prepend="where" property="keyword">
+			a.username like concat('%',#keyword#,'%') or remarkname like concat('%',#keyword#,'%')
+		</isNotNull>
+		limit #pp.offset#, #pp.pageSize#
+	</select>
+	<select id="friend.queryMyFollowExceptTaCount" resultClass="java.lang.Integer" parameterClass="java.util.Map">
+		select count(distinct(a.followuid)) from 
+		(select f.*,username from t_follow f,t_user u where f.followuid=u.uid and f.uid=#uid# and f.followuid!=#friendid#) a 
+		left join t_remarklist r on a.followuid=r.remarkuid and r.uid=a.uid
+		<isNotNull prepend="where" property="keyword">
+			a.username like concat('%',#keyword#,'%') or remarkname like concat('%',#keyword#,'%')
+		</isNotNull>
+	</select>
+	<select id="friend.queryMyFollowExceptTa" resultClass="psf.vo.sns.SnsUserInfoVO" parameterClass="java.util.Map">
+		select a.*,remarkname remarkName from 
+		(select distinct(f.followuid) fuid,f.uid uid,username,avatarid avatarFileName from t_follow f,t_user u where f.uid=#uid# and f.followuid=u.uid and f.followuid!=#friendid#) a 
+		left outer join t_remarklist r on a.fuid=r.remarkuid and r.uid=a.uid
+		<isNotNull prepend="where" property="keyword">
+			a.username like concat('%',#keyword#,'%') or remarkname like concat('%',#keyword#,'%')
+		</isNotNull>
+		limit #pp.offset#, #pp.pageSize#
+	</select>
+	<!-- 推荐 引荐 end -->
+	<!-- 我收到的引荐页 begin -->
+	<select id="friend.queryMyGetIntroduceCount" resultClass="java.lang.Integer">
+		select count(distinct(uid)) from t_introduce where touid=#touid# and delbyreader=0 order by addtime desc
+	</select>
+	<select id="friend.queryMyGetIntroduce" resultClass="psf.vo.sns.IntroduceVO" parameterClass="java.util.Map">
+		select i.*,username,avatarid avatarFileName from t_introduce i,t_user u where touid=#touid# and i.uid=u.uid and delbyreader=0 group by i.uid 
+		limit #pp.offset#, #pp.pageSize#
+	</select>
+	<select id="friend.queryMyIntroduceFriends" resultClass="psf.vo.sns.SnsUserInfoVO" parameterClass="java.util.Map">
+		select i.fromuid uid,username,avatarid avatarFileName,sex,snsstatus,nowzoneid nowZoneName
+		from t_introduce i,t_user u 
+		where i.uid=#uid# and touid=#touid# and fromuid=u.uid group by fromuid
+	</select>
+	<update id="friend.delMyIntroduce" parameterClass="java.util.Map">
+		update t_introduce set delbyreader=1 where uid=#uid# and touid=#touid#
+	</update>
+	<update id="friend.delMySendIntroduce" parameterClass="java.util.Map">
+		update t_introduce set delbysender=1 where uid=#uid# and touid=#touid#
+	</update>
+	<!-- 我收到的引荐页 end -->
+	<!-- 我发出的引荐页 begin -->
+	<select id="friend.queryMySendIntroduceCount" resultClass="java.lang.Integer">
+		select count(distinct(touid)) from t_introduce where uid=#uid# and delbysender=0 order by addtime desc
+	</select>
+	<select id="friend.queryMySendIntroduce" resultClass="psf.vo.sns.IntroduceVO" parameterClass="java.util.Map">
+		select i.*,username,avatarid avatarFileName from t_introduce i,t_user u where i.uid=#uid# and i.touid=u.uid and delbysender=0 group by i.touid
+		limit #pp.offset#, #pp.pageSize#
+	</select>
+	<select id="friend.queryMyFriend" resultClass="java.lang.Integer">
+		select distinct(friendid) from t_friend where uid=#uid# and friendid!=#friendid#
+	</select>
+	<select id="friend.queryMyFol" resultClass="java.lang.Integer">
+		select distinct(followuid) from t_follow where uid=#uid# and followuid!=#friendid#
+	</select>
+	<select id="friend.queryMyFan" resultClass="java.lang.Integer">
+		select distinct(uid) from t_follow where followuid=#uid# and uid!=#friendid#
+	</select>
+	
+	
+	<!-- 我发出的引荐页 end -->
+	
+	<!-- 查找我的好友，关注 -->
+	<select id="friend.queryMyFriendAndFollow" resultClass="java.lang.Integer">
+		select distinct(a.uid) from 
+		(select distinct(friendid) uid from t_friend where uid=#uid# union all select distinct(followuid) uid from t_follow where uid=#uid#) a
+	</select>
+</sqlMap>

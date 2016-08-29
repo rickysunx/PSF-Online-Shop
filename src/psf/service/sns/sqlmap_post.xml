@@ -1,0 +1,694 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+	"../../../sql-map-2.dtd">
+<sqlMap>
+	<update id="post.delete" parameterClass="java.lang.Integer">
+		update t_post set delflag=1 where postid=#postid#
+	</update>
+	
+	<select id="post.queryById" parameterClass="java.lang.Integer" resultClass="psf.entity.TPost">
+		select * from t_post where postid=#postid# and delflag=0
+	</select>
+	
+	<select id="post.queryPostListItemById" parameterClass="java.lang.Integer" resultClass="psf.vo.sns.PostListItemVO">
+		select postid,uid,posttype as otype,title,content,addtime,forwardid,
+			sharecount as shareCount,forwardcount as forwardCount,likecount as likeCount,commentcount as commentCount,typeid,p.cateid,pc.catename 
+		from t_post p left join t_product_cate pc on p.cateid=pc.cateid where p.postid=#postid# and p.delflag = 0
+	</select>
+	
+	<select id="post.queryPostListItemForCount" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select count(1) from t_post p 
+		where p.delflag = 0 and p.posttype != 5
+		<isEqual property="range" compareValue="1" prepend="AND">
+			p.uid in (select uid from t_user where uid=#uid# union select followuid from t_follow where uid=#uid# union select friendid from t_friend where uid=#uid#)
+		</isEqual>
+		<isEqual property="range" compareValue="2" prepend="AND">
+			p.uid = #uid#
+		</isEqual>
+		<isEqual property="range" compareValue="3" prepend="AND">
+			exists (select null from t_like where p.postid=oid and uid=#uid#)
+		</isEqual>
+		<isNotNull prepend="AND" property="otype">
+			p.posttype = #otype#
+		</isNotNull>
+		<isNotNull prepend="AND" property="time">
+			<![CDATA[	p.addtime > #time# 	]]>
+		</isNotNull> 
+	</select>
+	
+	<select id="post.queryPostListItem" parameterClass="java.util.Map" resultClass="psf.vo.sns.PostListItemVO">
+		select postid,uid,posttype as otype,title,content,addtime,forwardid,
+			sharecount as shareCount,forwardcount as forwardCount,likecount as likeCount,commentcount as commentCount,typeid,p.cateid,pc.catename
+		from t_post p left join t_product_cate pc on p.cateid=pc.cateid where p.delflag = 0 and p.posttype != 5 <!-- 不显示圈子贴，转发到圈子的帖子 --> 
+		<isEqual property="range" compareValue="1" prepend="AND">
+			p.uid in (select uid from t_user where uid=#uid# union select followuid from t_follow where uid=#uid# union select friendid from t_friend where uid=#uid#)
+		</isEqual>
+		<isEqual property="range" compareValue="2" prepend="AND">
+			p.uid = #uid#
+		</isEqual>
+		<isEqual property="range" compareValue="3" prepend="AND">
+			exists (select null from t_like where p.postid=oid and uid=#uid#)
+		</isEqual>
+		<isNotNull prepend="AND" property="otype">
+			p.posttype = #otype#
+		</isNotNull>
+		<isNotNull prepend="AND" property="time">
+			<![CDATA[	p.addtime > #time# 	]]>
+		</isNotNull> 
+		<isEqual property="orderby" compareValue="1">
+			order by addtime desc,clickcount desc
+		</isEqual>
+		<isEqual property="orderby" compareValue="2">
+			order by clickcount desc,addtime desc
+		</isEqual>
+		<isNotNull prepend="" property="pageSize">
+			limit #offset#,#pageSize#
+		</isNotNull>
+	</select>
+	
+	<select id="post.queryPostCount" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select count(*) from t_post where posttype=#posttype# and typeid=#typeid#
+	</select>
+	<select id="post.queryProductPostCount" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select count(*) from t_post_product pp, t_post p where pp.postid=p.postid and p.posttype=#posttype# and pp.pid=#typeid#
+	</select>
+	<select id="post.queryBrandPostCount" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select count(*) from t_post_brand pb,t_post p where pb.postid=p.postid and pb.brandid=#typeid# and p.posttype=#posttype#
+	</select>
+
+	<select id="post.queryCommentCountByPostid" resultClass="java.lang.Integer">
+		select count(1) from t_comment where oid=#postid# and replyid=0
+	</select>
+	
+	<!-- 根据用户查post -->
+	<select id="post.queryPostbyUid" parameterClass="java.lang.Integer" resultClass="psf.entity.TPost">
+		select * from t_post where uid=#uid# and replyid=0 and delflag=0 order by addtime desc
+	</select>
+	<!-- 更改评论总数 wangyf add at 2011-10-19-->
+	<update id="post.updateCommentCountByPostid" parameterClass="java.lang.Integer">
+		update t_post p set p.commentcount = (select count(1) from t_comment c where (c.delflag=0 or c.haschild=1) and c.oid=p.postid and c.otype=p.posttype)
+		where p.postid=#postid#
+	</update>
+	
+	<select id="post.queryForwardCountByPostid" resultClass="java.lang.Integer">
+		select count(1) from t_post where forwardid=#postid#
+	</select>
+	
+	<select id="post.countHotByUid" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select count(1) from t_post where posttype=#posttype# and uid != #uid# 	
+	</select>
+	<select id="post.queryHotShowByUid" parameterClass="java.util.Map" resultClass="psf.vo.sns.ShowVO">
+		select *,commentcount+sharecount+forwardcount+clickcount as c from t_post where posttype=#posttype# and uid != #uid# 
+		order by c desc 
+		limit #offset#,#pageSize#
+	</select>
+	<select id="post.queryHotExpByUid" parameterClass="java.util.Map" resultClass="psf.vo.sns.ShopexpVO">
+		select *,commentcount+sharecount+forwardcount+clickcount as c from t_post where posttype=#posttype# and uid != #uid# 
+		order by c desc 
+		limit #offset#,#pageSize#
+	</select>
+	<select id="post.queryHotGuideByUid" parameterClass="java.util.Map" resultClass="psf.vo.sns.GuideVO">
+		select *,commentcount+sharecount+forwardcount+clickcount as c from t_post where posttype=#posttype# and uid != #uid# 
+		order by c desc 
+		limit #offset#,#pageSize#
+	</select>
+	
+	<select id="post.countShowRecommend" parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+		select count(1) from t_post p 
+		where exists (select null from (select postid from t_post_product where pid in (select pid from t_post_product pp where exists (select * from t_post where postid=pp.postid and posttype=2 and uid=#uid#))) as a where a.postid=p.postid) 
+		and uid!=#uid# and posttype=2
+	</select>
+	<select id="post.queryShowRecommend" parameterClass="java.util.Map" resultClass="psf.vo.sns.ShowVO">
+		select *,commentcount+sharecount+forwardcount+clickcount as c from t_post p where 
+		exists (select null from (select postid from t_post_product where pid in (select pid from t_post_product pp where exists (select * from t_post where postid=pp.postid and posttype=2 and uid=#uid#))) as a where a.postid=p.postid) 
+		and uid!=#uid# and posttype=2
+		order by c desc
+		limit #offset#, #pageSize#
+	</select>
+
+	<select id="post.countShopexpRecommend" parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+		select count(1) from t_post p 
+		where exists (select null from (select postid from t_post_product where pid in (select pid from t_post_product pp where exists (select * from t_post where postid=pp.postid and posttype=3 and uid=#uid#))) as a where a.postid=p.postid) 
+		and uid!=#uid# and posttype=3
+	</select>
+	<select id="post.queryShopexpRecommend" parameterClass="java.util.Map" resultClass="psf.vo.sns.ShopexpVO">
+		select *,commentcount+sharecount+forwardcount+clickcount as c from t_post p where 
+		exists (select null from (select postid from t_post_product where pid in (select pid from t_post_product pp where exists (select * from t_post where postid=pp.postid and posttype=3 and uid=#uid#))) as a where a.postid=p.postid) 
+		and uid!=#uid# and posttype=3
+		order by c desc
+		limit #offset#, #pageSize#
+	</select>
+
+	<select id="post.countGuideRecommend" parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+		select count(1) from t_post p 
+		where exists (select null from t_post_brand where postid=p.postid and brandid in (select distinct brandid from t_post_brand pb where exists (select * from t_post where postid=pb.postid and posttype=4 and uid=#uid#))) 
+		and posttype=4 and uid!=#uid#
+	</select>
+	<select id="post.queryGuideRecommend" parameterClass="java.util.Map" resultClass="psf.vo.sns.GuideVO">
+		select *,commentcount+sharecount+forwardcount+clickcount as c from t_post p 
+		where exists (select null from t_post_brand where postid=p.postid and brandid in (select distinct brandid from t_post_brand pb where exists (select * from t_post where postid=pb.postid and posttype=4 and uid=#uid#))) 
+		and posttype=4 and uid!=#uid#
+		order by c desc
+		limit #offset#,#pageSize#
+	</select>
+	
+	<select id="post.queryShowVOById" parameterClass="java.lang.Integer" resultClass="psf.vo.sns.ShowVO">
+		select * from t_post where postid=#showid# and delflag=0
+	</select>
+	<select id="post.countOtherPostByUid" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select count(*) from t_post where uid=#uid# and postid!=#postid# and posttype=#posttype# and delflag=0
+	</select>
+	<select id="post.queryOtherShowByUid" parameterClass="java.util.Map" resultClass="psf.vo.sns.ShowVO">
+		select * from t_post where uid=#uid# and postid!=#postid# and posttype=#posttype# and delflag=0 order by clickcount desc limit #offset#,#pageSize#
+	</select>
+	<select id="post.queryOtherShopexpByUid" parameterClass="java.util.Map" resultClass="psf.vo.sns.ShopexpVO">
+		select * from t_post where uid=#uid# and postid!=#postid# and posttype=#posttype# and delflag=0 order by clickcount desc limit #offset#,#pageSize#
+	</select>
+	<select id="post.queryOtherGuideByUid" parameterClass="java.util.Map" resultClass="psf.vo.sns.GuideVO">
+		select * from t_post where uid=#uid# and postid!=#postid# and posttype=#posttype# and delflag=0 order by clickcount desc limit #offset#,#pageSize#
+	</select>
+	
+	<!-- 体验 -->
+		<!-- 发表体验、秀场的商品 -->
+	<select id="exp.queryProductCateByOrder" resultClass="psf.entity.TProductCate" parameterClass="java.lang.Integer">
+		select distinct(pc.cateid),catename from (select distinct(a.pid) from 
+		(select op.pid from t_order o,t_order_product op where o.uid=#uid# and o.orderid=op.orderid and o.shipping_status=2) a) b,t_product_cate pc,t_product p 
+		where b.pid=p.pid and p.cateid=pc.cateid
+	</select>
+	<select id="exp.queryProductByOrderCount" resultClass="java.lang.Integer" parameterClass="java.util.Map">
+		select count(distinct(a.pid)) from 
+		(select op.pid from t_order o,t_order_product op where o.uid=#uid# and o.orderid=op.orderid and o.shipping_status=2) a,t_product p where a.pid=p.pid
+		<isNotNull property="cateid" prepend="and">
+			p.cateid = #cateid#
+		</isNotNull>
+		<isNotEmpty property="keyword" prepend="and">
+			p.pname like concat('%',#keyword#,'%')
+		</isNotEmpty>
+		<isEqual property="pub" compareValue="0" prepend="and">
+			a.pid not in (select pp.pid from t_post_product pp where pp.postid in (select postid from t_post where uid=#uid# and delflag=0 and posttype=#posttype#))
+		</isEqual>
+		<isEqual property="pub" compareValue="1" prepend="and">
+			a.pid in (select pp.pid from t_post_product pp where pp.postid in (select postid from t_post where uid=#uid# and delflag=0 and posttype=#posttype#))
+		</isEqual>
+	</select>
+	<select id="exp.queryProductByOrder" resultClass="psf.vo.sns.right.SnsRightProductVO" parameterClass="java.util.Map">
+		select distinct(a.pid),pname,pcode,goods_thumb,goods_img picid,price from 
+		(select op.pid from t_order o,t_order_product op where o.uid=#uid# and o.orderid=op.orderid and o.shipping_status=2) a,t_product p where a.pid=p.pid
+		<isNotNull property="cateid" prepend="and">
+			p.cateid = #cateid#
+		</isNotNull>
+		<isNotEmpty property="keyword" prepend="and">
+			p.pname like concat('%',#keyword#,'%')
+		</isNotEmpty>
+		<isEqual property="pub" compareValue="0" prepend="and">
+			a.pid not in (select pp.pid from t_post_product pp where pp.postid in (select postid from t_post where uid=#uid# and delflag=0 and posttype=#posttype#))
+		</isEqual>
+		<isEqual property="pub" compareValue="1" prepend="and">
+			a.pid in (select pp.pid from t_post_product pp where pp.postid in (select postid from t_post where uid=#uid# and delflag=0 and posttype=#posttype#))
+		</isEqual>
+		limit #offset#,#pageSize#
+	</select>
+	
+	<!-- 体验（结束 ） -->
+	
+	<!-- 指南Begin -->
+		<select id="guide.countBrandByCate" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+			select count(distinct b.brandid) from t_product p,t_brand b 
+			where p.brandid=b.brandid and p.cateid in (select distinct cat_id from v_cate where cat_id_1 =#cateid#)
+			<isNotEmpty property="keyword" prepend="and">
+				b.brandname like concat('%',#keyword#,'%')
+			</isNotEmpty>
+		</select>
+		<select id="guide.queryBrandByCate" parameterClass="java.util.Map" resultClass="psf.vo.mall.BrandVO">
+			select distinct b.* from t_product p,t_brand b 
+			where p.brandid=b.brandid and p.cateid in (select distinct cat_id from v_cate where cat_id_1 =#cateid#) 
+			<isNotEmpty property="keyword" prepend="and">
+				b.brandname like concat('%',#keyword#,'%')
+			</isNotEmpty>
+			limit #offset#,#pageSize#
+		</select>
+	<!-- 指南End -->
+	
+	<select id="post.queryPostProductByPostid" parameterClass="java.lang.Integer" resultClass="psf.vo.mall.ProductVO">
+		select pp.postid,pp.iscover,prod.*,
+			(select count(1) from t_post_product pp1,t_post p where pp.pid=pp1.pid and p.postid=pp1.postid) expCount 
+			from t_post_product pp,t_product prod 
+			where postid = #postid# and pp.pid = prod.pid
+	</select>
+	
+	<select id="post.queryPostPicByPostid" parameterClass="java.util.Map" resultClass="psf.vo.sns.PostPicVO">
+		select pp.*,concat(p.picid,'.',p.filetype) picFileName,p.fileName,p.fileType
+			from t_post_pic pp,t_pic p 
+			where pp.picid = p.picid and pp.postid = #postid# 
+			<isNotNull property="type" prepend="AND">
+				p.otype=#type#
+			</isNotNull>
+	</select>
+	
+	
+	<select id="post.countMyPost" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select count(*) from t_post p where posttype=#posttype# and delflag=0
+		<isEqual property="type" compareValue="1" prepend="AND">
+			uid=#uid#
+		</isEqual>
+		<isEqual property="type" compareValue="2" prepend="AND">
+			exists (select null from t_like where p.postid=oid and uid=#uid#)
+		</isEqual>
+		<isEqual property="type" compareValue="3" prepend="AND">
+			exists (select null from t_comment where p.postid=oid and otype=#posttype# and uid=#uid#)
+		</isEqual>
+		<isNotEmpty property="keyword" prepend="AND">
+			(title like concat('%',#keyword#,'%') or content like concat('%',#keyword#,'%'))
+		</isNotEmpty>
+	</select>
+	<select id="post.queryMyPost" parameterClass="java.util.Map" resultClass="psf.vo.sns.PostListItemVO">
+		select postid,uid,posttype as otype,title,content,addtime,forwardid,
+			sharecount as shareCount,forwardcount as forwardCount,likecount as likeCount,commentcount as commentCount,typeid,p.cateid,pc.catename from t_post p 
+			left join t_product_cate pc on p.cateid=pc.cateid 
+			where posttype=#posttype# and delflag=0
+		<isEqual property="type" compareValue="1" prepend="AND">
+			uid=#uid#
+		</isEqual>
+		<isEqual property="type" compareValue="2" prepend="AND">
+			exists (select null from t_like where p.postid=oid and uid=#uid#)
+		</isEqual>
+		<isEqual property="type" compareValue="3" prepend="AND">
+			exists (select null from t_comment where p.postid=oid and otype=#posttype# and uid=#uid#)
+		</isEqual>
+		<isNotEmpty property="keyword" prepend="AND">
+			(title like concat('%',#keyword#,'%') or content like concat('%',#keyword#,'%'))
+		</isNotEmpty>
+		<isEqual property="orderby" compareValue="1">
+			order by addtime desc,clickcount desc
+		</isEqual>
+		<isEqual property="orderby" compareValue="2">
+			order by clickcount desc,addtime desc
+		</isEqual>
+		limit #offset#, #pageSize#
+	</select>
+	
+	<select id="post.countFriendPost" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select count(*) from t_post p where posttype=#posttype# and delflag=0 and 
+		exists(select null from t_friend where p.uid=friendid and uid=#uid# 
+		<isNotEmpty property="type" prepend="AND">
+			friendgroupid=#type#
+		</isNotEmpty>
+		)
+		<isNotEmpty property="keyword" prepend="AND">
+			(title like concat('%',#keyword#,'%') or content like concat('%',#keyword#,'%'))
+		</isNotEmpty>
+	</select>
+	<select id="post.queryFriendPost" parameterClass="java.util.Map" resultClass="psf.vo.sns.PostListItemVO">
+		select postid,uid,posttype as otype,title,content,addtime,forwardid,
+		sharecount as shareCount,forwardcount as forwardCount,likecount as likeCount,commentcount as commentCount,typeid,p.cateid.pc.catename from t_post p 
+		left join t_product_cate pc on p.cateid=pc.cateid
+		where posttype=#posttype# and delflag=0 and 
+		exists(select null from t_friend where p.uid=friendid and uid=#uid#
+		<isNotEmpty property="type" prepend="AND">
+			friendgroupid=#type#
+		</isNotEmpty>
+		)
+		<isNotEmpty property="keyword" prepend="AND">
+			(title like concat('%',#keyword#,'%') or content like concat('%',#keyword#,'%'))
+		</isNotEmpty>
+		<isEqual property="orderby" compareValue="1">
+			order by addtime desc,clickcount desc
+		</isEqual>
+		<isEqual property="orderby" compareValue="2">
+			order by clickcount desc,addtime desc
+		</isEqual>
+		limit #offset#, #pageSize#
+	</select>
+	
+	<select id="post.countGroupFriendPost" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select count(*) from t_post p where posttype=#posttype# and delflag=0 and 
+		uid in (select distinct uid from t_group_member gm where exists 
+		(select null from t_group_member where gm.groupid=groupid and uid=#uid# 
+		<isNotEqual property="groupid" compareValue="0" prepend="AND">
+		groupid=#groupid#
+		</isNotEqual>
+		) 
+		and uid!=#uid#)
+		<isNotEmpty property="keyword" prepend="AND">
+			(title like concat('%',#keyword#,'%') or content like concat('%',#keyword#,'%'))
+		</isNotEmpty>
+	</select>
+	<select id="post.queryGroupFriendPost" parameterClass="java.util.Map" resultClass="psf.vo.sns.PostListItemVO">
+		select postid,uid,posttype as otype,title,content,addtime,forwardid,
+		sharecount as shareCount,forwardcount as forwardCount,likecount as likeCount,commentcount as commentCount,typeid,p.cateid,pc.catename from t_post p 
+		left join t_product_cate pc on p.cateid=pc.cateid 
+		where posttype=#posttype# and delflag=0 and 
+		uid in (select distinct uid from t_group_member gm where exists 
+		(select null from t_group_member where gm.groupid=groupid and uid=#uid# 
+		<isNotEqual property="groupid" compareValue="0" prepend="AND">
+		groupid=#groupid#
+		</isNotEqual>
+		) 
+		and uid!=#uid#)
+		<isNotEmpty property="keyword" prepend="AND">
+			(title like concat('%',#keyword#,'%') or content like concat('%',#keyword#,'%'))
+		</isNotEmpty>
+		<isEqual property="orderby" compareValue="1">
+			order by addtime desc,clickcount desc
+		</isEqual>
+		<isEqual property="orderby" compareValue="2">
+			order by clickcount desc,addtime desc
+		</isEqual>
+		limit #offset#, #pageSize#
+	</select>
+	
+	<select id="post.countClubPost" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select count(*) from t_post p where posttype=#posttype# and delflag=0 
+		<isNotEqual property="cateid" compareValue="0" prepend="AND">
+			<isEqual property="posttype" compareValue="2">
+				exists (select null from t_post_product pp, t_product pr,t_product_cate pc where p.postid=pp.postid and pp.pid=pr.pid and pr.cateid=#cateid#)
+			</isEqual>
+			<isEqual property="posttype" compareValue="3">
+				exists (select null from t_post_product pp, t_product pr,t_product_cate pc where p.postid=pp.postid and pp.pid=pr.pid and pr.cateid=#cateid#)
+			</isEqual>
+			<isEqual property="posttype" compareValue="4">
+				exists (select null from t_post_brand pb, t_product pr,t_product_cate pc where p.postid=pb.postid and pb.brandid=pr.brandid and pr.cateid=#cateid#)
+			</isEqual>
+		</isNotEqual>
+		<isNotEmpty property="keyword" prepend="AND">
+			(title like concat('%',#keyword#,'%') or content like concat('%',#keyword#,'%'))
+		</isNotEmpty>
+	</select>
+	<select id="post.queryClubPost" parameterClass="java.util.Map" resultClass="psf.vo.sns.PostListItemVO">
+		select postid,uid,posttype as otype,title,content,addtime,forwardid,
+		sharecount as shareCount,forwardcount as forwardCount,likecount as likeCount,commentcount as commentCount,typeid,p.cateid,pc.catename from t_post p 
+		left join t_product_cate pc on p.cateid=pc.cateid 
+		where posttype=#posttype# and delflag=0 
+		<isNotEqual property="cateid" compareValue="0" prepend="AND">
+			<isEqual property="posttype" compareValue="2">
+				exists (select null from t_post_product pp, t_product pr,t_product_cate pc where p.postid=pp.postid and pp.pid=pr.pid and pr.cateid=#cateid#)
+			</isEqual>
+			<isEqual property="posttype" compareValue="3">
+				exists (select null from t_post_product pp, t_product pr,t_product_cate pc where p.postid=pp.postid and pp.pid=pr.pid and pr.cateid=#cateid#)
+			</isEqual>
+			<isEqual property="posttype" compareValue="4">
+				exists (select null from t_post_brand pb, t_product pr,t_product_cate pc where p.postid=pb.postid and pb.brandid=pr.brandid and pr.cateid=#cateid#)
+			</isEqual>
+		</isNotEqual>
+		<isNotEmpty property="keyword" prepend="AND">
+			(title like concat('%',#keyword#,'%') or content like concat('%',#keyword#,'%'))
+		</isNotEmpty>
+		<isEqual property="orderby" compareValue="1">
+			order by addtime desc,clickcount desc
+		</isEqual>
+		<isEqual property="orderby" compareValue="2">
+			order by clickcount desc,addtime desc
+		</isEqual>
+		limit #offset#, #pageSize#
+	</select>
+	
+	<select id="post.countPostProduct" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select count(*) from t_product pr where 
+		<isEqual property="type" compareValue="1">
+			exists (select null from t_post_product pp, t_post p where pr.pid=pp.pid and pp.postid=p.postid and p.posttype=#posttype# and p.uid=#uid#)
+		</isEqual>
+		<isEqual property="type" compareValue="2">
+			exists (select null from t_post_product pp,t_post p, (select * from t_like where uid=#uid# and otype=#posttype#) as a where pr.pid=pp.pid and pp.postid=a.oid)
+		</isEqual>
+		<isEqual property="type" compareValue="3">
+			exists (select null from t_post_product pp, t_post p, (select * from t_friend where uid=#uid#) as a where pr.pid=pp.pid and pp.postid=p.postid and p.posttype=#posttype# and p.uid=a.friendid)
+		</isEqual>
+		<isEqual property="type" compareValue="4">
+			exists (select null from t_post_product pp, t_post p, (select distinct uid from t_group_member gm where exists (select null from t_group_member where gm.groupid=groupid and uid=#uid#) and uid!=#uid#) as a 
+			where pr.pid=pp.pid and pp.postid=p.postid and p.posttype=#posttype# and p.uid=a.uid)
+		</isEqual>
+		<isEqual property="type" compareValue="5">
+			exists (select null from t_post_product pp,t_post p where pr.pid=pp.pid and pp.postid=p.postid and p.posttype=#posttype#)
+		</isEqual>
+		<isNotEmpty property="keyword" prepend="AND">
+			(pr.pname like concat('%',#keyword#,'%'))
+		</isNotEmpty>
+	</select>
+	<select id="post.queryPostProduct" parameterClass="java.util.Map" resultClass="psf.vo.sns.right.SnsRightProductVO">
+		select pid,pcode,pname,goods_thumb,goods_img as picid,price,price_market,likecount from t_product pr where 
+		<isEqual property="type" compareValue="1">
+			exists (select null from t_post_product pp, t_post p where pr.pid=pp.pid and pp.postid=p.postid and p.posttype=#posttype# and p.uid=#uid#)
+		</isEqual>
+		<isEqual property="type" compareValue="2">
+			exists (select null from t_post_product pp,t_post p, (select * from t_like where uid=#uid# and otype=#posttype#) as a where pr.pid=pp.pid and pp.postid=a.oid)
+		</isEqual>
+		<isEqual property="type" compareValue="3">
+			exists (select null from t_post_product pp, t_post p, (select * from t_friend where uid=#uid#) as a where pr.pid=pp.pid and pp.postid=p.postid and p.posttype=#posttype# and p.uid=a.friendid)
+		</isEqual>
+		<isEqual property="type" compareValue="4">
+			exists (select null from t_post_product pp, t_post p, (select distinct uid from t_group_member gm where exists (select null from t_group_member where gm.groupid=groupid and uid=#uid#) and uid!=#uid#) as a 
+			where pr.pid=pp.pid and pp.postid=p.postid and p.posttype=#posttype# and p.uid=a.uid)
+		</isEqual>
+		<isEqual property="type" compareValue="5">
+			exists (select null from t_post_product pp,t_post p where pr.pid=pp.pid and pp.postid=p.postid and p.posttype=#posttype#)
+		</isEqual>
+		<isNotEmpty property="keyword" prepend="AND">
+			(pr.pname like concat('%',#keyword#,'%'))
+		</isNotEmpty>
+		<isEqual property="orderby" compareValue="1">
+			order by pr.ts desc,pr.clickcount desc
+		</isEqual>
+		<isEqual property="orderby" compareValue="2">
+			order by pr.clickcount desc,pr.ts desc
+		</isEqual>
+		limit #offset#, #pageSize#
+	</select>
+	
+	<select id="post.countPostBrand" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select count(*) from t_brand b where 
+		<isEqual property="type" compareValue="1">
+			exists (select null from t_post_brand pb,t_post p where b.brandid=pb.brandid and pb.postid=p.postid and p.posttype=4 and p.uid=#uid#)
+		</isEqual>
+		<isEqual property="type" compareValue="2">
+			exists (select null from t_post_brand pb, (select * from t_like where uid=#uid# and otype=4) as a where b.brandid=pb.brandid and pb.postid=a.oid)
+		</isEqual>
+		<isEqual property="type" compareValue="3">
+			exists (select null from t_post_brand pb,t_post p, (select * from t_friend where uid=#uid#) as a where b.brandid=pb.brandid and pb.postid=p.postid and p.uid=a.friendid and p.posttype=4)
+		</isEqual>
+		<isEqual property="type" compareValue="4">
+			exists (select null from t_post_brand pb, t_post p, (select distinct uid from t_group_member gm where exists (select null from t_group_member where gm.groupid=groupid and uid=#uid#) and uid!=#uid#) as a 
+			where b.brandid=pb.brandid and pb.postid=p.postid and p.posttype=4 and p.uid=a.uid)
+		</isEqual>
+		<isEqual property="type" compareValue="5">
+			exists (select null from t_post_brand pb,t_post p where b.brandid=pb.brandid and pb.postid=p.postid and p.posttype=4)
+		</isEqual>
+		<isNotEmpty property="keyword" prepend="AND">
+			(b.brandname like concat('%',#keyword#,'%'))
+		</isNotEmpty>
+	</select>
+	<select id="post.queryPostBrand" parameterClass="java.util.Map" resultClass="psf.vo.mall.BrandVO">
+		select b.* from t_brand b where 
+		<isEqual property="type" compareValue="1">
+			exists (select null from t_post_brand pb,t_post p where b.brandid=pb.brandid and pb.postid=p.postid and p.posttype=4 and p.uid=#uid#)
+		</isEqual>
+		<isEqual property="type" compareValue="2">
+			exists (select null from t_post_brand pb, (select * from t_like where uid=#uid# and otype=4) as a where b.brandid=pb.brandid and pb.postid=a.oid)
+		</isEqual>
+		<isEqual property="type" compareValue="3">
+			exists (select null from t_post_brand pb,t_post p, (select * from t_friend where uid=#uid#) as a where b.brandid=pb.brandid and pb.postid=p.postid and p.uid=a.friendid and p.posttype=4)
+		</isEqual>
+		<isEqual property="type" compareValue="4">
+			exists (select null from t_post_brand pb, t_post p, (select distinct uid from t_group_member gm where exists (select null from t_group_member where gm.groupid=groupid and uid=#uid#) and uid!=#uid#) as a 
+			where b.brandid=pb.brandid and pb.postid=p.postid and p.posttype=4 and p.uid=a.uid)
+		</isEqual>
+		<isEqual property="type" compareValue="5">
+			exists (select null from t_post_brand pb,t_post p where b.brandid=pb.brandid and pb.postid=p.postid and p.posttype=4)
+		</isEqual>
+		<isNotEmpty property="keyword" prepend="AND">
+			(b.brandname like concat('%',#keyword#,'%'))
+		</isNotEmpty>
+	</select>
+	
+	<select id="post.countHotProductPost" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select count(distinct p.postid) from t_post p, t_post_product pp where p.postid=pp.postid 
+		and pid in (select pid from t_post_product where postid=#postid#) and p.posttype=#posttype# and delflag=0
+	</select>
+	<select id="post.queryHotProductShow" parameterClass="java.util.Map" resultClass="psf.vo.sns.ShowVO">
+		select distinct p.* from t_post p, t_post_product pp where p.postid=pp.postid 
+		and pid in (select pid from t_post_product where postid=#postid#) and p.posttype=#posttype# and delflag=0
+		order by clickcount desc
+		limit #offset#,#pageSize#
+	</select>
+	<select id="post.queryHotProductShopexp" parameterClass="java.util.Map" resultClass="psf.vo.sns.ShopexpVO">
+		select distinct p.* from t_post p, t_post_product pp where p.postid=pp.postid 
+		and pid in (select pid from t_post_product where postid=#postid#) and p.posttype=#posttype# and delflag=0
+		order by clickcount desc
+		limit #offset#,#pageSize#
+	</select>
+	<select id="post.countHotBrandPost" parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+		select count(distinct p.postid) from t_post p,t_post_brand pb where p.postid=pb.postid
+		and brandid in (select brandid from t_post_brand where postid=#postid#) and delflag=0
+	</select>
+	<select id="post.queryHotBrandPost" parameterClass="java.util.Map" resultClass="psf.vo.sns.GuideVO">
+		select distinct p.* from t_post p, t_post_brand pb where p.postid=pb.postid
+		and brandid in (select brandid from t_post_brand where postid=#postid#) and delflag=0
+		order by clickcount desc
+		limit #offset#,#pageSize#
+	</select>
+	
+	<!-- 圈子 发言-->
+	<select id="post.countGroupPost" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select count(1) from t_post p where p.posttype=5
+		<isEqual property="type" compareValue="1" prepend="AND">
+			p.uid = #uid#
+		</isEqual>
+		<isEqual property="type" compareValue="2" prepend="AND">
+			exists (select null from t_comment where p.postid=oid and otype=5 and uid=#uid#)
+		</isEqual>
+		<isEqual property="type" compareValue="3" prepend="AND">
+			exists (select null from t_comment where p.postid=oid and otype=5 and touid=#uid#)
+		</isEqual>
+		<isNotNull property="groupid" prepend="AND">
+			p.typeid = #groupid#
+		</isNotNull>
+		<isNotNull property="topicid" prepend="AND">
+			exists (select null from t_post_topic where p.postid=postid and topicid=#topicid#)
+		</isNotNull>
+		<isNotEmpty property="keyword" prepend="AND">
+			(p.title like concat('%',#keyword#,'%') or p.content like concat('%',#keyword#,'%'))
+		</isNotEmpty>
+		and p.delflag = 0
+	</select>
+	<select id="post.queryGroupPost" parameterClass="java.util.Map" resultClass="psf.vo.sns.PostListItemVO">
+		select p.postid,p.uid,p.posttype as otype,p.title,p.content,p.addtime,p.forwardid,
+		p.sharecount as shareCount,p.forwardcount as forwardCount,p.likecount as likeCount,p.commentcount as commentCount,p.typeid from t_post p 
+		where p.posttype=5
+		<isEqual property="type" compareValue="1" prepend="AND">
+			p.uid = #uid#
+		</isEqual>
+		<isEqual property="type" compareValue="2" prepend="AND">
+			exists (select null from t_comment where p.postid=oid and otype=5 and uid=#uid#)
+		</isEqual>
+		<isEqual property="type" compareValue="3" prepend="AND">
+			exists (select null from t_comment where p.postid=oid and otype=5 and touid=#uid#)
+		</isEqual>
+		<isEqual property="type" compareValue="4" prepend="AND">
+			exists (select null from t_group_member where p.typeid=groupid and uid=#uid#)
+		</isEqual>
+		<isNotNull property="groupid" prepend="AND">
+			p.typeid = #groupid#
+		</isNotNull>
+		<isNotNull property="topicid" prepend="AND">
+			exists (select null from t_post_topic where p.postid=postid and topicid=#topicid#)
+		</isNotNull>
+		<isNotEmpty property="keyword" prepend="AND">
+			(p.title like concat('%',#keyword#,'%') or p.content like concat('%',#keyword#,'%'))
+		</isNotEmpty>
+		and p.delflag = 0 
+		<isEqual property="orderby" compareValue="1">
+			order by p.addtime desc, p.commentcount desc
+		</isEqual>
+		<isEqual property="orderby" compareValue="2">
+			order by p.commentcount desc, p.addtime desc
+		</isEqual>
+		limit #offset#, #pageSize#
+	</select>
+	
+	<select id="post.queryGroupPostCount" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select count(1) from t_post p where p.delflag=0 
+		<isNotNull property="groupid" prepend="AND">
+			(p.posttype=5 and p.typeid=#groupid#)
+		</isNotNull>
+		<isNotNull property="topicid" prepend="AND">
+			exists (select null from t_post_topic where p.postid=postid and topicid=#topicid#)
+		</isNotNull>
+	</select>
+	
+	<!-- Begin更新帖子转发数 -->
+	<select id="post.queryForwardCount" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select count(1) from t_post where posttype=8 and replyid=#postid# and delflag=0
+	</select>
+	<update id="post.updateForwardCount" parameterClass="java.util.Map">
+		update t_post set forwardcount = #forwardcount# where postid=#postid#
+	</update>
+	<!-- END -->
+	
+	<select id="post.countGroupPostByType" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select count(distinct p.postid) from t_post p where 
+		p.posttype=5 and p.typeid=#groupid#
+		<isNotEqual property="type" compareValue="0" prepend="AND">
+		exists (select null from t_post where p.forwardid=postid and posttype=#type#)	
+		</isNotEqual>
+		<isNotEmpty property="keyword" prepend="AND">
+			(p.title like concat('%',#keyword#,'%') or p.content like concat('%',#keyword#,'%'))
+		</isNotEmpty>
+		and p.delflag = 0 
+	</select>
+	
+	<select id="post.queryGroupPostByType" parameterClass="java.util.Map" resultClass="psf.vo.sns.PostListItemVO">
+		select p.postid,p.uid,p.posttype as otype,p.title,p.content,p.addtime,p.forwardid,
+		p.sharecount as shareCount,p.forwardcount as forwardCount,p.likecount as likeCount,p.commentcount as commentCount,p.typeid from t_post p where
+		p.posttype=5 and p.typeid=#groupid# 
+		<isNotEqual property="type" compareValue="0" prepend="AND">
+		exists (select null from t_post where p.forwardid=postid and posttype=#type#)	
+		</isNotEqual>
+		<isNotEmpty property="keyword" prepend="AND">
+			(p.title like concat('%',#keyword#,'%') or p.content like concat('%',#keyword#,'%'))
+		</isNotEmpty>
+		and p.delflag = 0
+		<isEqual property="orderby" compareValue="1">
+			order by p.addtime desc, p.commentcount desc
+		</isEqual>
+		<isEqual property="orderby" compareValue="2">
+			order by p.commentcount desc, p.addtime desc
+		</isEqual>
+		limit #offset#, #pageSize#
+	</select>
+	
+	<select id="post.countGroupAnnoucement" parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+		select count(1) from t_post where posttype = 9 and typeid=#groupid# and delflag = 0
+	</select>
+	<select id="post.queryGroupAnnoucement" parameterClass="java.util.Map" resultClass="psf.vo.sns.PostListItemVO">
+		select p.postid,p.posttype as otype,p.content,p.addtime,u.uid,u.username as userName from t_post p,t_user u where p.uid=u.uid 
+		and posttype = 9 and typeid=#groupid# and delflag = 0
+		order by p.addtime desc
+		limit #offset#,#pageSize#
+	</select>
+	
+	<select id="post.countTopicPost" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select count(1) from t_post where content like concat('%',#topictitle#,'%') 
+		<isEqual property="topictype" compareValue="0" prepend="AND">
+			(posttype = 1 or posttype = 8)
+		</isEqual>
+		<isEqual property="topictype" compareValue="1" prepend="AND">
+			posttype=5 and typeid=#groupid#
+		</isEqual>
+		and delflag = 0
+	</select>
+	<select id="post.queryTopicPost" parameterClass="java.util.Map" resultClass="psf.vo.sns.PostListItemVO">
+		select p.postid,p.uid,p.posttype as otype,p.title,p.content,p.addtime,p.forwardid,
+		p.sharecount as shareCount,p.forwardcount as forwardCount,p.likecount as likeCount,p.commentcount as commentCount,p.typeid from t_post p 
+		where content like concat('%',#topictitle#,'%') 
+		<isEqual property="topictype" compareValue="0" prepend="AND">
+			(posttype = 1 or posttype = 8)
+		</isEqual>
+		<isEqual property="topictype" compareValue="1" prepend="AND">
+			posttype=5 and typeid=#groupid#
+		</isEqual>
+		and delflag = 0
+		<isEqual property="orderby" compareValue="1">
+			order by p.addtime desc, p.commentcount desc
+		</isEqual>
+		<isEqual property="orderby" compareValue="2">
+			order by p.commentcount desc, p.addtime desc
+		</isEqual>
+		limit #offset#, #pageSize#
+	</select>
+	
+	<select id="post.queryLastPostByUid" parameterClass="java.lang.Integer" resultClass="psf.vo.sns.PostListItemVO">
+		select p.postid,p.content,p.addtime from t_post p where p.uid = #uid# and p.delflag = 0 order by addtime desc limit 0,1 
+	</select>
+	
+	<select id="post.queryPostByIDs" parameterClass="java.util.Map" resultClass="psf.vo.sns.PostListItemVO">
+		select p.postid,p.uid,p.posttype as otype,p.title,p.content,p.addtime,p.forwardid,
+		p.sharecount as shareCount,p.forwardcount as forwardCount,p.likecount as likeCount,p.commentcount as commentCount,p.typeid,p.cateid,pc.catename 
+		from t_post p left join t_product_cate pc on p.cateid=pc.cateid where p.postid in <iterate property="postids" conjunction="," open="(" close=")">#postids[]#</iterate> 
+		<isEqual property="orderby" compareValue="1">
+			order by p.addtime desc, p.commentcount desc
+		</isEqual>
+		<isEqual property="orderby" compareValue="2">
+			order by p.commentcount desc, p.addtime desc
+		</isEqual>
+		limit #offset#, #pageSize#
+	</select>
+</sqlMap> 

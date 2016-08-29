@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+	"../../../sql-map-2.dtd">
+<sqlMap>
+
+	<update id="comment.delete" parameterClass="java.lang.Integer">
+		update t_comment set delflag=1 where commentid=#commentid#
+	</update>
+	
+	<update id="comment.updateHaschild" parameterClass="java.util.Map">
+		update t_comment set haschild=#haschild# where commentid=#commentid#
+	</update>
+	
+	<select id="comment.queryCommentVOByID" parameterClass="java.lang.Integer" resultClass="psf.vo.sns.CommentVO">
+		select c.*, u.username, u.avatarid from t_comment c, t_user u 
+		where commentid = #commentid# and c.uid=u.uid
+	</select>
+	
+	<!-- 查询一级品论的回复总数 -->
+	<select id="comment.countOneCommentByOid" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select count(1) from t_comment 
+		where (delflag=0 or haschild=1) and otype=#otype# and oid=#oid# and replyid=0
+	</select>
+	<select id="comment.queryOneCommentByOid" parameterClass="java.util.Map" resultClass="psf.vo.sns.CommentVO">
+		select c.*, u.username, u.avatarid from t_comment c, t_user u 
+		where (c.delflag=0 or c.haschild=1) and c.otype=#otype# and c.oid=#oid# and c.replyid=0 and c.uid=u.uid
+		order by c.addtime desc limit #offset#, #pageSize#
+	</select>
+	
+	<!-- 查询二级品论的回复总数 -->
+	<select id="comment.countReplyComment" parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+		select count(1) from t_comment 
+		where delflag=0 and replyid=#commentid#
+	</select>
+	<select id="comment.queryReplyComment" parameterClass="java.util.Map" resultClass="psf.vo.sns.CommentVO">
+		select c.*, u.username, u.avatarid from t_comment c, t_user u where c.delflag=0 and c.replyid=#commentid# and c.uid=u.uid
+		order by c.addtime desc limit #offset#, #pageSize#
+	</select>
+	
+	<!-- 查询全部品论的回复总数 -->
+	<select id="comment.countCommentByOid" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select count(1) from t_comment where (delflag=0 or haschild=1) and otype=#otype# and oid=#oid#
+	</select>
+	
+	<select id="comment.queryLastByOid" parameterClass="java.util.Map" resultClass="psf.vo.sns.CommentVO">
+		select c.*,u.username from t_user u, t_comment c where u.uid=c.uid and c.otype=#otype# and c.oid=#oid# order by c.addtime desc limit 0,1
+	</select>
+	
+	<select id="comment.queryCommentCount" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select count(1) from t_comment where otype=#otype# and oid in (select postid from t_post where posttype=#otype# and typeid=#oid#) and delflag=0
+	</select>
+
+	<!-- 我的评论 -->
+	<select id="comment.queryMyCommentCount" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select count(commentid) from t_comment c,t_user u where c.uid=#uid# and c.touid=u.uid and delflag=0
+		<isEqual property="type" compareValue="2" prepend="and">
+			touid in (select friendid from t_friend f where f.uid=#uid#) 
+		</isEqual>
+		<isEqual property="type" compareValue="3" prepend="and">
+			touid in (select followuid from t_follow where uid=#uid#) 
+		</isEqual>
+		<isEqual property="type" compareValue="4" prepend="and">
+			touid in (select uid from t_follow where followuid=#uid#) 
+		</isEqual>
+		<isEqual property="type" compareValue="5" prepend="and">
+			otype=5 
+		</isEqual>
+		<isNotNull property="keyword" prepend="and">
+			(username like concat('%',#keyword#,'%') or content like concat('%',#keyword#,'%'))
+		</isNotNull>
+	</select>
+	<select id="commnet.queryMyComment" parameterClass="java.util.Map" resultClass="psf.vo.sns.CommentVO">
+		select c.*,username from t_comment c,t_user u where c.uid=#uid# and c.touid=u.uid and delflag=0
+		<isEqual property="type" compareValue="2" prepend="and">
+			touid in (select friendid from t_friend f where f.uid=#uid#) 
+		</isEqual>
+		<isEqual property="type" compareValue="3" prepend="and">
+			touid in (select followuid from t_follow where uid=#uid#) 
+		</isEqual>
+		<isEqual property="type" compareValue="4" prepend="and">
+			touid in (select uid from t_follow where followuid=#uid#) 
+		</isEqual>
+		<isEqual property="type" compareValue="5" prepend="and">
+			otype=5 
+		</isEqual>
+		<isNotNull property="keyword" prepend="and">
+			(username like concat('%',#keyword#,'%') or content like concat('%',#keyword#,'%'))
+		</isNotNull>
+		order by addtime desc limit #pp.offset#,#pp.pageSize#
+	</select>
+	<!-- 评论我的 -->
+	<select id="comment.queryAboutMyCommentCount" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select count(distinct(oid)) from t_comment c,t_user u where touid=#uid# and delflag=0 and c.uid!=#uid# and c.uid=u.uid
+		<isNotNull prepend="and" property="keyword">
+			(username like concat('%',#keyword#,'%') or content like concat('%',#keyword#,'%'))
+		</isNotNull>
+	</select>
+	<select id="comment.queryAboutMyComment" parameterClass="java.util.Map" resultClass="psf.vo.sns.SnsUserInfoVO">
+		select commentid,otype,oid,addtime,c.uid,username from t_comment c,t_user u where touid=#uid# and delflag=0 and c.uid!=#uid# and c.uid=u.uid 
+		<isNotNull prepend="and" property="keyword">
+			(username like concat('%',#keyword#,'%') or content like concat('%',#keyword#,'%'))
+		</isNotNull>
+		group by oid order by addtime desc limit #pp.offset#,#pp.pageSize#
+	</select>
+	<select id="comment.queryBlogByCommentOid" parameterClass="java.lang.Integer" resultClass="java.lang.String">
+		select username from t_post p,t_user u where postid=#oid# and p.uid=u.uid
+	</select>
+	<select id="comment.queryPostByCommentOid" parameterClass="java.lang.Integer" resultClass="psf.entity.TPost">
+		select title,typeid from t_post where postid=#oid#
+	</select>
+	<select id="comment.queryGroupByTypeid" parameterClass="java.lang.Integer" resultClass="java.lang.String">
+		select groupname from t_group where groupid=#typeid#
+	</select>
+	<select id="comment.queryTitleByCommentOid" parameterClass="java.lang.Integer" resultClass="java.lang.String">
+		select title from t_post where postid=#oid#
+	</select>
+	
+	<select id="comment.countGroupComment" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select count(1) from t_comment c,t_post p,t_group g 
+		where c.oid=p.postid and p.typeid=g.groupid and otype=5 
+		<isNotNull property="groupid" prepend="AND">
+			g.groupid = #groupid#
+		</isNotNull>
+		<isEqual property="range" compareValue="1">
+			c.uid = ##
+		</isEqual>
+		
+		<isNotEmpty property="keyword" prepend="AND">
+			c.content like concat('%',#keyword#,'%')
+		</isNotEmpty>
+		and c.delflag=0 
+	</select>
+	<select id="comment.queryGroupComment" parameterClass="java.util.Map" resultClass="psf.vo.sns.CommentVO">
+		select g.groupname as fromGroupName,p.title as fromPostTitle,c.uid,c.content,c.addtime from t_comment c,t_post p,t_group g 
+		where c.oid=p.postid and p.typeid=g.groupid and otype=5 
+		<isNotNull property="groupid" prepend="AND">
+			g.groupid = #groupid#
+		</isNotNull>
+		<isNotEmpty property="keyword" prepend="AND">
+			c.content like concat('%',#keyword#,'%')
+		</isNotEmpty>
+		and c.delflag=0 order by c.addtime desc 
+		limit #offset#, #pageSize#
+	</select>
+</sqlMap>

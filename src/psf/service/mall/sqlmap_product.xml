@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+	"../../../sql-map-2.dtd">
+<sqlMap>
+	
+	<select id="product.queryTopProduct" parameterClass="java.util.Map" resultClass="psf.vo.sns.right.SnsRightProductVO">
+		select * from (
+		<isEqual property="posttype" compareValue="0">
+			select pid,pname,price,goods_thumb,goods_img from t_product order by likecount desc limit 0,#topCount#
+		</isEqual>
+		<isEqual property="posttype" compareValue="1">
+			select pid,pname,price,goods_thumb,goods_img from t_product p where exists (select null from t_post_product where p.pid=pid) order by likecount desc limit 0,#topCount#
+		</isEqual>
+		<isEqual property="posttype" compareValue="2">
+			select pid,pname,price,goods_thumb,goods_img from t_product p where exists (select null from t_post_product where p.pid=pid) order by likecount desc limit 0,#topCount#
+		</isEqual>
+		<isEqual property="posttype" compareValue="3">
+			select pid,pname,price,goods_thumb,goods_img from t_product p where exists (select null from t_post_brand where p.brandid=brandid) order by likecount desc limit 0,#topCount#
+		</isEqual>
+		) as a limit #offset#,#pageSize#
+	</select>
+	
+	<select id="product.queryRightProductVO" parameterClass="java.lang.Integer" resultClass="psf.vo.sns.right.SnsRightProductVO">
+		select pid, pname, pcode, price, price_market, likecount, goods_thumb,goods_img from t_product where pid = #pid#;
+	</select>
+	
+	<select id="product.queryProductByShowid" parameterClass="java.lang.Integer" resultClass="psf.vo.sns.right.SnsRightProductVO">
+		select p.pid, pcode, p.pname, p.price, p.price_market from t_product p,t_post_product pp where pp.pid=p.pid and pp.postid=#showid#
+	</select>
+	
+	<select id="product.querySelectedProduct" parameterClass="java.util.Map" resultClass="psf.vo.sns.right.SnsRightProductVO">
+		select pid, pname, pcode, price, price_market, likecount, goods_thumb,goods_img from t_product where 
+		pid in <iterate property="pids" open="(" close=")" conjunction=",">#pids[]#</iterate> limit #offset#,#pageSize#
+	</select>
+	
+	<select id="product.countHotPostProduct" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select count(*) from t_product pr where 
+		<isEqual property="posttype" compareValue="2">
+			exists (select null from t_post_product pp,t_post p where pr.pid=pp.pid and pp.postid=p.postid and p.posttype=#posttype#) 
+		</isEqual>
+		<isEqual property="posttype" compareValue="3">
+			exists (select null from t_post_product pp,t_post p where pr.pid=pp.pid and pp.postid=p.postid and p.posttype=#posttype#)
+		</isEqual>
+		<isEqual property="posttype" compareValue="4">
+			exists (select null from t_post_brand pb,t_post p where pr.brandid=pb.brandid and pb.postid=p.postid and p.posttype=#posttype#) 
+		</isEqual>
+	</select>
+	<select id="product.queryHotPostProduct" parameterClass="java.util.Map" resultClass="psf.vo.sns.right.SnsRightProductVO">
+		select pid, pname, pcode, price, price_market, likecount, goods_thumb,goods_img from t_product pr where 
+		<isEqual property="posttype" compareValue="2">
+			exists (select null from t_post_product pp,t_post p where pr.pid=pp.pid and pp.postid=p.postid and p.posttype=#posttype#) 
+		</isEqual>
+		<isEqual property="posttype" compareValue="3">
+			exists (select null from t_post_product pp,t_post p where pr.pid=pp.pid and pp.postid=p.postid and p.posttype=#posttype#)
+		</isEqual>
+		<isEqual property="posttype" compareValue="4">
+			exists (select null from t_post_brand pb,t_post p where pr.brandid=pb.brandid and pb.postid=p.postid and p.posttype=#posttype#) 
+		</isEqual>
+		order by likecount desc
+		limit #offset#,#pageSize#
+	</select>
+	
+	<select id="product.countGuideBrandProduct" parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+		select count(*) from t_product pr where exists (select null from t_post_brand where pr.brandid=brandid and postid=#postid#)
+	</select>
+	<select id="product.queryGuideBrandProduct" parameterClass="java.util.Map" resultClass="psf.vo.sns.right.SnsRightProductVO">
+		select pid, pname, pcode, price, price_market, likecount, goods_thumb,goods_img from t_product pr where 
+		exists (select null from t_post_brand where pr.brandid=brandid and postid=#postid#)
+		order by likecount desc
+		limit #offset#,#pageSize#
+	</select>
+	
+	<select id="product.queryParentCate" parameterClass="java.lang.Integer" resultClass="psf.entity.TProductCate">
+		select * from t_product_cate pc where exists (select null from t_product_cate where pc.cateid = parentid and cateid=#cateid#) 
+	</select>
+	
+	<select id="product.queryProductCateByLevel" parameterClass="java.util.Map" resultClass="psf.entity.TProductCate">
+		<isEqual property="level" compareValue="1">
+			select cat_id_1 as cateid,cat_name_1 as catename,1 level from v_cate group by cat_id_1,cat_name_1
+		</isEqual>
+		<isEqual property="level" compareValue="2">
+			select cat_id_2 as cateid,cat_name_2 as catename,2 level from v_cate group by cat_id_2,cat_name_2
+		</isEqual>
+		<isEqual property="level" compareValue="3">
+			select cat_id as cateid,cat_name as catename,0 level from v_cate group by cat_id,cat_name
+		</isEqual>
+	</select>
+	
+	<select id="product.countPostProductByUid" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select count(distinct pp.pid) from t_post p,t_post_product pp where p.postid=pp.postid and p.uid=#uid# and p.posttype=#posttype# and p.delflag=0
+	</select>
+	<select id="product.queryPostProductByUid" parameterClass="java.util.Map" resultClass="psf.vo.sns.right.SnsRightProductVO">
+		select pid, pname, pcode, price, price_market, likecount, goods_thumb,goods_img from t_product pr where pr.pid in 
+		(select distinct pp.pid from t_post p,t_post_product pp where p.postid=pp.postid and p.uid=#uid# and p.posttype=#posttype# and p.delflag=0) 
+		limit #offset#,#pageSize#
+	</select>
+</sqlMap>

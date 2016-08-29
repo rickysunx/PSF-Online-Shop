@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="psf"
+  id="myeclipse.1316756611781"
+  context-root="/"
+  j2ee-spec="1.4"
+  archive="psf.war">
+  <attributes>
+    <attribute name="webrootdir" value="WebRoot" />
+  </attributes>
+</project-module>
+

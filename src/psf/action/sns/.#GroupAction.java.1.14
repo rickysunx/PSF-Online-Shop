@@ -1,0 +1,310 @@
+
+package psf.action.sns;
+
+import java.util.List;
+
+import psf.PsfAction;
+import psf.common.PageParam;
+import psf.common.PageResult;
+import psf.common.PsfTime;
+import psf.entity.TGroup;
+import psf.entity.TGroupClass;
+import psf.entity.TGroupMember;
+import psf.entity.TZone;
+import psf.service.common.ZoneService;
+import psf.service.sns.GroupService;
+import psf.service.sns.PostService;
+import psf.service.sns.TopicService;
+import psf.vo.sns.CommentVO;
+import psf.vo.sns.GroupVO;
+import psf.vo.sns.PostListItemVO;
+import psf.vo.sns.TopicVO;
+
+public class GroupAction extends PsfAction {
+	public void squareGroup() throws Exception {
+		set("groupTab","squaregroup");
+	}
+	public void myGroup() throws Exception {
+		set("groupTab","mygroup");
+	}
+	public void topicGroup() throws Exception {
+		set("groupTab","topicgroup");
+	}
+	public void editGroupInfo() throws Exception {
+		set("groupTab","editgroupinfo");
+		
+		GroupService groupService = new GroupService();
+		List<TGroupClass> groupclass = groupService.queryGroupClass(null);
+		set("groupclass", groupclass);
+		
+		ZoneService zoneService = new ZoneService();
+		List<TZone> provinces = zoneService.queryZoneByLevel(1);
+		List<TZone> cities = zoneService.queryZoneChildren(provinces.get(0).getZoneid());
+		set("provinces", provinces);
+		set("cities", cities);
+	}
+	public void editGroupAvatar() throws Exception {
+		set("groupTab","editgroupavatar");
+	}
+	public void manageInfo() throws Exception {
+		set("groupTab","manageinfo");
+	}
+	public void manageAvatar() throws Exception {
+		set("groupTab","manageavatar");
+	}
+	public void manageAnnouncement() throws Exception {
+		set("groupTab","manageannouncement");
+	}
+	public void manageMember() throws Exception {
+		set("groupTab","managemember");
+	}
+	public void manageApply() throws Exception {
+		set("groupTab","manageapply");
+	}
+	public void manageInviteAbout() throws Exception {
+
+	}
+	public void manageInviteFriend() throws Exception {
+
+	}
+	public void detailGroup() throws Exception {
+
+	}
+	public void detailGroupTopiclist() throws Exception {
+
+	}
+	public void detailGroupTopicdetail() throws Exception {
+
+	}
+	public void detailGroupFriend() throws Exception {
+
+	}
+
+	public void getChildZone() throws Exception {
+		Integer parentid = p2int("parentid");
+		ZoneService zoneService = new ZoneService();
+		List<TZone> childs = null;
+		if(parentid != null){
+			childs =zoneService.queryZoneChildren(parentid);
+		}
+		set("childs", childs);
+	}
+	
+	public void saveGroup() throws Exception {
+		try{
+			String reg = "[,|\\\\s|,\\\\s|\\\\s,]+";
+			String message = null;
+			Integer success = 0;
+			String groupname = p("group_name");
+			String groupintro = p("group_intro").trim();
+			Integer groupclass = p2int("group_class");
+			Integer addr_province = p2int("addr_province");
+			Integer addr_city = p2int("addr_city");
+			String grouptag = p("group_tag");
+			Integer grouptype = p2int("group_type");
+			Integer jointype = null;
+			if(grouptype.equals(1)){
+				jointype = p2int("join_type");
+				grouptype = jointype;
+			}
+			
+			if(groupname == null || groupname.equals("")){
+				message = "圈子名称不能为空!";
+			}else if(groupintro == null || groupintro.equals("") || groupintro.length()>70){
+				message = "圈子介绍内容字数不符合要求!";
+			}else if(groupclass == null){
+				message = "未选择圈子分类!";
+			}else if(addr_province == null || addr_city == null){
+				message = "地址填写错误!";
+			}else if(grouptag == null || grouptag.split(reg).length > 5){
+				message = "圈子标签错误!";
+			}else if(grouptype == null){
+				message = "未选择圈子类别!";
+			}else{
+				TGroup group = new TGroup();
+				group.setGroupname(groupname);
+				group.setGroupclassid(groupclass);
+				group.setUid(getLoginUserId());
+				group.setPicid(1028);	//默认
+				group.setGrouptype(grouptype);
+				PsfTime time1 = new PsfTime();
+				group.setAddtime(time1.getTimeInSeconds());
+				group.setAddip(getHexIP());
+				group.setMembercount(1);	//圈子初始成员为1
+				group.setIntro(groupintro);
+				group.setZoneid(addr_city);
+				group.setGrouptag(grouptag);
+				group.setDelflag(0);
+				GroupService groupService = new GroupService();
+				Integer groupid = groupService.addGroup(group);
+				
+				TGroupMember groupmember = new TGroupMember();
+				groupmember.setGroupid(groupid);
+				groupmember.setUid(getLoginUserId());
+				PsfTime time2 = new PsfTime();
+				groupmember.setAddtime(time2.getTimeInSeconds());
+				groupmember.setLasttime(time2.getTimeInSeconds());
+				groupService.addGroupMember(groupmember);
+				
+				set("groupid", groupid);
+				success = 1;
+			}
+			set("message", message);
+			set("success", success);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
+	public void getRecommendation() throws Exception {
+		String keyword = p("keyword");
+		if(keyword.equals("null") || keyword.equals("圈子搜索")){
+			keyword = null;
+		}
+		PageParam pp = new PageParam(1, 18);
+		PageResult<GroupVO> recommend_groups = groupService.queryGroupRecommend(getLoginUserId(), pp);
+		set("recommend_groups", recommend_groups);
+	}
+	
+	public void getTopicContent() throws Exception {
+		Integer type = p2int("type");
+		if(type == null){
+			type = 0;
+		}
+		set("type", type);
+		Integer orderby = p2int("orderby");
+		if(orderby == null){
+			orderby = 1;
+		}
+		set("orderby", orderby);
+		String keyword = p("keyword");
+		if(keyword.equals("null")||keyword.equals("圈子话题搜索")){
+			keyword = null;
+		}
+		set("keyword", keyword);
+		Integer page = p2int("page");
+		if(page == null){
+			page = 1;
+		}
+		set("page", page);
+		PageParam pp = new PageParam(page, 20);
+		PostService postService = new PostService();
+		PageResult<PostListItemVO> posts = postService.queryGroupPost(type, getLoginUserId(), null, null, keyword, orderby, pp);
+		if(posts != null){
+			set("postlist", posts.getList());
+			set("pageCount", posts.getPageCount());
+		}
+	}
+	
+	public void getMyGroup() throws Exception {
+		Integer type = p2int("type");
+		if(type == null){
+			type =1;
+		}
+		set("type", type);
+		Integer orderby = p2int("orderby");
+		if(orderby == null){
+			orderby = 1;
+		}
+		set("orderby", orderby);
+		String keyword = p("keyword");
+		if(keyword.equals("null") || keyword.equals("圈子搜索")){
+			keyword = null;
+		}
+		set("keyword", keyword);
+		Integer page = p2int("page");
+		if(page == null){
+			page = 1;
+		}
+		set("page", page);
+		PageParam pp = new PageParam(page,4);
+		GroupService groupService = new GroupService();
+		if(getLoginUserId() != null){
+			PageResult<GroupVO> groups = groupService.queryGroupByUid(type, getLoginUserId(), orderby, keyword, pp);
+			if(groups != null){
+				set("grouplist", groups.getList());
+				set("pageCount", groups.getPageCount());
+			}
+		}
+	}
+	
+	/**
+	 * 圈子广场品友圈子请求
+	 * @throws Exception
+	 */
+	public void getPsfFriendGroup() throws Exception {
+		Integer type = p2int("type");
+		set("type", type);
+		Integer page = p2int("page");
+		if(page == null){
+			page = 1;
+		}
+		set("page", page);
+		PageParam pp = new PageParam(page,3);
+		GroupService groupService = new GroupService();
+		if(getLoginUserId() != null){
+			PageResult<GroupVO> groups = groupService.queryGroupByUserType(getLoginUserId(), type, pp);
+			if(groups != null){
+				set("grouplist", groups.getList());
+				set("pageCount", groups.getPageCount());
+			}
+		}
+	}
+	
+	/**
+	 * 圈子广场热门圈子请求
+	 * @throws Exception
+	 */
+	public void getHotGroup() throws Exception {
+		Integer classid = p2int("classid");
+		set("classid", classid);
+		Integer page = p2int("page");
+		if(page == null){
+			page = 1;
+		}
+		set("page", page);
+		PageParam pp = new PageParam(page,21);
+		GroupService groupService = new GroupService();
+		PageResult<GroupVO> groups = groupService.queryGroupByClass(classid, null, pp);
+		if(groups != null){
+			set("grouplist", groups.getList());
+			set("pageCount", groups.getPageCount());
+		}
+	}
+	
+	/**
+	 * 圈子热门话题
+	 * @throws Exception
+	 */
+	public void getHotTopic() throws Exception{
+		Integer page = p2int("page");
+		if(page == null){
+			page = 1;
+		}
+		set("page",page);
+		PageParam pp = new PageParam(page, 6);
+		TopicService topicService  = new TopicService();
+		PageResult<TopicVO> topics = topicService.queryTopicVOByUid(1, 0, null, null, null, 2, pp);
+		if(topics != null){
+			set("topiclist", topics.getList());
+			set("pageCount", topics.getPageCount());
+		}
+	}
+	
+	/**
+	 * 圈子的最新发言
+	 * @throws Exception
+	 */
+	public void getLatestComment() throws Exception {
+		String keyword = p("keyword");
+		if(keyword.equals("null") || keyword.equals("圈子发言搜索")){
+			keyword = null;
+		}
+		PageParam pp = new PageParam(1,5);
+		PageResult<PostListItemVO> posts = postService.queryGroupPost(0, getLoginUserId(), null, null, keyword, 1, pp);
+		if(posts != null){
+			set("postlist", posts.getList());
+			set("pageCount", posts.getPageCount());
+		}
+	}
+}

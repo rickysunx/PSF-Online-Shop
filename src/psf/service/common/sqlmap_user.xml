@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+	"../../../sql-map-2.dtd">
+<sqlMap>
+
+	<select id="user.queryEcsUser" parameterClass="java.lang.Integer" resultClass="psf.entity.EcsUsers">
+		select * from ecs_users where user_id = #user_id#
+	</select>
+	<select id="user.usernameExists" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+	<![CDATA[
+		select 1 from t_user where username=#username# and uid<>#uid#
+	]]>
+	</select>
+	<select id="user.emailExists" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+	<![CDATA[
+		select 1 from t_user where email=#email# and uid<>#uid#
+	]]>
+	</select>
+	<select id="user.regUsernameCheck" resultClass="psf.entity.TUser">
+		select * from t_user where username=#username#
+	</select>
+	<select id="user.regEmailCheck" resultClass="psf.entity.TUser">
+		select * from t_user where email=#email#
+	</select>
+	<select id="user.queryAllIndustry" resultClass="psf.entity.TIndustry">
+		select * from t_industry
+	</select>
+	<update id="user.updateIndustryByUid" parameterClass="java.util.Map">
+		update t_user set industryid=#industryid#,ap_industry=#ap_industry# where uid=#uid#
+	</update>
+	<update id="user.updateUserPassword" parameterClass="java.util.Map">
+		update t_user set userpass=#userpass# where uid=#uid#
+	</update>
+	<select id="user.queryIndustryByIndustryid" resultClass="psf.entity.TIndustry">
+		select * from t_industry where industryid=#industryid#
+	</select>
+	<select id="user.queryAllUsers" resultClass="psf.entity.TUser">
+		select * from t_user
+	</select>
+	<select id="user.queryUserByUid" resultClass="psf.entity.TUser">
+		select * from t_user where uid=#uid#
+	</select>
+	<select id="user.queryUser0ByUid" resultClass="psf.entity.TUser0">
+		select * from t_user0 where uid=#uid#
+	</select>
+	<select id="user.queryUserByName" resultClass="psf.entity.TUser">
+		select * from t_user where username=#username#
+	</select>
+	<select id="user.queryUserByEmail" resultClass="psf.entity.TUser">
+		select * from t_user where email=#email#
+	</select>
+	<select id="user.queryUserByPhone" resultClass="psf.entity.TUser">
+		select * from t_user where mobile=#moblie#
+	</select>
+	<delete id="user.delEdu" parameterClass="java.lang.Integer">
+		delete from t_user_edu where eduid=#eduid#
+	</delete>
+	<delete id="user.delJob" parameterClass="java.lang.Integer">
+		delete from t_user_job where jobid=#jobid#
+	</delete>
+	<delete id="user.delAccount" parameterClass="java.lang.Integer">
+		delete from t_user_account where accountid=#accountid#
+	</delete>
+	<update id="user.updateApwealth" parameterClass="java.util.Map">
+		update t_user set ap_wealth=#ap# where uid=#uid#
+	</update>
+	<select id="user.queryPrivateByUid" resultClass="psf.entity.TUser">
+		select ap_msg,ap_wealthtype from t_user where uid=#uid#
+	</select>
+	<update id="user.updatePrivateByUid" parameterClass="java.util.Map">
+		update t_user set ap_msg=#ap_msg#,ap_wealthtype=#ap_wealthtype# where uid=#uid# 
+	</update>
+	<!-- 查询银行账户信息begin -->
+	<select id="user.queryAccountByUidCount" parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+		select count(accountid) from t_user_account where uid=#uid#
+	</select>
+	<select id="user.queryAccountByUid" parameterClass="java.util.Map" resultClass="psf.entity.TUserAccount">
+		select * from t_user_account where uid=#uid# limit #pp.offset#,#pp.pageSize#
+	</select>
+	
+	<!-- 查询银行账户信息end -->
+	<!-- 查询发表 -->
+	<select id="user.queryPubCount" resultClass="java.lang.Integer" parameterClass="java.lang.Integer">
+		 select sum(showcount+shopexpcount+guidecount) from t_user_balance where uid=#uid#
+	</select>
+	<!-- 统计各项余额 -->
+	<select id="user.queryCashCount" resultClass="java.math.BigDecimal" parameterClass="java.lang.Integer">
+		select sum(amount) from t_user_cash where uid=#uid#
+	</select>
+	<select id="user.queryCoinCount" resultClass="java.math.BigDecimal" parameterClass="java.lang.Integer">
+		select sum(amount) from t_user_coin where uid=#uid#
+	</select>
+	<select id="user.queryPointCount" resultClass="java.math.BigDecimal" parameterClass="java.lang.Integer">
+		select sum(amount) from t_user_point where uid=#uid#
+	</select>
+	<select id="user.queryExpCount" resultClass="java.math.BigDecimal" parameterClass="java.lang.Integer">
+		select sum(amount) from t_user_exp where uid=#uid#
+	</select>
+	<select id="user.queryCouponCount" resultClass="java.math.BigDecimal" parameterClass="java.lang.Integer">
+		select sum(amount) from t_user_coupon where uid=#uid#
+	</select>
+	<select id="user.queryFansCount" resultClass="java.lang.Integer" parameterClass="java.lang.Integer">
+		select count(distinct(uid)) from t_follow where followuid=#uid#
+	</select>
+	<select id="user.queryFollowCount" resultClass="java.lang.Integer" parameterClass="java.lang.Integer">
+		select count(distinct(followuid)) from t_follow where uid=#uid#
+	</select>
+	<select id="user.queryShowCount" resultClass="java.lang.Integer" parameterClass="java.lang.Integer">
+		select count(postid) from t_post where uid=#uid# and posttype=2 and delflag=0
+	</select>
+	<select id="user.queryShopExpCount" resultClass="java.lang.Integer" parameterClass="java.lang.Integer">
+		select count(postid) from t_post where uid=#uid# and posttype=4 and delflag=0
+	</select>
+	<select id="user.queryGuideCount" resultClass="java.lang.Integer" parameterClass="java.lang.Integer">
+		select count(postid) from t_post where uid=#uid# and posttype=3 and delflag=0
+	</select>
+	<select id="user.queryGroupMemberCount" resultClass="java.lang.Integer" parameterClass="java.lang.Integer">
+		select count(distinct(uid)) from t_group_member where uid in 
+		(select uid from t_group_member where groupid in (select groupid from t_group_member where uid=#uid#)) and uid!=#uid#
+	</select>
+	<select id="user.queryFriendCount" resultClass="java.lang.Integer" parameterClass="java.lang.Integer">
+		select count(distinct(friendid)) from t_friend where uid=#uid#
+	</select>
+	<select id="user.queryGroupCount" resultClass="java.lang.Integer" parameterClass="java.lang.Integer">
+		select count(groupid) from t_group_member where uid=#uid#
+	</select>
+	<select id="user.queryVisitCount" resultClass="java.lang.Integer" parameterClass="java.lang.Integer">
+		select count(visituid) from t_log_space_visit where spaceuid=#uid#
+	</select>
+	<select id="user.TUserBalance" parameterClass="java.lang.Integer" resultClass="psf.entity.TUserBalance">
+		select * from t_user_balance where uid=#uid#
+	</select>
+	<!-- 统计各项余额 -->
+	
+	<select id="user.queryTopUser" parameterClass="java.util.Map" resultClass="psf.vo.sns.right.SnsRightUserVO">
+		select * from (select uid from t_user_balance where uid != #uid# order by coins desc limit 0,#topCount#) a limit #offset#,#pageSize#
+	</select>
+	
+	<select id="user.countTopUserByType" parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+		select count(distinct uid)  from t_user_coin where otype=#otype#
+	</select>
+	<select id="user.queryTopUserByType" parameterClass="java.util.Map" resultClass="psf.vo.sns.right.SnsRightUserVO">
+		select * from (select c.uid, sum(amount) as coins,
+		b.showcount as showCount, b.shopexpcount as shopexpCount, b.guidecount as guideCount from t_user_coin c left join t_user_balance b on b.uid=c.uid where otype=#otype# group by c.uid order by sum(amount) desc limit 0, #topCount#) 
+		as a 
+		limit #offset#,#pageSize#;
+	</select>
+	<select id="user.queryJobByUid" resultClass="psf.entity.TUserJob">
+		select * from t_user_job where uid=#uid# order by ts desc
+	</select>
+	<update id="user.updateJobAccesspower" parameterClass="java.util.Map">
+		update t_user_job set accesspower=#accesspower# where uid=#uid#
+	</update>
+	<select id="user.queryEduByUidAndSchooltype" resultClass="psf.entity.TUserEdu" parameterClass="java.util.Map">
+		select * from t_user_edu where uid=#uid# and schooltype=#schooltype# order by ts desc
+	</select>
+	<update id="user.updateEduAccesspower" parameterClass="java.util.Map">
+		update t_user_edu set accesspower=#accesspower# where eduid=#eduid#
+	</update>
+	<select id="user.queryUserAddressByUid" resultClass="psf.vo.sns.UserAddressVO">
+		select * from t_user_address where uid=#uid#
+	</select>
+	<update id="user.updateToNotDefaultAddress" parameterClass="java.lang.Integer">
+		update t_user_address set isdefault=0 where uid=#uid#
+	</update>
+	<update id="user.updateDefaultAddress" parameterClass="java.lang.Integer">
+		update t_user_address set isdefault=1 where addressid=#addressid#
+	</update>
+	<delete id="user.delAddress" parameterClass="java.lang.Integer">
+		delete from t_user_address where addressid=#addressid#
+	</delete>
+	<select id="user.queryUserAddressByAddressid" resultClass="psf.entity.TUserAddress" parameterClass="java.lang.Integer">
+		select * from t_user_address where addressid=#addressid#
+	</select>
+	
+	<!-- 财富部分 begin -->
+	<select id="user.querySumCoinByUid" resultClass="java.math.BigDecimal">
+		select sum(amount) from t_user_coin where uid=#uid# and amount>0
+	</select>
+	<select id="user.queryBalanceCoinByUid" resultClass="java.math.BigDecimal">
+		select sum(amount) from t_user_coin where uid=#uid#
+	</select>
+	<select id="user.querySumPointByUid" resultClass="java.math.BigDecimal">
+		select sum(amount) from t_user_point where uid=#uid# and amount>0
+	</select>
+	<select id="user.queryBalancePointByUid" resultClass="java.math.BigDecimal">
+		select sum(amount) from t_user_point where uid=#uid#
+	</select>
+	<select id="user.querySumCouponByUid" resultClass="java.math.BigDecimal">
+		select sum(amount) from t_user_coupon where uid=#uid# and amount>0
+	</select>
+	<select id="user.queryBalanceCouponByUid" resultClass="java.math.BigDecimal">
+		select sum(amount) from t_user_coupon where uid=#uid#
+	</select>
+	<select id="user.queryCoinByMonth" resultClass="java.math.BigDecimal" parameterClass="java.util.Map">
+		select sum(amount) from t_user_coin where uid=#uid# and addtime between #fromdate# and #enddate#
+	</select>
+	<select id="user.querySumCoinByMonth" resultClass="java.math.BigDecimal" parameterClass="java.util.Map">
+		select sum(amount) from t_user_coin where uid=#uid# and amount &gt; 0 and addtime between #fromdate# and #enddate# 
+	</select>
+	<select id="user.queryPointByMonth" resultClass="java.math.BigDecimal" parameterClass="java.util.Map">
+		select sum(amount) from t_user_point where uid=#uid# and addtime between #fromdate# and #enddate#
+	</select>
+	<select id="user.queryCouponByMonth" resultClass="java.math.BigDecimal" parameterClass="java.util.Map">
+		select sum(amount) from t_user_coupon where uid=#uid# and isused=0 and 
+		( (validstart &gt;=#fromdate# and validstart &lt;=#enddate# and (validend &lt;= #enddate# or validend &gt;=#enddate#)) or 
+		  (validstart &lt;=#fromdate# and (validend &gt;=#fromdate# and validend &lt;=#enddate#)) or
+		  (validstart &lt;=#fromdate# and validend &gt;=#fromdate#)
+		  )
+	</select>
+	<!-- 享金明细 begin -->
+	<select id="user.queryCoinByUidCount" resultClass="java.lang.Integer" parameterClass="java.util.Map">
+		select count(coinid) from t_user_coin where uid=#uid#
+		<isEqual property="type" compareValue="2" prepend="and">
+			amount &gt; 0 
+		</isEqual>
+		<isEqual property="type" compareValue="3" prepend="and">
+			amount &lt; 0 
+		</isEqual>
+	</select>
+	<select id="user.queryCoinByUid" resultClass="psf.vo.sns.UserCoinVO" parameterClass="java.util.Map">
+		select * from t_user_coin where uid=#uid#
+		<isEqual property="type" compareValue="2" prepend="and">
+			amount &gt; 0 
+		</isEqual>
+		<isEqual property="type" compareValue="3" prepend="and">
+			amount &lt; 0 
+		</isEqual>
+		order by addtime desc limit #pp.offset#,#pp.pageSize#
+	</select>
+	<select id="user.queryCoinByUidAndBalance" resultClass="java.math.BigDecimal" parameterClass="java.util.Map">
+		select sum(amount) from t_user_coin where coinid &lt;= #coinid# and uid=#uid#
+	</select>
+	<select id="user.queryCoinProduct" resultClass="psf.vo.sns.UserCoinVO" parameterClass="java.lang.Integer">
+		select pname from t_post_product pp,t_product p where pp.postid=#oid# and pp.pid=p.pid
+	</select>
+	<!-- 享金明细 end -->
+	
+	<!-- 优惠券明细 begin -->
+	<select id="user.queryCouponByUidCount" resultClass="java.lang.Integer" parameterClass="java.util.Map">
+		select count(couponid) from t_user_coupon where uid=#uid#
+		<isEqual property="type" compareValue="2" prepend="and">
+			isused = 0
+		</isEqual>
+		<isEqual property="type" compareValue="3" prepend="and">
+			isused = 1 
+		</isEqual>
+		<isEqual property="type" compareValue="4" prepend="and">
+			validend &lt;#nowdate#
+		</isEqual>
+	</select>
+	<select id="user.queryCouponByUid" resultClass="psf.vo.sns.UserCouponVO" parameterClass="java.util.Map">
+		select * from t_user_coupon where uid=#uid#
+		<isEqual property="type" compareValue="2" prepend="and">
+			isused = 0
+		</isEqual>
+		<isEqual property="type" compareValue="3" prepend="and">
+			isused = 1 
+		</isEqual>
+		<isEqual property="type" compareValue="4" prepend="and">
+			validend &lt;#nowdate#
+		</isEqual>
+		limit #pp.offset#,#pp.pageSize#
+	</select>
+	<select id="user.queryValidCouponByUid" resultClass="psf.vo.sns.UserCouponVO" parameterClass="java.util.Map">
+		select amount amountType,sum(amount) sumAmount,count(couponid) count from t_user_coupon where uid=#uid# and isused=0
+		and validstart &lt;= #nowdate# and validend &gt;= #nowdate# group by amount
+	</select>
+	<!-- 优惠券明细 end -->
+	
+	<!-- 积分明细 begin -->
+	<select id="user.queryPointByUidCount" resultClass="java.lang.Integer" parameterClass="java.util.Map">
+		select count(pointid) from t_user_point where uid=#uid# and addtime &gt;= #fromdate# and addtime &lt;= #enddate#
+	</select>
+	<select id="user.queryPointByUid" resultClass="psf.vo.sns.UserPointVO" parameterClass="java.util.Map">
+		select * from t_user_point where uid=#uid# and addtime &gt;= #fromdate# and addtime &lt;= #enddate# limit #pp.offset#,#pp.pageSize#
+	</select>
+	<!-- 积分明细 end -->
+		
+	<!-- 品友财富 begin -->
+		<select id="user.queryPsffriendAllWealthCount" resultClass="java.lang.Integer">
+			select count(distinct(a.uid)) from (select friendid uid from t_friend where uid=#uid# 
+				   union all select followuid from t_follow where uid=#uid# union all select uid from t_follow where followuid=#uid#) a
+		</select>
+		<select id="user.queryPsffriendAllWealth" resultClass="psf.vo.sns.SnsUserInfoVO" parameterClass="java.util.Map">
+			select distinct(a.fuid),username,avatarid avatarFileName,(select sum(amount) from t_user_coin where uid=a.fuid and amount>0) coins 
+			from (select friendid fuid from t_friend where uid=#uid# union all select followuid fuid from t_follow where uid=#uid# union all select uid fuid from t_follow where followuid=#uid#) a,
+			t_user u where a.fuid=u.uid limit #pp.offset#,#pp.pageSize#
+		</select>
+		<select id="user.queryFriendWealthCount" resultClass="java.lang.Integer">
+			select count(distinct(friendid)) from t_friend where uid=#uid#
+		</select>
+		<select id="user.queryFriendWealth" resultClass="psf.vo.sns.SnsUserInfoVO" parameterClass="java.util.Map">
+			select distinct(friendid) fuid,username,avatarid avatarFileName,(select sum(amount) from t_user_coin c where c.uid=fuid and amount>0) coins 
+			from t_friend f,t_user t where f.uid=#uid# and f.friendid=t.uid limit #pp.offset#,#pp.pageSize#
+		</select>
+		<select id="user.queryFollowWealthCount" resultClass="java.lang.Integer">
+			select count(distinct(followuid)) from t_follow where uid=#uid#
+		</select>
+		<select id="user.queryFollowWealth" resultClass="psf.vo.sns.SnsUserInfoVO" parameterClass="java.util.Map">
+			select distinct(followuid) fuid,username,avatarid avatarFileName,(select sum(amount) from t_user_coin c where c.uid=fuid and amount>0) coins 
+			from t_follow f,t_user t where f.uid=#uid# and f.followuid=t.uid limit #pp.offset#,#pp.pageSize#
+		</select>
+		<select id="user.queryFansWealthCount" resultClass="java.lang.Integer">
+			select count(distinct(uid)) from t_follow where followuid=#uid#
+		</select>	
+		<select id="user.queryFansWealth" resultClass="psf.vo.sns.SnsUserInfoVO" parameterClass="java.util.Map">
+			select distinct(f.uid) fuid,username,avatarid avatarFileName,(select sum(amount) from t_user_coin c where c.uid=fuid and amount>0) coins 
+			from t_follow f,t_user t where f.followuid=#uid# and f.uid=t.uid limit #pp.offset#,#pp.pageSize#
+		</select>
+	<!-- 品友财富 begin -->
+	<!-- 享金，积分排行 begin -->
+	<select id="user.queryCoinRankCount" resultClass="java.lang.Integer">
+		select count(distinct(uid)) from t_user_coin
+	</select>
+	<select id="user.queryCoinRank" resultClass="psf.vo.sns.SnsUserInfoVO" parameterClass="java.util.Map">
+		select distinct(c.uid) fuid,username,avatarid avatarFileName,(select sum(amount) from t_user_coin where uid=fuid and amount>0) coins 
+		from t_user_coin c,t_user u where c.uid=u.uid order by coins desc limit #pp.offset#,#pp.pageSize#
+	</select>
+	<select id="user.queryPointRankCount" resultClass="java.lang.Integer">
+		select count(distinct(uid)) from t_user_point
+	</select>
+	<select id="user.queryPointRank" resultClass="psf.vo.sns.SnsUserInfoVO" parameterClass="java.util.Map">
+		select distinct(p.uid) fuid,username,avatarid avatarFileName,(select sum(amount) from t_user_point where uid=fuid and amount>0) points 
+		from t_user_point p,t_user u where p.uid=u.uid order by points desc limit #pp.offset#,#pp.pageSize#
+	</select>
+	
+	<!-- 享金，积分排行 end -->
+	<!-- 财富部分 end -->
+	
+	<select id="user.querySearchUserVOByIDs" parameterClass="java.util.Map" resultClass="psf.vo.sns.SearchUserVO">
+		select u.uid,u.username,concat(p.picid,'.',p.filetype) as avatarFileName,u.sex,u.nowzoneid,u.snsstatus from t_user u,t_pic p 
+		where u.uid in <iterate property="uids" conjunction="," open="(" close=")">#uids[]#</iterate> and u.avatarid=p.picid and u.sealflag != 1
+		limit #offset#,#pageSize#
+	</select>
+</sqlMap>

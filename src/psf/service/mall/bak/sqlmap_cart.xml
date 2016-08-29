@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+	"../../../sql-map-2.dtd">
+<sqlMap>
+
+	<update id="cart.update" parameterClass="psf.entity.TCart">
+		update t_cart set pcount=#pcount# where uid=#uid# and pid=#pid#
+	</update>
+	
+	<select id="cart.isExist" parameterClass="psf.entity.TCart" resultClass="psf.entity.TCart">
+		select * from t_cart where uid=#uid# and pid=#pid#
+	</select>
+	
+	<delete id="cart.delete" parameterClass="java.util.Map">
+		delete from t_cart where uid=#uid# and pid=#pid#
+	</delete>
+	
+	<delete id="cart.clearCart" parameterClass="java.lang.Integer">
+		delete from t_cart where uid=#uid#
+	</delete>
+	
+	<select id="cart.queryCartByUid" parameterClass="java.lang.Integer" resultClass="psf.entity.TCart">
+		select * from t_cart where uid=#uid#
+	</select>
+	
+</sqlMap>

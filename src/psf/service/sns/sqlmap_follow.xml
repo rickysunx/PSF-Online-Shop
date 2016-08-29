@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+	"../../../sql-map-2.dtd">
+<sqlMap>
+	<select id="follow.queryisFollow" resultClass="psf.entity.TFollow" parameterClass="java.util.Map">
+		select * from t_follow where uid=#uid# and followuid=#followuid#
+	</select>
+	<delete id="follow.delFollow" parameterClass="psf.entity.TFollow">
+		delete from t_follow where uid=#uid# and followuid=#followuid#
+	</delete>
+	<select id="follow.queryFollowgroupByUid" resultClass="psf.entity.TFollowGroup">
+		select * from t_follow_group where uid=#uid# order by displayorder 
+	</select>
+	<select id="follow.queryFollowgroupByFollowuid" parameterClass="java.util.Map" resultClass="psf.vo.sns.FriendVO">
+		select f.*,g.followgroupname from t_follow f left join t_follow_group g on f.followgroupid=g.followgroupid where f.followuid=#followuid# and f.uid=#uid#
+	</select>
+	<update id="follow.updateFollowGroup" parameterClass="java.util.Map">
+		update t_follow_group set followgroupname=#followgroupname# where followgroupid=#followgroupid#
+	</update>
+	<select id="follow.queryFollowuidByFollowgroupid" parameterClass="java.util.Map">
+		select * from t_follow where uid=#uid# and followgroupid=#followgroupid#
+	</select>
+	<delete id="follow.delFollowGroup">
+		delete from t_follow_group where followgroupid=#followgroupid#
+	</delete>
+	<delete id="follow.delFollowByFollowgroupid" parameterClass="java.util.Map">
+		delete from t_follow where uid=#uid# and followuid=#followuid# and followgroupid=#followgroupid#
+	</delete>
+	<update id="follow.updateFollowgroup" parameterClass="java.util.Map">
+		update t_follow set followgroupid=#followgroupid# where uid=#uid# and followuid=#followuid#
+	</update>
+	<select id="follow.queryFollowGroupByFollowuid" parameterClass="psf.entity.TFollow" resultClass="psf.entity.TFollowGroup">
+		select * from t_follow_group where followgroupid in (
+			select followgroupid from t_follow where uid=#uid# and followuid=#followuid#
+		)
+	</select>
+	<!-- 查询粉丝  -->
+	<select id="follow.queryFansByUidCount" resultClass="java.lang.Integer">
+		select count(distinct(uid)) from t_follow f where followuid=#uid# 
+	</select>
+	<select id="follow.queryFansByUid" resultClass="psf.vo.sns.FriendVO" parameterClass="java.util.Map">
+		select distinct(f.uid) friendid,sex,snsstatus,(select content from t_post where uid=f.uid and delflag=0 order by addtime desc limit 1) newpost,
+		(select postid from t_post where uid=f.uid and delflag=0 order by addtime desc limit 1) postid
+		 from t_follow f,t_user u where u.uid=f.uid and followuid=#uid# limit #pp.offset#,#pp.pageSize#
+	</select>
+		<!-- 搜索查询粉丝 -->
+	<select id="follow.queryFansByKeywordCount" resultClass="java.lang.Integer">
+		select count(distinct(a.fanuid)) from (
+			select f.uid fanuid from t_follow f,t_user u where f.followuid=#uid# and f.uid=u.uid and username like concat('%',#keyword#,'%')
+			union all
+			select fo.uid fanuid from t_follow fo,t_remarklist rl where fo.followuid=#uid# and rl.uid=#uid# and rl.remarkuid=fo.uid and remarkname like concat('%',#keyword#,'%')
+		) a
+	</select>
+	<select id="follow.queryFansByKeyword" resultClass="psf.vo.sns.FriendVO" parameterClass="java.util.Map">
+		select distinct(a.fanuid) friendid,username,avatarid avatarFileName,sex,snsstatus,nowzoneid zoneid,
+		(select content from t_post where uid=a.fanuid and delflag=0 order by addtime desc limit 1) newpost,
+		(select postid from t_post where uid=a.fanuid and delflag=0 order by addtime desc limit 1) postid from 
+		(select f.uid fanuid from t_follow f,t_user u where f.followuid=#uid# and f.uid=u.uid and username like concat('%',#keyword#,'%') 
+		 union all 
+		 select fo.uid fanuid from t_follow fo,t_remarklist rl where fo.followuid=#uid# and rl.uid=#uid# and rl.remarkuid=fo.uid and remarkname like concat('%',#keyword#,'%')
+		) a,t_user user where a.fanuid = user.uid limit #pp.offset#,#pp.pageSize#
+	</select>
+	
+	<!-- 分页查询分组关注  -->
+	<select id="follow.queryFollowCount" resultClass="java.lang.Integer" parameterClass="java.util.Map">
+		select count(distinct(followuid)) from t_follow where uid=#uid#
+			<isNotNull prepend="and" property="followgroupid">
+				followgroupid=#followgroupid#
+			</isNotNull>		
+	</select>
+	<select id="follow.queryFollowByUid" resultClass="psf.vo.sns.FriendVO" parameterClass="java.util.Map">
+		select distinct(f.followuid) friendid,sex,snsstatus,
+		(select content from t_post where uid=f.followuid and delflag=0 order by addtime desc limit 1) newpost,
+		(select postid from t_post where uid=f.followuid and delflag=0 order by addtime desc limit 1) postid from t_follow f,t_user u
+		where f.uid=#uid# and f.followuid=u.uid
+		<isNotNull prepend="and" property="followgroupid">
+			f.followgroupid = #followgroupid# 
+		</isNotNull>
+		limit #pp.offset#,#pp.pageSize#
+	</select>
+		<!-- 搜索查询关注-->
+	<select id="follow.queryFollowByKeywordCount" resultClass="java.lang.Integer" parameterClass="java.util.Map">
+		select count(distinct(a.followuid)) from (
+			select f.followuid from t_follow f,t_user u where f.uid=#uid# and f.followuid=u.uid and username like concat('%',#keyword#,'%')
+			<isNotNull prepend="and" property="followgroupid">
+				f.followgroupid=#followgroupid#
+			</isNotNull>
+			union all
+			select fo.followuid from t_follow fo,t_remarklist rl where fo.uid=#uid# and rl.uid=#uid# and rl.remarkuid=fo.uid and remarkname like concat('%',#keyword#,'%')
+			<isNotNull prepend="and" property="followgroupid">
+				fo.followgroupid=#followgroupid#
+			</isNotNull>
+		) a				
+	</select>
+	<select id="follow.queryFollowByKeyword" resultClass="psf.vo.sns.FriendVO" parameterClass="java.util.Map">
+		select a.followuid friendid,sex,snsstatus,
+		(select content from t_post where uid=a.followuid and delflag=0 order by addtime desc limit 1) newpost,
+		(select postid from t_post where uid=a.followuid and delflag=0 order by addtime desc limit 1) postid from (
+			select f.followuid from t_follow f,t_user u where f.uid=#uid# and f.followuid=u.uid and username like concat('%',#keyword#,'%')
+			<isNotNull prepend="and" property="followgroupid">
+				f.followgroupid=#followgroupid#
+			</isNotNull>
+			union all
+			select fo.followuid from t_follow fo,t_remarklist rl where fo.uid=#uid# and rl.uid=#uid# and rl.remarkuid=fo.uid and remarkname like concat('%',#keyword#,'%')
+			<isNotNull prepend="and" property="followgroupid">
+				fo.followgroupid=#followgroupid#
+			</isNotNull>
+		) a,t_user user where a.followuid = user.uid limit #pp.offset#,#pp.pageSize#
+	</select>	
+	<update id="follow.updateAllFollowGroupOrderToZero" parameterClass="java.lang.Integer">
+		update t_follow_group set displayorder = 0 where uid=#uid#
+	</update>
+	<update id="follow.updateFollowGroupOrder" parameterClass="psf.entity.TFollowGroup">
+		update t_follow_group set displayorder = #displayorder# where followgroupid=#followgroupid# and uid=#uid#
+	</update>
+	<select id="follow.queryMyFollowCount" resultClass="java.lang.Integer">
+		select count(distinct(followuid)) from t_follow where uid=#uid#
+	</select>
+	<select id="follow.queryMyFansCount" resultClass="java.lang.Integer">
+		select count(distinct(uid)) from t_follow where followuid=#uid#
+	</select>
+	<!-- 关注筛选 -->
+	<!-- 最新  -->
+	<select id="follow.queryFollowByNew" resultClass="psf.vo.sns.FriendVO" parameterClass="java.util.Map">
+		select distinct(f.followuid) friendid,
+		(select content from t_post where uid=f.followuid and delflag=0 order by addtime desc limit 1) newpost,
+		(select postid from t_post where uid=f.followuid and delflag=0 order by addtime desc limit 1) postid from t_follow f,t_user u
+		where f.uid=#uid# and f.followuid=u.uid order by f.ts desc limit #pp.offset#,#pp.pageSize#
+	</select>
+	<!-- 最近联系 -->
+	<select id="follow.queryFollowByRelation" resultClass="psf.vo.sns.FriendVO" parameterClass="java.util.Map">
+		select distinct(followuid) friendid,t.addtime,
+		(select content from t_post where uid=f.followuid and delflag=0 order by addtime desc limit 1) newpost,
+		(select postid from t_post where uid=f.followuid and delflag=0 order by addtime desc limit 1) postid from t_follow as f left join (
+		select distinct(c.uid ) uid,max(c.addtime) addtime from (
+			select distinct(a.uid),max(a.addtime) addtime from (select msgto uid,addtime from t_msg where msgfrom=#uid# union all select msgfrom uid,addtime from t_msg where msgto=#uid#) a group by a.uid
+			union all
+			select distinct(b.uid),max(b.addtime) addtime from (select uid uid,addtime from t_comment where touid=#uid# union all select touid uid,addtime from t_comment where uid=#uid#) b group by b.uid
+		) c where c.uid in (select followuid from t_follow where uid=#uid#) group by c.uid order by c.addtime desc) as t on t.uid=f.followuid
+		where f.uid=#uid#  order by addtime desc  limit #pp.offset#,#pp.pageSize#
+	</select>	
+	
+	<select id="follow.queryFansByNew" resultClass="psf.vo.sns.FriendVO" parameterClass="java.util.Map">
+		select distinct(f.uid) friendid,
+		(select content from t_post where uid=f.uid and delflag=0 order by addtime desc limit 1) newpost,
+		(select postid from t_post where uid=f.uid and delflag=0 order by addtime desc limit 1) postid from t_follow f where f.followuid=#uid# order by f.ts desc limit #pp.offset#,#pp.pageSize#
+	</select>
+	<!-- 最近联系 -->
+	<select id="follow.queryFansByRelation" resultClass="psf.vo.sns.FriendVO" parameterClass="java.util.Map">
+		select distinct(f.uid) friendid,t.addtime,
+		(select content from t_post where uid=f.uid and delflag=0 order by addtime desc limit 1) newpost,
+		(select postid from t_post where uid=f.uid and delflag=0 order by addtime desc limit 1) postid from t_follow as f left join (
+		select distinct(c.uid ) uid,max(c.addtime) addtime from (
+			select distinct(a.uid),max(a.addtime) addtime from (select msgto uid,addtime from t_msg where msgfrom=#uid# union all select msgfrom uid,addtime from t_msg where msgto=#uid#) a group by a.uid
+			union all
+			select distinct(b.uid),max(b.addtime) addtime from (select uid uid,addtime from t_comment where touid=#uid# union all select touid uid,addtime from t_comment where uid=#uid#) b group by b.uid
+		) c where c.uid in (select uid from t_follow where followuid=#uid#) group by c.uid order by c.addtime desc) as t on t.uid=f.uid
+		where f.followuid=#uid#  order by addtime desc  limit #pp.offset#,#pp.pageSize#
+	</select>	
+	
+</sqlMap>

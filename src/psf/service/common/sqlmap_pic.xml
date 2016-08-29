@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+	"../../../sql-map-2.dtd">
+<sqlMap>
+
+	<delete id="pic.delPicContent" parameterClass="psf.entity.TPicContent">
+		delete from t_pic_content where picid=#picid# and thumbid=#thumbid#
+	</delete>
+	
+	<select id="pic.getPicContent" parameterClass="java.util.Map" resultClass="psf.entity.TPicContent">
+		select * from t_pic_content where picid=#picid# and thumbid=#thumbid#
+	</select>
+	
+	<update id="pic.updatePic" parameterClass="java.util.Map">
+		update t_pic set otype=#otype#, oid=#oid# 
+			where picid IN 
+		<iterate property="picids" open="(" close=")" conjunction=",">#picids[]#</iterate>
+	</update>
+	
+	<select id="pic.queryByPicId" parameterClass="java.lang.Integer" resultClass="psf.entity.TPic">
+		select * from t_pic where picid = #picid#
+	</select>
+	
+	<select id="pic.queryPicByOidForCount" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select count(1) from t_pic where otype=#otype# and oid=#oid#
+	</select>
+	<select id="pic.queryPicByOid" parameterClass="java.util.Map" resultClass="psf.entity.TPic">
+		select * from t_pic where otype=#otype# and oid=#oid#
+	</select>
+	<select id="pic.queryPicByOidForPage" parameterClass="java.util.Map" resultClass="psf.entity.TPic">
+		select * from t_pic where otype=#otype# and oid=#oid# limit #offset#,#pageSize#
+	</select>
+	
+	<delete id="pic.deleteByPicId" parameterClass="java.lang.Integer">
+		delete from t_pic where picid = #picid#
+	</delete>
+	
+	<select id="pic.queryAllPicContent" resultClass="psf.entity.TPicContent">
+		select * from t_pic_content;
+	</select>
+	<update id="pic.updataPicContent" parameterClass="psf.entity.TPicContent">
+		update t_pic_content set width=#width#, height=#height# where picid=#picid# and thumbid=#thumbid#
+	</update>
+</sqlMap> 

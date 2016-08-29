@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+	"../../../sql-map-2.dtd">
+<sqlMap>
+	<select id="sns.isLikedByUid" parameterClass="psf.entity.TLike" resultClass="java.lang.Integer">
+		select count(1) from t_like where uid=#uid# and otype=#otype# and oid=#oid#
+	</select>
+	<delete id="sns.delLike" parameterClass="psf.entity.TLike">
+		delete from t_like where uid=#uid# and otype=#otype# and oid=#oid#
+	</delete>
+	<delete id="sns.delBlackList" parameterClass="psf.entity.TBlacklist">
+		delete from t_blacklist where uid=#uid# and blockuid=#blockuid#
+	</delete>
+	<select id="sns.queryBlacklistCount" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select count(1) from t_blacklist where uid=#uid# and blockuid=#blockuid#
+	</select>
+	<delete id="sns.delRemark" parameterClass="psf.entity.TRemarklist">
+		delete from t_remarklist where uid=#uid# and remarkuid=#remarkuid#
+	</delete>
+	<select id="sns.queryRemarkName" parameterClass="java.util.Map" resultClass="java.lang.String">
+		select remarkname from t_remarklist where uid=#uid# and remarkuid=#remarkuid#
+	</select>
+	<select id="sns.queryLikeCountByOid" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select count(1) from t_like where otype=#otype# and oid=#oid#
+	</select>
+	<select id="sns.queryLikeUserByOid" parameterClass="java.util.Map" resultClass="psf.vo.sns.LikeUserVO">
+		select u.uid, u.avatarid as avatarFileName from t_user u,t_like l where u.uid=l.uid and l.otype=#otype# and l.oid=#oid# order by l.ts desc limit #offset#,#pageSize#
+	</select>
+	<select id="sns.queryPicByPicid" resultClass="psf.entity.TPic">
+		select * from t_pic where picid=#picid#
+	</select>
+	<select id="sns.countRecommendUser" parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+		select count(distinct u.uid) from t_follow f,t_user u 
+		where f.uid=u.uid and followuid in (SELECT followuid FROM `t_follow`where uid=#uid#) 
+		and f.uid not in (select followuid from t_follow where uid=#uid#) 
+		and f.uid != #uid#
+	</select>
+	<select id="sns.queryRecommendUser" parameterClass="java.util.Map" resultClass="psf.vo.sns.right.SnsRightUserVO">
+		select distinct b.uid, b.showcount showCount,b.shopexpcount shopexpCount,b.guidecount guideCount from t_follow f,t_user_balance b where 
+		f.uid=b.uid and followuid in (SELECT followuid FROM `t_follow`where uid=#uid#) 
+		and f.uid not in (select followuid from t_follow where uid=#uid#) 
+		and f.uid != #uid#
+		order by b.coins desc
+		limit #offset#,#pageSize#
+	</select>
+	<select id="sns.countHotUserByUid" parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+		select count(1) from t_user_balance where uid!=#uid# and uid not in (select followuid from t_follow where uid=#uid#)
+	</select>
+	<select id="sns.queryHotUserByUid" parameterClass="java.util.Map" resultClass="psf.vo.sns.right.SnsRightUserVO">
+		select uid, showcount showCount, shopexpcount shopexpCount, guidecount guideCount from t_user_balance where 
+		uid!=#uid# and uid not in (select followuid from t_follow where uid=#uid#) 
+		order by coins desc 
+		limit #offset#, #pageSize#
+	</select>
+	<select id="sns.queryBlackListByUidCount" resultClass="java.lang.Integer">
+		select count(blockuid) from t_blacklist where uid=#uid#
+	</select>
+	<select id="sns.queryBlacklistByUid" resultClass="psf.vo.sns.SnsUserInfoVO" parameterClass="java.util.Map">
+		select u.uid,u.username,u.avatarid avatarFileName from t_user u,t_blacklist b where u.uid=b.blockuid and b.uid=#uid#
+	</select>
+
+	
+	<select id="sns.countPostProductUser" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select count(*) from t_user u where exists (select null from t_like where u.uid=uid and uid!=#uid# and otype=12 
+		and oid in (select pid from t_post_product where postid=#postid#))
+	</select>
+	<select id="sns.queryPostProductUser" parameterClass="java.util.Map" resultClass="psf.vo.sns.right.SnsRightUserVO">
+		select u.uid uid,u.username username,b.showcount showCount,b.shopexpcount shopexpCount,b.guidecount guideCount from t_user u,t_user_balance b where 
+		u.uid=b.uid and exists (select null from t_like where u.uid=uid and uid!=#uid# and otype=12 
+		and oid in (select pid from t_post_product where postid=#postid#)) 
+		order by b.coins desc
+		limit #offset#,#pageSize#
+	</select>
+	
+	<select id="sns.countPostBrandUser" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select count(*) from t_user u where exists (select null from t_like where u.uid=uid and uid!=#uid# and otype=11 
+		and oid in (select brandid from t_post_brand where postid=#postid#))
+	</select>
+	<select id="sns.queryPostBrandUser" parameterClass="java.util.Map" resultClass="psf.vo.sns.right.SnsRightUserVO">
+		select u.uid uid,u.username username,b.showcount showCount,b.shopexpcount shopexpCount,b.guidecount guideCount from t_user u,t_user_balance b where 
+		u.uid=b.uid and exists (select null from t_like where u.uid=uid and uid!=#uid# and otype=11 
+		and oid in (select brandid from t_post_brand where postid=#postid#))
+		order by b.coins desc
+		limit #offset#,#pageSize#
+	</select>
+
+	<select id="sns.queryUrlById" resultClass="psf.entity.TUrl" parameterClass="java.lang.Integer">
+		select * from t_url where urlid = #urlid#
+	</select>
+	
+	<select id="sns.queryAtUserCount" resultClass="java.lang.Integer" parameterClass="java.util.Map">
+		select count(1) from t_user u left join t_remarklist r on u.uid = r.remarkuid and r.uid=#uid#
+		where (u.uid in (select friendid from t_friend where uid = #uid#) or u.uid in (select uid from t_follow where followuid = #uid#))
+    		and (u.username like concat('%',#name#,'%') or r.remarkname like concat('%',#name#,'%'))
+	</select>
+	
+	<select id="sns.queryAtUser" resultClass="psf.vo.sns.AtUserVO" parameterClass="java.util.Map">
+		select u.uid,u.username,r.remarkname from t_user u left join t_remarklist r on u.uid = r.remarkuid and r.uid=#uid#
+		where (u.uid in (select friendid from t_friend where uid = #uid#) or u.uid in (select uid from t_follow where followuid = #uid#))
+    		and (u.username like concat('%',#name#,'%') or r.remarkname like concat('%',#name#,'%'))
+    	limit #offset#,#size#
+	</select>
+	
+	<select id="sns.countUserByType" resultClass="java.lang.Integer" parameterClass="java.util.Map">
+		select count(1) from t_user u  
+		<isNotNull property="type" prepend="WHERE">
+			<isEqual property="type" compareValue="1">
+				exists (select null from t_friend where u.uid=friendid and uid=#uid#)
+			</isEqual>
+			<isEqual property="type" compareValue="2">
+				exists (select null from t_follow where u.uid=followuid and uid=#uid#)
+			</isEqual>
+			<isEqual property="type" compareValue="3">
+				(exists (select null from t_friend where u.uid=friendid and uid=#uid#) 
+				or exists (select null from t_follow where u.uid=followuid and uid=#uid#))
+			</isEqual>
+			<isEqual property="type" compareValue="4">
+				exists (select null from t_follow where u.uid=uid and followuid=#uid#)
+			</isEqual>
+			<isEqual property="type" compareValue="5">
+				(exists (select null from t_friend where u.uid=friendid and uid=#uid#) 
+				or exists (select null from t_follow where u.uid=uid and followuid=#uid#))
+			</isEqual>
+			<isEqual property="type" compareValue="6">
+				(exists (select null from t_follow where u.uid=followuid and uid=#uid#) 
+				or exists (select null from t_follow where u.uid=uid and followuid=#uid#))
+			</isEqual>
+			<isEqual property="type" compareValue="7">
+				(exists (select null from t_friend where u.uid=friendid and uid=#uid#) 
+				or exists (select null from t_follow where u.uid=followuid and uid=#uid#) 
+				or exists (select null from t_follow where u.uid=uid and followuid=#uid#))
+			</isEqual>
+		</isNotNull>
+		<isNotEmpty property="keyword" prepend="AND">
+			u.username like concat('%',#keyword#,'%')
+		</isNotEmpty>
+	</select>
+	<select id="sns.queryUserByType" parameterClass="java.util.Map" resultClass="psf.vo.sns.LikeUserVO">
+		select u.uid,u.username,concat(p.picid,'.',p.filetype) as avatarFileName from t_user u left join t_pic p on u.avatarid=p.picid 
+		<isNotNull property="type" prepend="WHERE">
+			<isEqual property="type" compareValue="1">
+				exists (select null from t_friend where u.uid=friendid and uid=#uid#)
+			</isEqual>
+			<isEqual property="type" compareValue="2">
+				exists (select null from t_follow where u.uid=followuid and uid=#uid#)
+			</isEqual>
+			<isEqual property="type" compareValue="3">
+				(exists (select null from t_friend where u.uid=friendid and uid=#uid#) 
+				or exists (select null from t_follow where u.uid=followuid and uid=#uid#))
+			</isEqual>
+			<isEqual property="type" compareValue="4">
+				exists (select null from t_follow where u.uid=uid and followuid=#uid#)
+			</isEqual>
+			<isEqual property="type" compareValue="5">
+				(exists (select null from t_friend where u.uid=friendid and uid=#uid#) 
+				or exists (select null from t_follow where u.uid=uid and followuid=#uid#))
+			</isEqual>
+			<isEqual property="type" compareValue="6">
+				(exists (select null from t_follow where u.uid=followuid and uid=#uid#) 
+				or exists (select null from t_follow where u.uid=uid and followuid=#uid#))
+			</isEqual>
+			<isEqual property="type" compareValue="7">
+				(exists (select null from t_friend where u.uid=friendid and uid=#uid#) 
+				or exists (select null from t_follow where u.uid=followuid and uid=#uid#) 
+				or exists (select null from t_follow where u.uid=uid and followuid=#uid#))
+			</isEqual>
+		</isNotNull>
+		<isNotEmpty property="keyword" prepend="AND">
+			u.username like concat('%',#keyword#,'%')
+		</isNotEmpty>
+		limit #offset#,#pageSize#
+	</select>
+	
+	<select id="sns.countRightUserVO" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select count(uid) from t_user u where sealflag != 1
+		<isEqual property="type" compareValue="1" prepend="AND">
+			exists (select null from t_friend where u.uid=friendid and uid=#uid#)
+		</isEqual>
+		<isEqual property="type" compareValue="2" prepend="AND">
+			exists (select null from t_follow where u.uid=uid and followuid=#uid#)
+		</isEqual>
+		<isEqual property="type" compareValue="3" prepend="AND">
+			exists (select null from t_follow where u.uid=followuid and uid=#uid#)
+		</isEqual>
+		<isEqual property="type" compareValue="4" prepend="AND">
+			u.uid in (select distinct followuid from t_follow f where exists (select null from t_follow where f.uid=uid and followuid=#uid#) and followuid!=#uid#)
+		</isEqual>
+	</select>
+	<select id="sns.queryRightUserVO" parameterClass="java.util.Map" resultClass="psf.vo.sns.right.SnsRightUserVO">
+		select uid from t_user u where sealflag != 1
+		<isEqual property="type" compareValue="1" prepend="AND">
+			exists (select null from t_friend where u.uid=friendid and uid=#uid#)
+		</isEqual>
+		<isEqual property="type" compareValue="2" prepend="AND">
+			exists (select null from t_follow where u.uid=uid and followuid=#uid#)
+		</isEqual>
+		<isEqual property="type" compareValue="3" prepend="AND">
+			exists (select null from t_follow where u.uid=followuid and uid=#uid#)
+		</isEqual>
+		<isEqual property="type" compareValue="4" prepend="AND">
+			u.uid in (select distinct followuid from t_follow f where exists (select null from t_follow where f.uid=uid and followuid=#uid#) and followuid!=#uid#)
+		</isEqual>
+		limit #offset#,#pageSize#
+	</select>
+	
+	<select id="sns.queryInviteCode" parameterClass="java.util.Map" resultClass="psf.entity.TInviteCode">
+		select * from t_invite_code where isvalid=1 and invitecode=#invitecode# and uid=#uid# and otype=#otype#
+		<isEqual property="otype" compareValue="5" prepend="AND">
+			oid=#oid#
+		</isEqual>
+	</select>
+</sqlMap>

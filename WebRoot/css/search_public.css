@@ -1,0 +1,42 @@
+.searchNav{height:10px;overflow:hidden;clear:both;}
+#searchbar{width:670px;height:106px;border-bottom:1px solid #ccc;margin-bottom:20px;}
+#searchbar .searchicon{width:52px; height:55px;background:url(/images/sns/search/searchicon.gif) no-repeat;float:left;margin:30px auto auto 30px;_margin-left:15px;}
+#searchbar .searchbox{width:522px;height:32px;overflow:hidden;padding:5px;background:#FCF7E6;float:left;margin:35px auto auto 30px;_margin-left:15px;}
+#searchbar .searchtext{width:520px;height:30px;border:1px solid #E9D799;background:#fff;overflow:hidden;}
+#searchbar .userinput{color:#333;width:420px;overflow:hidden;height:20px;line-height:20px;float:left;outline:none;border:none;padding:5px;padding-left:3px;}
+#searchbar .searchBtn{padding:0px;margin:0px;font-size:14px;font-weight:bold;float:right;border:none;cursor:hand;background:url(/images/sns/search/searBtnBg.gif) repeat-x;width:74px;border-left:1px solid #E9DAC2;height:30px; line-height:30px;}
+#searchMenu{width:100%;clear:both:height:30px;overflow:hidden;}
+#searchMenu li{float:left;height:30px;line-height:30px;}
+#searchMenu li.active{background:#E9EBE2;}
+#searchMenu li a{display:block;float:left;padding-left:15px;padding-right:15px;height:30px;line-height:30px;color:#685425;}
+#searchMenu li a:hover{background:#E9EBE2;}
+#searchTab{background:#E9EBE2;height:23px;line-height:24px;width:668px;padding-top:9px;padding-bottom:9px;padding-left:10px;}
+#searchTab li{height:23px;line-height:23px;float:left;width:40px;text-align:center;margin-right:10px;}
+#searchTab li.active{color:#fff;background:url(/images/sns/search/searchActive.gif) no-repeat;}
+#searchTab li a{color:#000;}
+#searchTab li a.active{color:#fff;background:url(/images/sns/search/searchActive.gif) no-repeat;}
+.searchRight{width:270px;border-bottom:1px solid #ccc;height:auto;margin:30px 15px;}
+.searchRight dt{height:18px;line-height:18px;margin:15px auto 15px auto;}
+.searchRight dt h3{display:block;height:18px;line-height:18px;width:70px;float:left;}
+.searchRight dt a{display:block;height:18px;line-height:18px;width:70px;float:right;}
+.searchRight dd{height:30px;line-height:30px;width:100%;}
+.searchRight dd a{color:#333;}
+.searchRight dd .hot{color:#ccc;}
+.searchRight dd span{color:#846F3C;}
+.searchRight dd .del{float:right;display:none;margin-top:10px;}
+.searchRight dd .search_history{float:left;}
+.dd_bg{background:#ccc;}
+.dd_none{display:none;}
+.dd_block{display:block;}
+.dd_over{background:#FCF7E6;}
+#userList{width:675px; height:114px;background:#FCF7E6;border:1px solid #E2D0B1;overflow:hidden;}
+#userList .userBox{height:65px;width:655px;margin-left:20px;margin-top:20px;overflow:hidden;}
+#userList .userBox li{ height:65px;width:152px;float:left;margin-right:10px;overflow:hidden;}
+#userList .userBox li .userPic{width:63px;height:63px;float:left;}
+#userList .userBox li .userNews{width:80px;height:63px;float:left;margin-left:9px;line-height:16px;}
+#userList .userBox li .cenTxt{display:block;height:30px;overflow:hidden;}
+#userList .userBox li .cenTxt a{color:#685425;}
+#userList .userBox li .friend{color:red;}
+#userList .userBox li .addBtn{color:#333;display:block;float:left;width:26px;padding-left:10px;height:18px; line-height:18px;background:url(/images/sns/search/userListBtn.gif) no-repeat;}
+#userList .userBox li .mar_left{margin-left:5px;}
+#userList .more{display:block;height:20px;line-height:20px;text-algin:right;padding-right:20px;margin-top:5px;}

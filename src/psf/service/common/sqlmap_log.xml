@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+	"../../../sql-map-2.dtd">
+<sqlMap>
+	<select id="log.countVisitorByUid" parameterClass="java.lang.Integer" resultClass="java.lang.Integer">	
+		select count(1) from t_user u where exists (select null from t_log_space_visit where u.uid=visituid and spaceuid=#uid#)  
+	</select>
+	
+	<select id="log.queryVisitorByUid" parameterClass="java.util.Map" resultClass="psf.vo.sns.right.SnsRightUserVO">
+		select u.* from t_user u, t_log_space_visit v where v.visituid=u.uid and v.spaceuid=#uid# 
+		order by v.ts desc
+		limit #offset#,#pageSize#
+	</select>
+	
+</sqlMap> 

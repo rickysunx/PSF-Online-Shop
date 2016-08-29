@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+	"../../../sql-map-2.dtd">
+<sqlMap>
+
+	<select id="express.queryAllExpress" resultClass="psf.entity.TExpress">
+		select * from t_express
+	</select>
+	
+	<select id="express.queryExpressByID" parameterClass="java.lang.Integer" resultClass="psf.entity.TExpress">
+		select * from t_express where expressid=#expressid#
+	</select>
+	
+</sqlMap>

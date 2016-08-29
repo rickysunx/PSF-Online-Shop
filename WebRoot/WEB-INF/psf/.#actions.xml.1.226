@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE vhost SYSTEM "../psfaction.dtd">
+
+<psf>
+
+<filter url="/*" class="psf.filter.PsfCommonFilter"/>
+<filter url="/sns*" class="psf.filter.SnsCommonFilter"/>
+
+<action url="/pic/*" class="psf.action.common.PicAction" method="getPic"/>
+<action url="/avatar/*" class="psf.action.common.PicAction" method="getAvatarPic"/>
+<action url="/ecimage/*" class="psf.action.common.PicAction" method="getEcImage"/>
+
+<action url="/action/upload_editor_pic" class="psf.action.common.PicAction" method="uploadEditorPic" result="json"/>
+<action url="/action/upload_pic" method="uploadPic" class="psf.action.common.PicAction" result="json"/>
+<action url="/action/get_login_dialog" class="jsp:/sns/components_float/loginbox.jsp"/>
+
+<!-- 首页 -->
+<action url="/" class="psf.action.common.IndexAction" method="index" forward="/index.jsp"/>
+<action url="/show" class="jsp:/plaza/show.jsp"></action>
+<action url="/guide" class="jsp:/plaza/guide.jsp"></action>
+<action url="/exp" class="jsp:/plaza/exp.jsp"></action>
+
+<!-- 商城 -->
+<action url="/mall" class="psf.action.mall.ProductAction" method="index" forward="/mall/index.jsp"/>
+<action url="/product/*" class="psf.action.mall.ProductAction" method="product" forward="/mall/product.jsp"/>
+<action url="/list0" class="jsp:/mall/list0.jsp"></action>
+<action url="/product0" class="jsp:/mall/product0.jsp"></action>
+<action url="/list" class="psf.action.mall.ProductAction" method="list" forward="/mall/list.jsp"/>
+<action url="/product" class="psf.action.mall.ProductAction" method="product" forward="/mall/product.jsp"/>
+
+<!-- 购物车 -->
+<action url="/action/mall/add_to_cart" class="psf.action.mall.CartAction" method="addToCart" result="json"></action>
+<action url="/action/mall/get_float_cart" class="psf.action.mall.CartAction" method="getFloatCart" forward="/common/float_cart.jsp"></action>
+<action url="/action/mall/get_cart_count" class="psf.action.mall.CartAction" method="getCartCount" result="json"></action>
+<action url="/action/mall/remove_form_cart" class="psf.action.mall.CartAction" method="removeFromCart" result="json"></action>
+<action url="/action/mall/update_cart_amount" class="psf.action.mall.CartAction" method="updateCartAmount" result="json"></action>
+<action url="/action/mall/move_to_like" class="psf.action.mall.CartAction" method="moveToLike" result="json"></action>
+
+<action url="/cart" class="psf.action.mall.CartAction" method="cart" forward="/mall/cart.jsp"></action>
+
+<!-- 商品 -->
+<action url="/action/mall/get_combine_buy_goods" class="psf.action.mall.ProductAction" method="getCombineBuyGoods" forward="/mall/list_combine_buy_list.jsp"/>
+<action url="/action/mall/get_sns_post" class="psf.action.mall.ProductAction" method="getSnsPost" forward="/mall/product_sns.jsp"></action>
+<action url="/action/mall/submit_comment" class="psf.action.mall.ProductAction" method="submitComment" result="json"></action>
+<action url="/action/mall/submit_question" class="psf.action.mall.ProductAction" method="submitQuestion" result="json"></action>
+<action url="/action/mall/get_question" class="psf.action.mall.ProductAction" method="getQuestion" forward="/mall/product_question.jsp"></action>
+<action url="/action/mall/get_one_question" class="psf.action.mall.ProductAction" method="getOneQuestion" forward="/mall/product_one_question.jsp"></action>
+<action url="/action/mall/get_question_more_answer" class="psf.action.mall.ProductAction" method="getMoreAnswer" forward="/mall/product_question_answer.jsp"></action>
+<action url="/action/mall/get_question_more_comment" class="psf.action.mall.ProductAction" method="getMoreComment" forward="/mall/product_question_comment.jsp"></action>
+
+<!-- 订单 -->
+<action url="/order/add" class="psf.action.mall.OrderAction" method="add" forward="/mall/order_add.jsp"></action>
+<action url="/order/success" class="psf.action.mall.OrderAction" method="success" forward="/mall/order_success.jsp"></action>
+<action url="/order/pay" class="psf.action.mall.OrderAction"></action>
+<action url="/order/address_save" class="psf.action.mall.OrderAction"></action>
+
+<action url="/action/order/save" class="psf.action.mall.OrderAction" method="save" result="json"></action>
+<action url="/action/order/set_default_address" class="psf.action.mall.OrderAction" method="setDefaultAddress" result="json"></action>
+<action url="/action/order/get_address" class="psf.action.mall.OrderAction" method="getAddress" forward="/mall/address_list.jsp"></action>
+
+
+<action url="/order1" class="jsp:/mall/order_1.jsp"></action>
+<action url="/order2" class="jsp:/mall/order_2.jsp"></action>
+<action url="/order3" class="jsp:/mall/order_3.jsp"></action>
+<action url="/order4" class="jsp:/mall/order_4.jsp"></action>
+<action url="/order5" class="jsp:/mall/order_5.jsp"></action>
+<action url="/order6" class="jsp:/mall/order_6.jsp"></action>
+<action url="/order7" class="jsp:/mall/order_7.jsp"></action>
+
+<action url="/tuan1" class="jsp:/mall/tuan_1.jsp"></action>
+<action url="/tuan2" class="jsp:/mall/tuan_2.jsp"></action>
+<action url="/tuan3" class="jsp:/mall/tuan_3.jsp"></action>
+<action url="/tuan4" class="jsp:/mall/tuan_4.jsp"></action>
+
+<action url="/sort1" class="jsp:/mall/sort_1.jsp"></action>
+<action url="/sort2" class="jsp:/mall/sort_2.jsp"></action>
+
+<action url="/profile1" class="jsp:/mall/profile_1.jsp"></action>
+<action url="/profile2" class="jsp:/mall/profile_2.jsp"></action>
+<action url="/profile3" class="jsp:/mall/profile_3.jsp"></action>
+<action url="/profile4" class="jsp:/mall/profile_4.jsp"></action>
+<action url="/profile5" class="jsp:/mall/profile_5.jsp"></action>
+<action url="/profile6" class="jsp:/mall/profile_6.jsp"></action>
+<action url="/profile7" class="jsp:/mall/profile_7.jsp"></action>
+<action url="/profile8" class="jsp:/mall/profile_8.jsp"></action>
+
+
+<!-- 登录 -->
+<action url="/login" method="login" class="psf.action.common.PassportAction" forward="/passport/login.jsp"></action>
+<action url="/login_check" method="loginCheck" class="psf.action.common.PassportAction" result="json"></action>
+<action url="/exit_login" method="exitLogin" class="psf.action.common.PassportAction" redirect="true" forward="/login"></action>
+<action url="/reg" method="reg" class="psf.action.common.PassportAction" forward="/passport/reg.jsp">
+</action>
+<action url="/reg_check_username" method="regCheckUsername" class="psf.action.common.PassportAction" result="json"></action>
+<action url="/reg_check_email" method="regCheckEmail" class="psf.action.common.PassportAction" result="json"></action>
+<action url="/reg_save" method="regSave" class="psf.action.common.PassportAction" result="json"></action>
+<action url="/getpwd" class="psf.action.common.PassportAction"></action>
+<action url="/getpwd_save" class="psf.action.common.PassportAction"></action>
+<action url="/captcha" method="captcha" class="psf.action.common.PassportAction"></action>
+
+<!-- SNS 首页 -->
+<action url="/sns" class="psf.action.sns.SnsAction" method="index" forward="/sns/index.jsp"></action>
+
+<!-- Post -->
+<action url="/post/*" class="psf.action.sns.PostAction" method="detail" forward="/sns/post.jsp">
+	<forward name="blog">/sns/detail_blog.jsp</forward>
+	<forward name="show">/sns/show/detail_show.jsp</forward>
+	<forward name="shopexp">/sns/exp/detail_exp.jsp</forward>
+	<forward name="guide">/sns/guide/detail_guide.jsp</forward>
+</action>
+
+<!-- SNS首页右侧推荐页面 -->
+<!--
+<action url="/action/sns/recommend_friend" class="psf.action.sns.RecommendAction" method="getFriend" forward="/sns/recommend_friend.jsp"></action>
+<action url="/action/sns/recommend_group" class="psf.action.sns.RecommendAction" method="getGroup" forward="/sns/recommend_group.jsp"></action>
+<action url="/action/sns/recommend_show" class="psf.action.sns.RecommendAction" method="getShow" forward="/sns/recommend_show.jsp"></action>
+<action url="/action/sns/recommend_shopexp" class="psf.action.sns.RecommendAction" method="getShopexp" forward="/sns/recommend_exp.jsp"></action>
+<action url="/action/sns/recommend_guide" class="psf.action.sns.RecommendAction" method="getGuide" forward="/sns/recommend_guide.jsp"></action>
+<action url="/action/sns/recommend_product" class="psf.action.sns.RecommendAction" method="getProduct" forward="/sns/recommend_product.jsp"></action>
+-->
+
+<!-- SNS右侧通用组件 -->
+<action url="/action/sns/right/coins_rank" forward="/sns/components_right/list/coins_rank.jsp" method="getCoins" class="psf.action.sns.SnsCommonRightAction"/>
+<action url="/action/sns/right/group" forward="/sns/components_right/list/group.jsp" method="getGroup" class="psf.action.sns.SnsCommonRightAction"/>
+<action url="/action/sns/right/product" forward="/sns/components_right/list/product.jsp" method="getProduct" class="psf.action.sns.SnsCommonRightAction"/>
+<action url="/action/sns/right/psf_friend" forward="/sns/components_right/list/psf_friend.jsp" method="getPsfFriend" class="psf.action.sns.SnsCommonRightAction"/>
+<action url="/action/sns/right/show" forward="/sns/recommend_show.jsp" method="getShow" class="psf.action.sns.SnsCommonRightAction"/>
+<action url="/action/sns/right/shopexp" forward="/sns/recommend_exp.jsp" method="getShopexp" class="psf.action.sns.SnsCommonRightAction"/>
+<action url="/action/sns/right/guide" forward="/sns/recommend_guide.jsp" method="getGuide" class="psf.action.sns.SnsCommonRightAction"/>
+<action url="/action/sns/get_float_show" method="getFloatShow" class="psf.action.sns.SnsCommonRightAction" forward="/sns/components_float/psf_show.jsp"></action>
+<action url="/action/sns/get_float_product" method="getFloatProduct" class="psf.action.sns.SnsCommonRightAction" forward="/sns/components_float/psf_product.jsp"></action>
+<action url="/action/sns/right/post_brand" method="getPostBrand" class="psf.action.sns.SnsCommonRightAction" forward="/sns/post_brand.jsp"></action>
+
+
+
+<!-- SNS 操作 -->
+<action url="/action/sns/change_remark" method="changeRemark" class="psf.action.sns.SnsAction" result="json"></action>
+<action url="/action/sns/get_post_list" method="getPostList" class="psf.action.sns.PostAction" forward="/sns/components/post_list.jsp"></action>
+<action url="/action/sns/get_last_update_post_list" method="getLastUpdatePostList" class="psf.action.sns.PostAction" forward="/sns/components/get_last_update_post_list.jsp"></action>
+<action url="/action/sns/get_last_update_post_count" method="getLastUpdatePostCount" class="psf.action.sns.PostAction" result="json"></action>
+<action url="/action/sns/get_comment_list" method="getCommentList" class="psf.action.sns.SnsAction" forward="/sns/components/comment_list_all.jsp"></action>
+<action url="/action/sns/add_blog" method="addBlog" class="psf.action.sns.SnsAction" result="json"></action>
+<action url="/action/sns/get_card" method="getCard" class="psf.action.sns.SnsAction" forward="/sns/components_float/psf_card.jsp"></action>
+<action url="/action/sns/get_comment" method="getComment" class="psf.action.sns.SnsAction" forward="/sns/components/comment_list.jsp"></action>
+<action url="/action/sns/get_comment_reply" method="getCommentReply" class="psf.action.sns.SnsAction" forward="/sns/components/comment_reply_list.jsp"></action>
+<action url="/action/sns/add_comment" method="addComment" class="psf.action.sns.SnsAction" result="json"></action>
+<action url="/action/sns/update_like" method="updateLike" class="psf.action.sns.SnsAction" result="json"></action>
+<action url="/action/sns/update_remark" method="updateRemark" class="psf.action.sns.SnsAction" result="json"></action>
+<action url="/action/sns/del_comment" method="delComment" class="psf.action.sns.SnsAction" result="json"></action>
+<action url="/action/sns/del_post" method="delPost" class="psf.action.sns.SnsAction" result="json"></action>
+<action url="/action/sns/add_blacklist" method="addBlacklist" class="psf.action.sns.SnsAction" result="json"></action>
+<action url="/action/sns/upload_avatar" method="uploadAvatar" class="psf.action.common.PicAction" result="json"></action>
+<action url="/action/sns/save_avatar" method="saveAvatar" class="psf.action.common.PicAction" result="json"/>
+<action url="/action/sns/upload_showpic" method="uploadPic" class="psf.action.common.PicAction" result="json"/>
+<action url="/action/sns/get_forward_form" method="getForwardInfo" class="psf.action.sns.SnsAction" forward="/sns/components/forward_forwardform.jsp"></action>
+<action url="/action/sns/get_message_form" method="getForwardInfo" class="psf.action.sns.SnsAction" forward="/sns/components/forward_messageform.jsp"></action>
+<action url="/action/sns/get_group_form" method="getForwardInfo" class="psf.action.sns.SnsAction" forward="/sns/components/forward_groupform.jsp"></action>
+
+<!-- 微博上传视频 -->
+<action url="/action/sns/blog/get_video_info" method="getVideoInfo" class="psf.action.sns.BlogAction" result="json"/>
+<!-- 转载 -->
+<action url="/action/sns/get_page_info" method="getPageInfo" class="psf.action.sns.SnsAction" result="json"/>
+<action url="/action/sns/save_republish" method="saveRepublish" class="psf.action.sns.SnsAction" result="json"/>
+<!-- @查询 -->
+<action url="/action/sns/get_at_user" method="getAtUser" class="psf.action.sns.SnsAction" result="json"/>
+
+<!-- SNS 消息 -->
+<action url="/action/sns/send_msg" method="sendMsg" class="psf.action.sns.MsgAction" result="json"></action>
+<action url="/action/sns/read_msg" method="readMsg" class="psf.action.sns.MsgAction" result="json"></action>
+<action url="/action/sns/del_user_msg" method="delMsgByUid" class="psf.action.sns.MsgAction" result="json"></action>
+<action url="/action/sns/del_msg" method="delMsgByMsgid" class="psf.action.sns.MsgAction" result="json"></action>
+<action url="/action/sns/send_new_msg" method="sendNewMsg" class="psf.action.sns.MsgAction" result="json"></action>
+
+<!-- 关注 -->
+<action url="/action/sns/follow/add" method="add" class="psf.action.sns.FollowAction" result="json"></action>
+<action url="/action/sns/follow/ask_for_follow" method="askForFollow" class="psf.action.sns.FollowAction" result="json"></action>
+<action url="/action/sns/follow/del" method="del" class="psf.action.sns.FollowAction" result="json"></action>
+<action url="/action/sns/follow/fans_del" method="fansDel" class="psf.action.sns.FollowAction" result="json"></action>
+<action url="/action/sns/follow/follow_group_add" method="followGroupAdd" class="psf.action.sns.FollowAction" result="json"></action>
+<action url="/action/sns/follow/follow_group_del" method="followGroupDel" class="psf.action.sns.FollowAction" result="json"></action>
+<action url="/action/sns/follow/follow_group_update" method="followGroupUpdate" class="psf.action.sns.FollowAction" result="json"></action>
+<action url="/action/sns/follow/get_follow_group" method="getFollowGroup" class="psf.action.sns.FollowAction" forward="/sns/friend/follow_group.jsp"></action>
+<action url="/action/sns/follow/change_group" method="changeFollowGroup" class="psf.action.sns.FollowAction" result="json"></action>
+
+<!-- SNS 好友页面 -->
+<action url="/sns/friend" class="psf.action.sns.FriendAction" method="myFriend" forward="/sns/friend/my_friend.jsp"></action>
+<action url="/sns/friend/myfans" class="psf.action.sns.FriendAction" method="myFans" forward="/sns/friend/my_fans.jsp"></action>
+<action url="/sns/friend/myfollow" class="psf.action.sns.FriendAction" method="myFollow" forward="/sns/friend/my_follow.jsp"></action>
+<action url="/sns/friend/psffriend" class="psf.action.sns.FriendAction" method="psfFriend" forward="/sns/friend/psf_friend.jsp"></action>
+<action url="/sns/friend/invite" class="psf.action.sns.FriendAction" method="invite" forward="/sns/friend/invite.jsp"></action>
+
+<!-- SNS 好友Ajax获取 -->
+<action url="/action/sns/friend/get_my_friend_items" class="psf.action.sns.FriendAction" method="getMyFriendItems" forward="/sns/friend/my_friend_items.jsp"></action>
+<action url="/action/sns/friend/get_my_follow_items" class="psf.action.sns.FriendAction" method="getMyFollowItems" forward="/sns/friend/my_follow_content.jsp"></action>
+<action url="/action/sns/friend/get_my_fans_items" class="psf.action.sns.FriendAction" method="getMyFansItems" forward="/sns/friend/my_fans_content.jsp"></action>
+<action url="/action/sns/friend/get_psffriend_items" class="psf.action.sns.FriendAction" method="getPsfFriendItems" forward="/sns/friend/psf_friend_content.jsp"></action>
+<action url="/action/sns/friend/get_psffriend_invite" class="psf.action.sns.FriendAction" method="getPsfFriendInvite" forward="/sns/friend/invite_content.jsp"></action>
+<action url="/action/sns/friend/get_friend_group" method="getFriendGroup" class="psf.action.sns.FriendAction" forward="/sns/friend/friend_group.jsp"></action>
+<action url="/action/sns/friend/get_friendbytype_items" class="psf.action.sns.FriendAction" method="getTypeFriend" forward="/sns/friend/my_friend_items.jsp"></action>
+<action url="/action/sns/friend/get_followbytype_items" class="psf.action.sns.FriendAction" method="getTypeFollow" forward="/sns/friend/my_follow_content.jsp"></action>
+<action url="/action/sns/friend/get_fansbytype_items" class="psf.action.sns.FriendAction" method="getTypeFans" forward="/sns/friend/my_fans_content.jsp"></action>
+<action url="/action/sns/friend/search_friend" class="psf.action.sns.FriendAction" method="searchFriend" forward="/sns/components/search_friend.jsp"></action>
+
+
+<!-- SNS好友操作 -->
+<action url="/action/sns/friend/group_add" method="groupAdd" class="psf.action.sns.FriendAction" result="json"></action>
+<action url="/action/sns/friend/group_update" method="groupUpdate" class="psf.action.sns.FriendAction" result="json"></action>
+<action url="/action/sns/friend/group_order" method="groupOrder" class="psf.action.sns.FriendAction" result="json"></action>
+<action url="/action/sns/friend/group_del" method="groupDel" class="psf.action.sns.FriendAction" result="json"></action>
+<action url="/action/sns/friend/change_group" method="changeGroup" class="psf.action.sns.FriendAction" result="json"></action>
+<action url="/action/sns/friend/del" method="delFriend" class="psf.action.sns.FriendAction" result="json"></action>
+<action url="/action/sns/friend/ask_for_friend" method="askForFriend" class="psf.action.sns.FriendAction" result="json"></action>
+<action url="/action/sns/friend/follow_all" method="followAll" class="psf.action.sns.FriendAction" result="json"></action>
+<action url="/action/sns/follow/follow_group_order" method="followGroupOrder" class="psf.action.sns.FollowAction" result="json"></action>
+<action url="/sns/friend/introducget" class="psf.action.sns.FriendAction" method="introducGet" forward="/sns/friend/introduc.jsp"></action>
+<action url="/sns/friend/introducsend" class="psf.action.sns.FriendAction" method="introducSend" forward="/sns/friend/send_introduc.jsp"></action>
+
+<action url="/action/sns/friend/introduce" method="introduceFriend" class="psf.action.sns.FriendAction" forward="/sns/components/introduce.jsp"></action>
+<action url="/action/sns/friend/tuijian" method="tuijianFriend" class="psf.action.sns.FriendAction" forward="/sns/components/recommend.jsp"></action>
+<action url="/action/sns/friend/save_tuijian" method="saveTuijian" class="psf.action.sns.FriendAction" result="json"></action>
+<action url="/action/sns/friend/del_introduce" method="delIntroduce" class="psf.action.sns.FriendAction" result="json"></action>
+<action url="/action/sns/friend/del_send_introduce" method="delSendIntroduce" class="psf.action.sns.FriendAction" result="json"></action>
+<action url="/action/sns/friend/save_introduce" method="saveIntroduce" class="psf.action.sns.FriendAction" result="json"></action>
+<action url="/action/sns/friend/allCheck" method="allCheck" class="psf.action.sns.FriendAction" result="json"></action>
+
+<!-- 个人资料 -->
+<action url="/sns/myinfo/info/basic" method="infoBasic" class="psf.action.sns.MyInfoAction" forward="/sns/myinfo/info/basic.jsp"/>
+<action url="/sns/myinfo/private" method="myPrivate" class="psf.action.sns.MyInfoAction" forward="/sns/myinfo/private.jsp"/>
+<action url="/sns/myinfo/info/avatar" method="infoAvatar" class="psf.action.sns.MyInfoAction" forward="/sns/myinfo/info/avatar.jsp"/>
+<action url="/sns/myinfo/info/job" method="infoJob" class="psf.action.sns.MyInfoAction" forward="/sns/myinfo/info/job.jsp"/>
+<action url="/sns/myinfo/info/edu" method="infoEdu" class="psf.action.sns.MyInfoAction" forward="/sns/myinfo/info/edu.jsp"/>
+<action url="/sns/myinfo/info/mylabel" method="infoMylabel" class="psf.action.sns.MyInfoAction" forward="/sns/myinfo/info/mylabel.jsp"/>
+
+<action url="/action/sns/myinfo/save_info_basic" method="saveInfoBasic" class="psf.action.sns.MyInfoAction" result="json"/>
+<action url="/action/sns/myinfo/save_info_job" method="saveInfoJob" class="psf.action.sns.MyInfoAction" result="json"/>
+<action url="/action/sns/myinfo/save_info_edu" method="saveInfoEdu" class="psf.action.sns.MyInfoAction" result="json"/>
+<action url="/sns/myinfo/blacklist" method="blackList" class="psf.action.sns.MyInfoAction" forward="/sns/myinfo/blacklist.jsp"/>
+<action url="/sns/myinfo/bankaccount" method="bankAccount" class="psf.action.sns.MyInfoAction" forward="/sns/myinfo/bankaccount.jsp"/>
+<action url="/sns/myinfo/address" method="address" class="psf.action.sns.MyInfoAction" forward="/sns/myinfo/address.jsp"/>
+
+<action url="/sns/myinfo/save_bankaccount" method="saveBankAccount" class="psf.action.sns.MyInfoAction" result="json"/>
+<action url="/sns/myinfo/del_bankaccount" method="delBankAccount" class="psf.action.sns.MyInfoAction" result="json"/>
+<action url="/sns/myinfo/update_bankaccount" method="saveUpdateBankAccount" class="psf.action.sns.MyInfoAction" result="json"/>
+
+<action url="/sns/myinfo/update_ap_private" method="updateApPrivate" class="psf.action.sns.MyInfoAction" result="json"/>
+
+<action url="/action/sns/myinfo/del_job" method="delJob" class="psf.action.sns.MyInfoAction" result="json"/>
+<action url="/action/sns/myinfo/update_job" method="updateJob" class="psf.action.sns.MyInfoAction" result="json"/>
+<action url="/action/sns/myinfo/set_job_power" method="setJobPower" class="psf.action.sns.MyInfoAction" result="json"/>
+<action url="/action/sns/myinfo/del_edu" method="delEdu" class="psf.action.sns.MyInfoAction" result="json"/>
+<action url="/action/sns/myinfo/update_edu" method="updateEdu" class="psf.action.sns.MyInfoAction" result="json"/>
+<action url="/action/sns/myinfo/set_edu_power" method="setEduPower" class="psf.action.sns.MyInfoAction" result="json"/>
+<action url="/sns/myinfo/del_blacklist" method="delBlackList" class="psf.action.sns.MyInfoAction" result="json"/>
+
+<action url="/sns/myinfo/save_address" method="saveAddress" class="psf.action.sns.MyInfoAction" result="json"/>
+<action url="/sns/myinfo/set_default_address" method="setDefaultAddress" class="psf.action.sns.MyInfoAction" result="json"/>
+<action url="/sns/myinfo/del_address" method="delAddress" class="psf.action.sns.MyInfoAction" result="json"/>
+<action url="/sns/myinfo/update_address" method="updateAddress" class="psf.action.sns.MyInfoAction" result="json"/>
+
+
+<!-- SNS指南页面戚海源20111017 11:22-->
+<action url="/sns/guide" method="myGuide"  class="psf.action.sns.GuideAction" forward="/sns/guide/my_guide.jsp" ></action>
+<action url="/sns/guide/friendguide" method="friendGuide"  class="psf.action.sns.GuideAction" forward="/sns/guide/friend_guide.jsp"></action>
+<action url="/sns/guide/groupguide" method="groupGuide"  class="psf.action.sns.GuideAction" forward="/sns/guide/group_guide.jsp"></action>
+<action url="/sns/guide/clubguide" method="clubGuide"  class="psf.action.sns.GuideAction" forward="/sns/guide/club_guide.jsp"></action>
+<action url="/sns/guide/relatedbrand" method="relatedBrand"  class="psf.action.sns.GuideAction" forward="/sns/guide/related_brand.jsp"></action>
+<!-- SNS指南操作戚海源20111017 11:22 -->
+<action url="/sns/guide/editguide" method="editGuide" class="psf.action.sns.GuideAction" forward="/sns/guide/edit_guide.jsp"></action>
+<action url="/sns/guide/detailguide" method="detailGuide" class="psf.action.sns.GuideAction" forward="/sns/guide/detail_guide.jsp"></action>
+<action url="/sns/guide/select_brand_dialog" method="getSelectBrandDialog" class="psf.action.sns.GuideAction" forward="/sns/guide/logoselect_dialog.jsp"></action>
+<action url="/sns/guide/get_brand" method="getBrand" class="psf.action.sns.GuideAction" forward="/sns/guide/brand_list.jsp"></action>
+<action url="/sns/guide/get_brand" method="getBrand" class="psf.action.sns.GuideAction" forward="/sns/guide/brand_list.jsp"></action>
+<action url="/sns/guide/get_selected_brand" method="getSelectedBrand" class="psf.action.sns.GuideAction" forward="/sns/guide/has_selected_brand.jsp"></action>
+<action url="/sns/guide/save_guide" method="saveGuide" class="psf.action.sns.GuideAction" result="json"/>
+<action url="/sns/guide/guide_list" method="myGuideList" class="psf.action.sns.GuideAction" forward="/sns/guide/guide_content.jsp"></action>
+<action url="/sns/guide/guide_brand_list" method="postBrand" class="psf.action.sns.GuideAction" forward="/sns/guide/related_brand_content.jsp"></action>
+
+<!-- SNS秀场戚海源2011 18:20 -->
+<action url="/sns/show"  method="myShow"  class="psf.action.sns.ShowAction" forward="/sns/show/my_show.jsp"></action>
+<action url="/sns/show/friendshow"  method="friendShow"  class="psf.action.sns.ShowAction" forward="/sns/show/friend_show.jsp"></action>
+<action url="/sns/show/groupshow"  method="groupShow"  class="psf.action.sns.ShowAction" forward="/sns/show/group_show.jsp"></action>
+<action url="/sns/show/clubshow"  method="clubShow"  class="psf.action.sns.ShowAction" forward="/sns/show/club_show.jsp"></action>
+<action url="/sns/show/showproduct"  method="showProduct"  class="psf.action.sns.ShowAction" forward="/sns/show/show_product.jsp"></action>
+<action url="/sns/show/editshow" method="editShow"  class="psf.action.sns.ShowAction" forward="/sns/show/edit_show.jsp"></action>
+<action url="/sns/show/detailshow" method="detailShow"  class="psf.action.sns.ShowAction" forward="/sns/show/detail_show.jsp"></action>
+<action url="/sns/show/get_product_cate" method="getProductCate"  class="psf.action.sns.ShowAction" forward="/sns/show/select_product.jsp"></action>
+<action url="/sns/show/get_product" method="getProduct"  class="psf.action.sns.ShowAction" forward="/sns/show/product_list.jsp"></action>
+<action url="/sns/show/get_selected_product" method="getSelectedProduct"  class="psf.action.sns.ShowAction" forward="/sns/show/has_selected_product.jsp"></action>
+<action url="/sns/show/del_pic" method="delShowPic" class="psf.action.sns.ShowAction" result="json"/>
+<action url="/sns/show/save_show" method="saveShow" class="psf.action.sns.ShowAction" result="json"/>
+<action url="/sns/show/show_list" method="myShowList" class="psf.action.sns.ShowAction" forward="/sns/show/show_content.jsp"></action>
+<action url="/sns/show/show_product_list" method="postProduct" class="psf.action.sns.ShowAction" forward="/sns/show/show_product_content.jsp"></action>
+
+<!-- 测试用（秀场列表展开状态页） -->
+<action url="/sns/show/personalshow" class="jsp:/sns/show/personal_show.jsp"></action>
+<!-- SNS体验秀场戚海源20111021 10:20 -->
+<action url="/sns/exp"  method="myExp"  class="psf.action.sns.ExpAction" forward="/sns/exp/my_exp.jsp"></action>
+<action url="/sns/exp/friendexp" method="friendExp"  class="psf.action.sns.ExpAction" forward="/sns/exp/friend_exp.jsp"></action>
+<action url="/sns/exp/groupexp" method="groupExp"  class="psf.action.sns.ExpAction" forward="/sns/exp/group_exp.jsp"></action>
+<action url="/sns/exp/clubexp" method="clubExp"  class="psf.action.sns.ExpAction" forward="/sns/exp/club_exp.jsp"></action>
+<action url="/sns/exp/expproduct" method="expProduct"  class="psf.action.sns.ExpAction" forward="/sns/exp/exp_product.jsp"></action>
+<action url="/sns/exp/editexp" method="editExp"  class="psf.action.sns.ExpAction" forward="/sns/exp/edit_exp.jsp"></action>
+<action url="/sns/exp/detailexp" method="detailExp"  class="psf.action.sns.ExpAction" forward="/sns/exp/detail_exp.jsp"></action>
+<action url="/sns/exp/select_product" method="selectProduct"  class="psf.action.sns.ExpAction" forward="/sns/exp/selectproduct.jsp"></action>
+<action url="/action/sns/exp/save" method="saveExp"  class="psf.action.sns.ExpAction" result="json"></action>
+<action url="/sns/exp/shopexp_list" method="myShopexpList"  class="psf.action.sns.ExpAction" forward="/sns/exp/exp_content.jsp"></action>
+<action url="/sns/show/shopexp_product_list" method="postProduct" class="psf.action.sns.ExpAction" forward="/sns/exp/exp_product_content.jsp"></action>
+
+
+
+<!-- SNS财富戚海源20111025 17:20 -->
+<action url="/sns/wealth" method="myWealth"  class="psf.action.sns.WealthAction" forward="/sns/wealth/my_wealth_list.jsp"></action>
+<action url="/sns/wealth_update" method="myWealthUpdateApwealth"  class="psf.action.sns.WealthAction" result="json"></action>
+<action url="/sns/wealth/mywealthcoin" method="myWealthCoin"  class="psf.action.sns.WealthAction" forward="/sns/wealth/my_wealth_coin.jsp"></action>
+<action url="/sns/wealth/mywealthcoupon" method="myWealthCoupon"  class="psf.action.sns.WealthAction" forward="/sns/wealth/my_wealth_coupon.jsp"></action>
+<action url="/sns/wealth/mywealthpoint" method="myWealthPoint"  class="psf.action.sns.WealthAction" forward="/sns/wealth/my_wealth_point.jsp"></action>
+<action url="/sns/wealth/psffriendwealth" method="psffriendWealth"  class="psf.action.sns.WealthAction" forward="/sns/wealth/psffriend_wealth.jsp"></action>
+<action url="/sns/wealth/rankingwealth" method="rankingWealth"  class="psf.action.sns.WealthAction" forward="/sns/wealth/ranking_wealth.jsp"></action>
+<!-- SNS圈子戚海源20111026 15:20 -->
+<action url="/sns/group/info" method="editGroupInfo"  class="psf.action.sns.GroupAction" forward="/sns/group/edit_group_info_content.jsp"></action>
+<action url="/sns/group/avatar" class="jsp:/sns/group/edit_group_avatar_content.jsp"></action>
+<action url="/sns/group/editgroup" method="editGroupInfo"  class="psf.action.sns.GroupAction" forward="/sns/group/edit_group_info.jsp"></action>
+<action url="/sns/group/editgroupavatar" method="editGroupAvatar"  class="psf.action.sns.GroupAction" forward="/sns/group/edit_group_avatar.jsp"></action>
+<action url="/sns/group/mygroup" method="myGroup"  class="psf.action.sns.GroupAction" forward="/sns/group/my_group.jsp"></action>
+<action url="/sns/group" method="topicGroup"  class="psf.action.sns.GroupAction" forward="/sns/group/topic_group.jsp"></action>
+<action url="/sns/group/squaregroup" method="squareGroup"  class="psf.action.sns.GroupAction" forward="/sns/group/square_group.jsp"></action>
+<action url="/sns/group/detail" method="detailGroup"  class="psf.action.sns.GroupAction" forward="/sns/group/detail/detail_group.jsp"></action>
+<action url="/sns/group/detail/topiclist" method="detailGroupTopiclist"  class="psf.action.sns.GroupAction" forward="/sns/group/detail/topiclist.jsp"></action>
+<action url="/gt/*" method="detailGroupTopicdetail"  class="psf.action.sns.GroupAction" forward="/sns/group/detail/topicdetail.jsp"></action>
+<action url="/sns/group/detail/groupfriend" method="detailGroupFriend"  class="psf.action.sns.GroupAction" forward="/sns/group/detail/groupfriend.jsp"></action>
+<action url="/sns/group/manage/inviteabout" method="manageInviteAbout"  class="psf.action.sns.GroupAction" forward="/sns/group/manage/inviteabout.jsp"></action>
+<action url="/sns/group/manage/invitefriend" method="manageInviteFriend"  class="psf.action.sns.GroupAction" forward="/sns/group/manage/invitefriend.jsp"></action>
+<action url="/sns/group/getchildzone" method="getChildZone" class="psf.action.sns.GroupAction" result="json"/>
+<action url="/sns/group/savegroup" method="saveGroup" class="psf.action.sns.GroupAction" result="json"/>
+<action url="/sns/group/topiclist" method="getTopicContent" class="psf.action.sns.GroupAction" forward="/sns/group/topic_group_content.jsp"></action>
+<action url="/sns/group/my_group_list" method="getMyGroup" class="psf.action.sns.GroupAction" forward="/sns/group/my_group_content.jsp"></action>
+<action url="/sns/group/squaregroup_recommedation" method="getRecommendation" class="psf.action.sns.GroupAction" forward="/sns/group/square_recommendation.jsp"></action>
+<action url="/sns/group/squaregroup_friends" method="getPsfFriendGroup" class="psf.action.sns.GroupAction" forward="/sns/group/square_friends.jsp"></action>
+<action url="/sns/group/squaregroup_hot" method="getHotGroup" class="psf.action.sns.GroupAction" forward="/sns/group/square_hot.jsp"></action>
+<action url="/sns/group/squaregroup_topic" method="getHotTopic" class="psf.action.sns.GroupAction" forward="/sns/group/square_topic.jsp"></action>
+<action url="/sns/group/squaregroup_saying" method="getLatestComment" class="psf.action.sns.GroupAction" forward="/sns/group/square_saying.jsp"></action>
+<action url="/sns/group/get_grouppost_list" method="getGroupPostList" class="psf.action.sns.GroupAction" forward="/sns/group/detail/detail_post_list.jsp"></action>
+<action url="/sns/group/get_grouptopic_list" method="getGroupTopicList" class="psf.action.sns.GroupAction" forward="/sns/group/detail/detail_topic_list.jsp"></action>
+<action url="/sns/group/get_groupfriend_list" method="getGroupFriendList" class="psf.action.sns.GroupAction" forward="/sns/group/detail/detail_friend_list.jsp"></action>
+<action url="/sns/group/get_topicpost_list" method="getTopicPostList" class="psf.action.sns.GroupAction" forward="/sns/group/detail/detail_post_list.jsp"></action>
+<action url="/sns/group/manage" method="manageInfo"  class="psf.action.sns.GroupAction" forward="/sns/group/manage/info.jsp"></action>
+<action url="/sns/group/manage/info" method="manage" class="psf.action.sns.GroupAction" forward="/sns/group/edit_group_info_content.jsp"></action>
+<action url="/sns/group/manage/avatar" method="manage"  class="psf.action.sns.GroupAction" forward="/sns/group/edit_group_avatar_content.jsp"></action>
+<action url="/sns/group/manage/announcement" method="manage"  class="psf.action.sns.GroupAction" forward="/sns/group/manage/announcement_content.jsp"></action>
+<action url="/sns/group/manage/member" method="manage"  class="psf.action.sns.GroupAction" forward="/sns/group/manage/member_content.jsp"></action>
+<action url="/sns/group/manage/apply" method="manage"  class="psf.action.sns.GroupAction" forward="/sns/group/manage/apply_content.jsp"></action>
+<action url="/sns/group/manage/save_annnouncement" method="saveAnnouncement" class="psf.action.sns.GroupAction" result="json"/>
+<action url="/sns/group/manage/del_annnouncement" method="delAnnouncement" class="psf.action.sns.GroupAction" result="json"/>
+<action url="/sns/group/manage/member_list" method="getMemberList" class="psf.action.sns.GroupAction" forward="/sns/group/manage/member_list.jsp"></action>
+<action url="/sns/group/manage/apply_list" method="getApplyList" class="psf.action.sns.GroupAction" forward="/sns/group/manage/apply_list.jsp"></action>
+<action url="/sns/group/manage/del_groupfriend" method="delGroupFriend" class="psf.action.sns.GroupAction" result="json"/>
+<action url="/sns/group/manage/manage_admin" method="manageAdmin" class="psf.action.sns.GroupAction" result="json"/>
+<action url="/sns/group/apply" method="apply" class="psf.action.sns.GroupAction" result="json"/>
+<action url="/sns/group/handle_apply" method="handleApply" class="psf.action.sns.GroupAction" result="json"/>
+<action url="/sns/group/manage/invite_dialog" method="getInviteDialog" class="psf.action.sns.GroupAction" forward="/sns/group/manage/inviteabout_dialog.jsp"></action>
+<action url="/sns/group/manage/invite_userlist" method="getInviteUserlist" class="psf.action.sns.GroupAction" forward="/sns/group/manage/invite_userlist.jsp"></action>
+<action url="/sns/group/manage/hasinvited_userlist" method="getHasInvitedUserList" class="psf.action.sns.GroupAction" forward="/sns/group/manage/invited_user.jsp"></action>
+<action url="/sns/group/save_invitation" method="saveInvitation" class="psf.action.sns.GroupAction" result="json"/>
+<action url="/sns/group/invite_list" method="getInviteList" class="psf.action.sns.GroupAction" forward="/sns/group/invite_list.jsp"></action>
+<action url="/sns/group/dismiss_group" method="dismissGroup" class="psf.action.sns.GroupAction" result="json"/>
+<action url="/sns/group/detail/right_user" method="groupDetailRightUser" class="psf.action.sns.GroupAction" forward="/sns/group/right/group_friend.jsp"></action>
+<action url="/sns/group/detail/right_topic" method="getHotTopic" class="psf.action.sns.GroupAction" forward="/sns/group/right/topic_list.jsp"></action>
+<action url="/sns/group/detail/right_group" method="groupDetailRightRecommend" class="psf.action.sns.GroupAction" forward="/sns/group/right/group_list.jsp"></action>
+<action url="/sns/group/promote" method="promoteGroup" class="psf.action.sns.GroupAction" result="json"></action>
+<!-- SNS管理圈子戚海源20111026 15:20 -->
+
+
+<!-- SNS我的信息戚海源20111027 14:10 -->
+<action url="/sns/my/msg" method="msg"  class="psf.action.sns.MyAction" forward="/sns/my/msg.jsp"></action>
+<action url="/sns/my/notice" method="notice"  class="psf.action.sns.MyAction" forward="/sns/my/notice.jsp"></action>
+<action url="/sns/my/invite" method="invite"  class="psf.action.sns.MyAction" forward="/sns/my/invite.jsp"></action>
+<action url="/sns/my/dialog" method="dialog"  class="psf.action.sns.MyAction" forward="/sns/my/dialog.jsp"></action>
+<action url="/sns/my/comment" method="comment"  class="psf.action.sns.MyAction" forward="/sns/my/comment.jsp"></action>
+<action url="/sns/my/about" method="about"  class="psf.action.sns.MyAction" forward="/sns/my/about.jsp"></action>
+
+<action url="/sns/apply/check_apply" method="checkApply" class="psf.action.sns.ApplyAction" result="json"></action>
+
+
+
+<action url="/sns/search" method="searchPage" class="psf.action.sns.SearchAction" forward="/sns/search/search.jsp"></action>
+<action url="/sns/search/resultpage" method="searchTab" class="psf.action.sns.SearchAction" forward="/sns/search/search_result.jsp"></action>
+<action url="/sns/search/resultlist" method="search" class="psf.action.sns.SearchAction">
+	<forward name="post">/sns/search/post_list.jsp</forward>
+	<forward name="user">/sns/search/user_list.jsp</forward>
+	<forward name="group">/sns/search/group_list.jsp</forward>
+	<forward name="topic">/sns/search/topic_list.jsp</forward>
+</action>
+
+
+<!-- SNS个人空间戚海源20111103 11:10 -->
+<action url="/sns/space" method="space"  class="psf.action.sns.SpaceAction" forward="/sns/space/space.jsp"></action>
+<action url="/sns/img_space" method="imgSpace"  class="psf.action.sns.SpaceAction" forward="/sns/space/img_space.jsp"></action>
+<!-- SNS品牌戚海源20111207 9:10 -->
+<action url="/sns/brand/blog" class="jsp:/sns/brand/blog_brand.jsp"></action>
+<!-- logo品牌对话窗2011 18:20 -->
+
+<action url="/sns/logoselect" class="jsp:/sns/logoselect_dialog.jsp"></action>
+
+<!-- comment 详细页 测试 -->
+<action url="/sns/comment/list_all" class="jsp:/sns/components/comment_for_page.jsp"></action>
+</psf>
+
+
+

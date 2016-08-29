@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+	"../../../sql-map-2.dtd">
+<sqlMap>
+
+	<select id="msg.queryMsgByMsgid" parameterClass="java.lang.Integer" resultClass="psf.entity.TMsg">
+		select * from t_msg where msgid=#msgid#
+	</select>
+	<update id="msg.delMsgByReader" parameterClass="java.lang.Integer">
+		update t_msg set delbyreader=1 where msgid=#msgid#
+	</update>
+	<update id="msg.delMsgBySender" parameterClass="java.lang.Integer">
+		update t_msg set delbysender=1 where msgid=#msgid#
+	</update>
+	<update id="msg.updateMsgReadFlag" parameterClass="java.util.Map">
+		update t_msg set isread=1 where msgfrom=#msgfrom# and msgto=#msgto#
+	</update>
+	<update id="msg.delFromMsgByUid" parameterClass="java.util.Map">
+		update t_msg set delbysender=1 where msgfrom=#msgfrom# and msgto=#msgto#
+	</update>
+	<update id="msg.delToMsgByUid" parameterClass="java.util.Map">
+		update t_msg set delbyreader=1 where msgfrom=#msgfrom# and msgto=#msgto#
+	</update>
+	
+	<!-- msg列表页 begin -->
+	<select id="msg.queryMsgByUidCount" resultClass="java.lang.Integer" parameterClass="java.lang.Integer">
+		select count(distinct(a.ouid)) from
+			(select m1.msgto ouid from t_msg m1 where m1.msgfrom=#uid# and m1.delbysender=0 group by ouid 
+       		  union all
+			 select m2.msgfrom ouid from t_msg m2 where m2.msgto=#uid# and m2.delbyreader=0 group by ouid ) a where ouid !=0
+	</select>	
+	<select id="msg.queryMsgByUid" resultClass="psf.vo.sns.MsgVO" parameterClass="java.util.Map">
+		select ouid uid,u.username,sum(newCount) newCount,sum(allCount) allCount,max(thetime) lastUpdateTime,
+			(select msgid from t_msg where (msgfrom = #uid# and msgto = t.ouid and delbysender=0) or (msgto=#uid# and msgfrom = t.ouid and delbyreader=0) order by addtime desc  limit 1) msgid,
+			(select msgcontent from t_msg where (msgfrom = #uid# and msgto = t.ouid and delbysender=0) or (msgto=#uid# and msgfrom = t.ouid and delbyreader=0) order by addtime desc  limit 1) msgcontent
+ 		from (
+			select m1.msgto ouid,0 newCount,count(1) allCount,max(addtime) thetime
+				from t_msg m1 where m1.msgfrom = #uid# and m1.delbysender = 0 group by ouid
+			union all
+			select m2.msgfrom ouid,abs(sum(isread-1)) newCount,count(1) allCount,max(addtime) thetime
+				from t_msg m2 where m2.msgto = #uid# and m2.delbyreader = 0 group by ouid ) t,t_user u
+		where t.ouid = u.uid
+		group by ouid
+		order by lastUpdateTime desc limit #pp.offset#,#pp.pageSize#
+	</select>
+	<!-- msg列表页 end -->
+	<select id="msg.queryMsgByToFrom" resultClass="psf.vo.sns.MsgVO" parameterClass="java.util.Map">
+		 select a.*,username from 
+		 (select msgid,msgfrom uid,addtime,msgcontent,0 msgType from t_msg where msgto=#uid# and msgfrom=#msgfrom# and delbyreader=0 
+		 	union 
+		 select msgid,msgfrom uid,addtime,msgcontent,1 msgType from t_msg where msgto=#msgfrom# and msgfrom=#uid# and delbysender=0) a,t_user u where a.uid=u.uid order by addtime desc
+	</select>
+	<!-- msg详细页 begin -->
+	<select id="msg.queryMsgDetialByUidCount" resultClass="java.lang.Integer" parameterClass="java.util.Map">
+		select count(msgid) from (
+			select msgid,msgcontent from t_msg where msgfrom=#uid#  and msgto=#ouid# and delbysender=0 
+			union 
+			select msgid,msgcontent from t_msg where msgto=#uid# and msgfrom=#ouid# and delbyreader=0) a
+		<isNotNull prepend="where" property="keyword">
+			a.msgcontent like concat('%',#keyword#,'%')
+		</isNotNull>
+	</select>
+	<select id="msg.queryMsgDetialByUid" resultClass="psf.vo.sns.MsgVO" parameterClass="java.util.Map">
+ 		select a.*,username,avatarid avatarFileName from 
+		 (select msgid,msgfrom uid,addtime,msgcontent,0 msgType from t_msg where msgto=#uid# and msgfrom=#ouid# and delbyreader=0 
+		 	union 
+		 select msgid,msgfrom uid,addtime,msgcontent,1 msgType from t_msg where msgto=#ouid# and msgfrom=#uid# and delbysender=0) a,t_user u 
+		 where a.uid=u.uid 
+		 <isNotNull prepend="and" property="keyword">
+			a.msgcontent like concat('%',#keyword#,'%')
+		</isNotNull>
+		 order by addtime desc limit #pp.offset#,#pp.pageSize#
+	</select>
+	
+	<!-- msg详细页end -->
+	<select id="msg.queryNoReadByUid" resultClass="java.lang.Integer" parameterClass="java.util.Map">
+		select count(msgid) from t_msg where msgto=#uid# and msgfrom=#msgfrom# and delbyreader=0 and isread=0
+	</select>
+	
+	<select id="msg.queryMsgListByUidCount" parameterClass="java.lang.Integer">
+		select count(1) from (
+			select msgid, msgto uid,msgcontent,addtime,'send' from t_msg where msgfrom=#uid# and delbysender=0
+			union all 
+			select msgid,msgfrom uid,msgcontent,addtime,'receive' from t_msg where msgto = #uid# and delbyreader=0) a
+	</select>
+	<select id="msg.queryMsgListByUid" parameterClass="java.util.Map" resultClass="psf.vo.sns.MsgVO">
+		select a.*,username tousrename,avatarid toavatarName from (
+			select msgid, msgto uid,msgcontent,addtime,'send' type from t_msg where msgfrom=#uid# and delbysender=0
+			union all 
+			select msgid,msgfrom uid,msgcontent,addtime,'receive' type from t_msg where msgto = #uid# and delbyreader=0) a,user u 
+		where u.uid=a.uid group by a.uid limit #pp.offset#,#pp.pageSize#
+	</select>
+	<select id="msg.queryMsgByUserCount" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select count(1) from (select msgid,msgcontent,msgfrom uid from t_msg where msgfrom=#msgfrom# and msgto=#msgto# and delbyreader=0 
+		union all select msgid,msgcontent,msgto uid from t_msg where msgto=#msgfrom# and msgfrom=#msgto# and delbysender=0) a
+	</select>
+	<select id="msg.queryMsgByUser" resultClass="psf.vo.sns.MsgVO" parameterClass="java.util.Map">
+		select a.*,username,avatarid toavatarName from (select msgid,msgcontent,msgfrom uid,addtime,'receive' type from t_msg where msgfrom=#msgfrom# and msgto=#msgto# and delbyreader=0 
+		union all select msgid,msgcontent,msgto uid,addtime,'send' type from t_msg where msgto=#msgfrom# and msgfrom=#msgto# and delbysender=0) a,user u
+		where u.uid=a.uid limit #pp.offset#,#pp.pageSize#	
+	</select>
+	<select id="msg.queryMsgByKeywordCount" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select count(1) from t_msg where msgcontent like concat('%',#keyword#,'%') and
+		(	<isEqual compareProperty="uid" property="msgfrom">
+				delbysender = 0
+			</isEqual> 
+			<isEqual prepend="or" compareProperty="uid" property="msgto">
+				delbyreader = 0 
+			</isEqual>
+		)
+	</select>
+	<select id="msg.queryMsgByKeyword"  parameterClass="java.util.Map" resultClass="psf.vo.sns.MsgVO">
+		select * from t_msg where msgcontent like concat('%',#keyword#,'%') and
+		(	<isEqual compareProperty="uid" property="msgfrom">
+				delbysender = 0
+			</isEqual> 
+			<isEqual prepend="or" compareProperty="uid" property="msgto">
+				delbyreader = 0 
+			</isEqual>
+		) 
+		limit #pp.offset#,#pp.pageSize#
+	</select>
+	<select id="msg.queryAutoMsgCount"  parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select count(msgid) from t_msg where msgfrom=0 and msgto=#uid# and delbyreader=0
+		<isNotNull prepend="and" property="keyword">
+			msgcontent like concat('%',#keyword#,'%')
+		</isNotNull>
+	</select>
+	<select id="msg.queryAutoMsg"  parameterClass="java.util.Map" resultClass="psf.vo.sns.MsgVO">
+		select * from t_msg where msgfrom=0 and msgto=#uid# and delbyreader=0 
+		<isNotNull prepend="and" property="keyword">
+			msgcontent like concat('%',#keyword#,'%')
+		</isNotNull>
+		limit #pp.offset#,#pp.pageSize#
+	</select>
+	
+</sqlMap>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+	"../../../sql-map-2.dtd">
+<sqlMap>
+
+	<select id="apply.queryApplyByID" resultClass="psf.entity.TApply">
+		select * from t_apply where applyid=#applyid#
+	</select>
+	<select id="apply.queryApplyByOidCount" resultClass="java.lang.Integer" parameterClass="java.util.Map">
+		select count(1) from t_apply where otype=#otype# and oid=#oid# and delbychecker=0
+	</select>
+	<select id="apply.queryApplyByOid" resultClass="psf.entity.TApply" parameterClass="java.util.Map">
+		select * from t_apply where otype=#otype# and oid=#oid# and delbychecker=0 limit #pp.offset#,#pp.pageSize#
+	</select>
+	<select id="apply.queryApplyByUidCount" resultClass="java.lang.Integer" parameterClass="java.util.Map">		
+		select count(distinct(fromuid)) from t_apply a,t_user u where touid=#uid# and checkstatus=0 and otype!=5 and fromuid!=#uid# and a.fromuid=u.uid
+		<isNotNull prepend="and" property="keyword">
+			username like concat('%',#keyword#,'%')
+		</isNotNull>
+	</select>
+	<select id="apply.queryApplyByUid" resultClass="psf.vo.sns.ApplyVO" parameterClass="java.util.Map">
+		select a.*,username,sex,avatarid avatarFileName,nowzoneid zonename,follows followCount,friends friendCount,fans fansCount,showcount,guidecount,shopexpcount
+ 		from t_apply a,t_user u,t_user_balance b where a.touid=#uid# and checkstatus=0 and otype!=5 and fromuid!=#uid# 
+ 		and a.fromuid=u.uid and a.fromuid=b.uid
+ 		<isNotNull prepend="and" property="keyword">
+			username like concat('%',#keyword#,'%')
+		</isNotNull> 
+		group by fromuid limit #pp.offset#,#pp.pageSize#
+	</select>
+	
+	<select id="apply.queryApplyByStatus" parameterClass="java.util.Map" resultClass="psf.entity.TApply">
+		select * from t_apply where otype=#otype# and oid=#oid# and applytype=#applytype# and checkstatus=#checkstatus# 
+		and delbyapplier=0 and delbychecker=0
+		<isEqual property="applytype" compareValue="1" prepend="AND">
+			fromuid=#uid# 
+		</isEqual>
+		<isEqual property="applytype" compareValue="2" prepend="AND">
+			touid=#uid#
+		</isEqual>
+	</select>
+	
+	<select id="apply.countApply" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select count(1) from t_apply a where delbyapplier=0 and delbychecker=0
+		<isNotNull property="otype" prepend="AND">
+			a.otype=#otype#
+		</isNotNull>
+		<isNotNull property="oid" prepend="AND">
+			a.oid=#oid#
+		</isNotNull>
+		<isNotNull property="fromuid" prepend="AND">
+			a.fromuid=#fromuid#
+		</isNotNull>
+		<isNotNull property="touid" prepend="AND">
+			a.touid=#touid#
+		</isNotNull>
+		<isNotNull property="applytype" prepend="AND">
+			a.applytype=#applytype#
+		</isNotNull>
+		<isNotNull property="checkstatus" prepend="AND">
+			a.checkstatus=#checkstatus#
+		</isNotNull>
+		<isEqual property="applytype" compareValue="2" prepend="AND">
+			not exists (select 1 from t_apply where a.oid=oid and a.otype=otype and a.touid=touid and a.checkstatus=checkstatus and addtime>a.addtime)
+		</isEqual>
+	</select>
+	<select id="apply.queryApply" parameterClass="java.util.Map" resultClass="psf.vo.sns.ApplyVO">
+		select * from t_apply a where delbyapplier=0 and delbychecker=0
+		<isNotNull property="otype" prepend="AND">
+			a.otype=#otype#
+		</isNotNull>
+		<isNotNull property="oid" prepend="AND">
+			a.oid=#oid#
+		</isNotNull>
+		<isNotNull property="fromuid" prepend="AND">
+			a.fromuid=#fromuid#
+		</isNotNull>
+		<isNotNull property="touid" prepend="AND">
+			a.touid=#touid#
+		</isNotNull>
+		<isNotNull property="applytype" prepend="AND">
+			a.applytype=#applytype#
+		</isNotNull>
+		<isNotNull property="checkstatus" prepend="AND">
+			a.checkstatus=#checkstatus#
+		</isNotNull>
+		<isEqual property="applytype" compareValue="2" prepend="AND">
+			not exists (select 1 from t_apply where a.oid=oid and a.otype=otype and a.touid=touid and a.checkstatus=checkstatus and addtime>a.addtime)
+		</isEqual>
+		order by addtime limit #offset#,#pageSize#
+	</select>
+</sqlMap>

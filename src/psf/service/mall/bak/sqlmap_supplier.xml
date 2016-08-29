@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+	"../../../sql-map-2.dtd">
+<sqlMap>
+
+	<delete id="supplier.delete" parameterClass="java.lang.Integer">
+		delete from t_supplier where supplierid=#supplierid#
+	</delete>
+	
+	<select id="supplier.querySupplierByID" parameterClass="java.lang.Integer" resultClass="psf.entity.TSupplier">
+		select * from t_supplier where supplierid=#supplierid#
+	</select>
+	
+</sqlMap>

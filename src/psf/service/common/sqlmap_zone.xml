@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+	"../../../sql-map-2.dtd">
+<sqlMap>
+
+	<select id="zone.queryZoneByLevel" parameterClass="java.util.Map" resultClass="psf.entity.TZone">
+		select * from t_zone 
+		<isNotEqual property="level" compareValue="-1">
+			where level = #level#
+		</isNotEqual>
+	</select>
+	
+	<select id="zone.queryAllZone" resultClass="psf.entity.TZone">
+		select * from t_zone;
+	</select>
+	
+	<select id="zone.queryZoneChildren" parameterClass="java.lang.Integer" resultClass="psf.entity.TZone">
+		select * from t_zone where level=2 and level1id=#parentid#
+	</select>
+	
+	<select id="zon.queryZoneByID" parameterClass="java.lang.Integer" resultClass="psf.entity.TZone">
+		select * from t_zone where zoneid = #zoneid#
+	</select>
+	<!-- 
+	<select id="zone.queryAllExpressZone" resultClass="psf.entity.TExpresszone">
+		select * from t_expresszone
+	</select>
+	
+	<select id="zone.queryExpressZoneChildren" parameterClass="java.util.Map" resultClass="psf.entity.TExpresszone">
+		select * from t_expresszone where 
+		<dynamic prepend="AND"> 
+		<isNotNull property="level">
+			<isEqual property="level" compareValue="1">
+				level1id = #parentid#
+			</isEqual>
+			<isEqual property="level" compareValue="2">
+				level2id = #parentid#
+			</isEqual>
+		</isNotNull>
+		</dynamic>
+	</select>
+	
+	<select id="zone.queryExpressZoneByID" parameterClass="java.lang.Integer" resultClass="psf.entity.TExpresszone">
+		select * from t_expresszone where expresszoneid = #expresszoneid#
+	</select>
+	 -->
+	<select id="zone.queryParentZone" parameterClass="java.lang.Integer" resultClass="psf.entity.TZone">
+		select * from t_zone z where exists (select null from t_zone where z.zoneid=level1id and level2id=#zoneid#)
+	</select>
+</sqlMap> 

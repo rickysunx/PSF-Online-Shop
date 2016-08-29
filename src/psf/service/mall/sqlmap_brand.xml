@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+	"../../../sql-map-2.dtd">
+<sqlMap>
+	
+	<select id="brand.countBrandByCateID" parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+		select count(1) from t_brand b where exist(select null from product where b.brandid=brandid and cateid=#cateid#)
+	</select>
+	<select id="brand.queryBrandByCateID" parameterClass="java.util.Map" resultClass="psf.entity.TBrand">
+		select * from t_brand b where exist(select null from product where b.brandid=brandid and cateid=#cateid#) limit #offset#,#pageSize#
+	</select>
+	
+	<select id="brand.countByGuideId" parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+		select count(1) from t_brand b,t_post_brand pb where b.brandid=pb.brandid and pb.postid = #guideid#
+	</select>
+	<select id="brand.queryByGuideId" parameterClass="java.util.Map" resultClass="psf.vo.mall.BrandVO">
+		select b.* from t_brand b,t_post_brand pb where b.brandid=pb.brandid and pb.postid = #guideid# limit #offset#,#pageSize#
+	</select>
+	
+	<select id="brand.queryBrandVO" parameterClass="java.lang.Integer" resultClass="psf.vo.mall.BrandVO">
+		select * from t_brand where brandid = #brandid#
+	</select>
+	
+	<select id="brand.queryRecommondFriend" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select count(*) from t_friend where uid=#uid# and friendid in (select distinct p.uid from t_post_brand pb,t_post p where pb.postid=p.postid and brandid=#brandid# and uid!=#uid#);
+	</select>
+	
+	<select id="brand.countPostBrandVO" parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+		select count(distinct b.brandid) from t_brand b,t_product p where b.brandid=p.brandid 
+		and exists (select null from t_post_product where p.pid=pid and postid=#postid#)
+	</select>
+	<select id="brand.queryPostBrandVO" parameterClass="java.util.Map" resultClass="psf.vo.mall.BrandVO">
+		select * from t_brand b,t_product p where b.brandid=p.brandid 
+		and exists (select null from t_post_product where p.pid=pid and postid=#postid#)
+		limit #offset#,#pageSize#
+	</select>
+</sqlMap>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
+    "sql-map-config-2.dtd">
+    
+<sqlMapConfig>
+	<transactionManager type="JDBC">
+		<dataSource type="SIMPLE">
+			<property name="JDBC.Driver" value="com.mysql.jdbc.Driver"/>
+			<property name="JDBC.ConnectionURL" value="jdbc:mysql://localhost/psf_new?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull"/>
+			<property name="JDBC.Username" value="root"/>
+			<property name="JDBC.Password" value="1"/>
+			<!-- OPTIONAL PROPERTIES BELOW -->
+			<property name="Pool.MaximumActiveConnections" value="200"/>
+			<property name="Pool.MaximumIdleConnections" value="30"/>
+			<property name="Pool.MaximumCheckoutTime" value="120000"/>
+			<property name="Pool.TimeToWait" value="10000"/>
+			<property name="Pool.PingQuery" value="select 1"/>
+			<property name="Pool.PingEnabled" value="true"/>
+			<property name="Pool.PingConnectionsOlderThan" value="10000"/>
+			<property name="Pool.PingConnectionsNotUsedFor" value="10000"/>
+		</dataSource>
+	</transactionManager>
+	
+	<sqlMap resource="autoGenSqlMap.xml"/>
+	<!-- common -->
+	<sqlMap resource="psf/service/common/sqlmap_user.xml"/>
+	<sqlMap resource="psf/service/sns/sqlmap_msg.xml"/>
+	<sqlMap resource="psf/service/sns/sqlmap_friend.xml"/>
+	<sqlMap resource="psf/service/sns/sqlmap_group.xml"/>
+	<sqlMap resource="psf/service/sns/sqlmap_sns.xml"/>
+	<sqlMap resource="psf/service/sns/sqlmap_apply.xml"/>
+	<sqlMap resource="psf/service/common/sqlmap_zone.xml"/>
+	<sqlMap resource="psf/service/common/sqlmap_badword.xml"/>
+	<sqlMap resource="psf/service/common/sqlmap_pic.xml"/>
+	<sqlMap resource="psf/service/sns/sqlmap_follow.xml"/>
+	<sqlMap resource="psf/service/common/sqlmap_log.xml"/>
+	
+	<!-- mall -->
+	<sqlMap resource="psf/service/mall/sqlmap_cart.xml"/>
+	<sqlMap resource="psf/service/mall/sqlmap_express.xml"/>
+	<sqlMap resource="psf/service/mall/sqlmap_order.xml"/>
+	<sqlMap resource="psf/service/mall/sqlmap_supplier.xml"/>
+	<sqlMap resource="psf/service/mall/sqlmap_product.xml"/>
+	<sqlMap resource="psf/service/mall/sqlmap_brand.xml"/>
+	
+	<!-- mall2 -->
+	<sqlMap resource="psf/action/mall/sqlmap_product.xml"/>
+	
+	<!-- sns -->
+	<sqlMap resource="psf/service/sns/sqlmap_event.xml"/>
+	<sqlMap resource="psf/service/sns/sqlmap_comment.xml"/>
+	<sqlMap resource="psf/service/sns/sqlmap_post.xml"/>
+
+</sqlMapConfig>

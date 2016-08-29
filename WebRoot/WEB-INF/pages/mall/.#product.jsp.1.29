@@ -1,0 +1,2627 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="/psf/tags" prefix="psf"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+	<title>${pageTitle }</title>
+    <psf:header/>
+	<link href="/css/mall.css" rel="stylesheet" type="text/css"/>
+	<script src="/js/jquery.js" type="text/javascript"></script>
+	
+<script type="text/javascript">
+
+function goodsShowImage(img_id) {
+	$("#goods_thumb_list > li").removeClass("current");
+	$("#goods_big_image").attr("src",$("#img_"+img_id).attr("img_url"));
+	$("#imgli_"+img_id).addClass("current");
+}
+
+$(document).ready(function(){
+
+});
+</script>
+
+</head>
+
+<body>
+<psf:shortcut/>
+
+<div id="html_wrap">
+	<div id="mall_header">
+    	<psf:include page="/mall/header.jsp"/>
+    	<psf:include page="/mall/search.jsp"/>
+    </div>
+    
+    <div id="main">
+    	<div class="pathbox">
+        	${cateNav}
+        </div>
+        
+        <div class="rows_content">
+        	<div class="v2_sidebar">
+            	<div class="sort_side_box rows">
+                	<div class="header"><h3>相关分类</h3></div>
+                    <ul>
+                    	<li><a href="#">衬衫</a></li>
+                        <li><a href="#">T血</a></li>
+                        <li><a href="#">针织</a></li>
+                        <li><a href="#">外套</a></li>
+                        <li><a href="#">裤子</a></li>
+                    </ul>
+                </div>
+                
+                <div class="sort_side_box rows">
+                	<div class="header"><h3>同类品牌</h3></div>
+                    <ol>
+                    	<li><a href="#">元气</a></li>
+                        <li><a href="#">Westside</a></li>
+                        <li><a href="#">酷</a></li>
+                        <li><a href="#">斯波帝卡</a></li>
+                        <li><a href="#">Genki</a></li>
+                        <li><a href="#">千喜步步高</a></li>
+                        <li><a href="#">圣迪勒</a></li>
+                        <li><a href="#">JUSTYLE</a></li>
+                        <li><a href="#">简时尚品</a></li>
+                        <li><a href="#">保罗威特</a></li>
+                    </ol>
+                </div>
+            </div>
+            <div class="v2_r_content">
+                <div class="shop_buyer rows">
+                	<div class="property"><div class="property_wrap">
+                    	<h1><a href="#">${goods.goods_name}</a></h1>
+                        <div class="meta">
+                        	<p>品 &nbsp;&nbsp; 牌：${goods.brand_name}　<!--a class="brand_icon" href="#"><img src="/images/mall/photo/logo13.png" alt="" /></a--> <a class="brand" href="#">关注该品牌</a></p>
+                            <p>商品编号：${goods.goods_sn }</p>
+                            <p class="psf_price">品　上　价：<b>￥${goods.shop_price}</b></p>
+                            <p class="price">
+                            	<span>市场价：￥${goods.market_price }</span>
+                                <span>享金额：<b>10.00</b></span>
+                            </p>
+                            <p class="comment">
+                            	<span>商品评分：</span>
+                                <span class="icons">
+                                    <em></em><em></em><em></em><em class="no"></em><em class="no"></em>
+                                </span>
+                                <a href="#">(已经有24人体验)</a>
+                            </p>
+                        </div>
+                        
+                        <div class="key">
+                        	<dl class="colorbox">
+                            	<dt>颜色：<b>灰色</b></dt>
+                                <dd>
+                                	<ul>
+                                    	<li>
+                                        	<a class="current" href="#">
+                                            	<span></span>
+                                                <img src="/images/mall/buy/color/1.png" alt="" />
+                                            </a>
+                                        </li>
+                                        
+                                        <li>
+                                        	<a href="#">
+                                            	<span></span>
+                                                <img src="/images/mall/buy/color/1.png" alt="" />
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </dd>
+                            </dl>
+                            
+                            <dl class="sizebox">
+                            	<dt>尺码：<b>未选择</b></dt>
+                                <dd>
+                                	<ul>
+                                    	<li>
+                                        	<a class="current" href="#">
+                                            	<span></span>M
+                                            </a>
+                                        </li>
+                                        <li>
+                                        	<a href="#">
+                                            	<span></span>L
+                                            </a>
+                                        </li>
+                                        <li>
+                                        	<a href="#">
+                                            	<span></span>XL
+                                            </a>
+                                        </li>
+                                        <li>
+                                        	<a href="#">
+                                            	<span></span>XXL
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </dd>
+                            </dl>
+                            
+                            <dl class="actions">
+                            	<dt>我要买：</dt>
+                                <dd>
+                                	<div class="amount">
+                                        <div class="numInput">
+                                            <a class="minus" href="javascript:void(0)">-</a><input value="640" name="pcount_306"><a class="add" href="#">+</a>
+                                        </div>
+                                        <div class="info">
+                                        	<p><span class="color">颜色：灰色</span>　<span class="size">尺码：未选择</span></p>
+                                            <p class="price">小计：<b>￥340.00</b></p>
+                                        </div>                                        
+                                    </div>
+                                    
+                                    <div class="btn_buy">
+                                    	<a class="like" href="#"></a><a class="like_add" href="#"></a>
+                                    </div>
+                                </dd>
+                            </dl>
+                            
+                            <dl class="buy_select">
+                            	<dt>支付方式：</dt>
+                                <dd>
+                                
+                                	<a href="#">货到付款</a> | <a href="#">在线支付</a> | <a href="#">邮政汇款</a> | <a href="#">礼品卡或虚拟帐户支付</a> | <a href="#">邮局网汇通汇款</a> | <a href="#">电话支付</a>
+                                </dd>
+                            </dl>
+                        </div>
+                    </div></div>
+                    <div class="gallery">
+                    	<div class="img">
+<c:if test="${!empty goodsImageList}">
+<img id="goods_big_image" src="/ecimage/${goodsImageList[0].img_url}"/>
+</c:if>
+                    	</div>
+                        <div class="thumbbox">
+                        	<a class="prev" href="#"><em></em></a>
+                            <a class="next" href="#"><em></em></a>
+                            <div class="thumb">
+                                <ul id="goods_thumb_list">
+<c:forEach var="img" items="${goodsImageList}" varStatus="s">
+	<li id="imgli_${img.img_id}" <c:if test="${s.first}">class="current"</c:if>><a id="img_${img.img_id}" href="javascript:goodsShowImage('${img.img_id}');" img_url="/ecimage/${img.img_url}"><img src="/ecimage/${img.thumb_url}" alt="" /></a></li>
+</c:forEach>
+                                </ul>
+                            </div>
+                        </div>
+                        <dl class="share_info">
+                        	<dt><img src="/images/mall/default/temp/xiangjin.png" alt="" /></dt>
+                            <dd>
+                            	<p>累计<span>享金</span><span class="share_price">1000.00</span></p>
+                                <p><a href="#">如何获得享金</a></p>
+                            </dd>
+                        </dl>
+                    </div>
+
+                </div>
+                
+<script type="text/javascript">
+function changeToGroupBuyTab() {
+	$("#combine_buy_tab").hide();
+	$("#group_buy_tab").show();
+}
+function changeToCombineBuyTab() {
+	$("#group_buy_tab").hide();
+	$("#combine_buy_tab").show();
+}
+</script>
+            	<div id="combine_buy_tab" class="media_mini_box rows">
+                    <dl class="tab partner_tab">
+                        <dt></dt>
+                        <dd onmouseover="changeToGroupBuyTab();"></dd>
+                    </dl>
+                    
+                    <div class="partner_content">
+                    
+                        <div class="infobox">
+                        
+                        	<div class="total_price"><strong>拍档总价格：</strong><b>￥500.00</b>元</div>
+                            <div class="price">
+                            
+                            	<p><b>品上价：</b><em></em> <b>100.00</b></p>
+                                <p><b>市场价：</b><em></em> <b>300.00</b></p>
+                            
+                            </div>
+                            
+                            <div class="buy">
+                            
+                            	<b>选中优惠组合<br />请点击：</b>
+                                <a class="partner_buy" href="#"></a>
+                                
+                            </div>
+                            
+                            <div class="right">
+                            
+                            	<a href="#">上一组</a>
+                                <a href="#">下一组</a>
+                            
+                            </div>
+    
+                        </div>
+                        
+                        <div class="partner_list">
+                        
+                        	<ul class="current">
+                            
+                            	<li class="first">
+                                
+                                	<div class="img">
+                                    
+                                    	<a href="#"><img src="/images/mall/photo/photo01.png" alt="" /></a>
+                                    
+                                    </div>
+                                    
+                                    <p><a href="#">热情撞色宽纹珠地短抽...</a></p>
+                                    <p class="price"><b>135</b></p>
+                                
+                                </li>
+                                
+                                <li>
+                                
+                                	<div class="img">
+                                    
+                                    	<a href="#"><img src="/images/mall/photo/photo01.png" alt="" /></a>
+                                    
+                                    </div>
+                                    
+                                    <p><input type="checkbox" /><a href="#">热情撞色宽纹珠地短抽...</a></p>
+                                    <p class="price">
+                                    	<span class="right">直减<b>10.00</b></span>
+                                    	<b>29.4</b>
+                                    </p>
+                                
+                                </li>
+                                
+                                <li>
+                                
+                                	<div class="img">
+                                    
+                                    	<a href="#"><img src="/images/mall/photo/photo01.png" alt="" /></a>
+                                    
+                                    </div>
+                                    
+                                    <p><input type="checkbox" /><a href="#">热情撞色宽纹珠地短抽...</a></p>
+                                    <p class="price">
+                                    	<span class="right">直减<b>10.00</b></span>
+                                    	<b>29.4</b>
+                                    </p>
+                                
+                                </li>
+                                
+                                <li>
+                                
+                                	<div class="img">
+                                    
+                                    	<a href="#"><img src="/images/mall/photo/photo01.png" alt="" /></a>
+                                    
+                                    </div>
+                                    
+                                    <p><input type="checkbox" /><a href="#">热情撞色宽纹珠地短抽...</a></p>
+                                    <p class="price">
+                                    	<span class="right">直减<b>10.00</b></span>
+                                    	<b>29.4</b>
+                                    </p>
+                                
+                                </li>
+                                
+                                <li>
+                                
+                                	<div class="img">
+                                    
+                                    	<a href="#"><img src="/images/mall/photo/photo01.png" alt="" /></a>
+                                    
+                                    </div>
+                                    
+                                    <p><input type="checkbox" /><a href="#">热情撞色宽纹珠地短抽...</a></p>
+                                    <p class="price">
+                                    	<span class="right">直减<b>10.00</b></span>
+                                    	<b>29.4</b>
+                                    </p>
+                                
+                                </li>
+                            
+                            </ul>
+                            
+                            <ul>
+                            
+                            	<li class="first">
+                                
+                                	<div class="img">
+                                    
+                                    	<a href="#"><img src="/images/mall/photo/photo01.png" alt="" /></a>
+                                    
+                                    </div>
+                                    
+                                    <p><a href="#">热情撞色宽纹珠地短抽...</a></p>
+                                    <p class="price"><b>135</b></p>
+                                
+                                </li>
+                                
+                                <li>
+                                
+                                	<div class="img">
+                                    
+                                    	<a href="#"><img src="/images/mall/photo/photo01.png" alt="" /></a>
+                                    
+                                    </div>
+                                    
+                                    <p><input type="checkbox" /><a href="#">热情撞色宽纹珠地短抽...</a></p>
+                                    <p class="price">
+                                    	<span class="right">直减<b>10.00</b></span>
+                                    	<b>29.4</b>
+                                    </p>
+                                
+                                </li>
+                                
+                                <li>
+                                
+                                	<div class="img">
+                                    
+                                    	<a href="#"><img src="/images/mall/photo/photo01.png" alt="" /></a>
+                                    
+                                    </div>
+                                    
+                                    <p><input type="checkbox" /><a href="#">热情撞色宽纹珠地短抽...</a></p>
+                                    <p class="price">
+                                    	<span class="right">直减<b>10.00</b></span>
+                                    	<b>29.4</b>
+                                    </p>
+                                
+                                </li>
+                                
+                                <li>
+                                
+                                	<div class="img">
+                                    
+                                    	<a href="#"><img src="/images/mall/photo/photo01.png" alt="" /></a>
+                                    
+                                    </div>
+                                    
+                                    <p><input type="checkbox" /><a href="#">热情撞色宽纹珠地短抽...</a></p>
+                                    <p class="price">
+                                    	<span class="right">直减<b>10.00</b></span>
+                                    	<b>29.4</b>
+                                    </p>
+                                
+                                </li>
+                                
+                                <li>
+                                
+                                	<div class="img">
+                                    
+                                    	<a href="#"><img src="/images/mall/photo/photo01.png" alt="" /></a>
+                                    
+                                    </div>
+                                    
+                                    <p><input type="checkbox" /><a href="#">热情撞色宽纹珠地短抽...</a></p>
+                                    <p class="price">
+                                    	<span class="right">直减<b>10.00</b></span>
+                                    	<b>29.4</b>
+                                    </p>
+                                
+                                </li>
+                            
+                            </ul>
+                        
+                        </div>
+                        
+                    </div>
+                    
+                    
+                    <div class="mygroup_content" style="display:none">
+                    
+                        <div class="infobox">
+                        
+                        	<div class="right">
+                            
+                            	<a href="#">我认识的人</a>
+                                <a href="#">换一组</a>
+                            
+                            </div>
+                        	<a class="mygroup_btn" href="#"></a>
+    
+                        </div>
+                        
+                        <ul class="mygroup_list">
+                        
+                            <li>
+                            
+                            	<div class="picborder">
+                                    <table class="pictable">
+                                        <tr>
+                                            <td class="t_l"> </td>
+                                            <td class="t_m">
+                                                <div></div>
+                                                <b></b>
+                                                <em></em>
+                                            </td>
+                                            <td class="t_r"> </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="m_l"> </td>
+                                            <td class="m_m">
+                                                
+                                                <div class="mygroup_box">
+                                                
+                                                	<div class="title"><h3>南瓜团</h3></div>
+                                                    <dl class="info">
+                                                    
+                                                    	<dt>
+                                                        
+                                                        	<a href="#"><img src="/images/mall/photo/photo01.png" alt="" /></a>
+                                                        
+                                                        </dt>
+                                                        <dd>
+                                                        
+                                                        	<p>价格：<b>￥10000.00</b></p>
+                                                            <p><strong>20人团</strong></p>
+                                                            <p>已参加15人，还缺<b>5人</b></p>
+                                                            <p>结束时间：<b>3天</b></p>
+                                                        
+                                                        </dd>
+                                                    
+                                                    </dl>
+                                                    <dl class="add_info">
+                                                    
+                                                    	<dt><a class="addgroup_btn" href="#"></a></dt>
+                                                        <dd class="success"></dd>
+                                                    
+                                                    </dl>
+                                                    
+                                                    <div class="postbox">
+                                                    
+                                                    	<div class="header">团主</div>
+                                                        <dl>
+                                                        
+                                                        	<dt><a href="#"><img src="/images/mall/photo/photo01.png" alt="" /></a></dt>
+                                                            <dd>
+                                                            
+                                                            	<h3><a href="#">melodi</a></h3>
+                                                                <p><span><a href="#">秀场</a>(10000)</span><span><a href="#">体验</a>(10000)</span><span><a href="#">指南</a>(10000)</span></p>
+                                                                <div class="bottom">
+                                                                
+                                                                	<a class="addbtn02 addbtn02_ok" href="#"><em></em>好友</a>
+                                                                    <a class="addbtn02 addbtn02_ok" href="#"><em></em>关注</a>
+                                                                
+                                                                </div>
+                                                            
+                                                            </dd>
+                                                        
+                                                        </dl>
+                                                        <div class="header"><b>10</b>个品友已经购买</div>
+                                                        <div class="friends">
+                                                        
+                                                        	<a href="#"><img src="/images/mall/photo/photo12.png" alt="" /></a>
+                                                            <a href="#"><img src="/images/mall/photo/photo13.png" alt="" /></a>
+                                                            <a href="#"><img src="/images/mall/photo/photo14.png" alt="" /></a>
+                                                            <a href="#"><img src="/images/mall/photo/photo12.png" alt="" /></a>
+                                                            <a href="#"><img src="/images/mall/photo/photo13.png" alt="" /></a>
+                                                            <a href="#"><img src="/images/mall/photo/photo14.png" alt="" /></a>
+                                                        
+                                                        </div>
+                                                    
+                                                    </div>
+                                                
+                                                </div>
+                                                
+                                            </td>
+                                            <td class="m_r"> </td>
+                                        </tr>
+                                        
+                                        <tr>
+                                            <td class="b_l"> </td>
+                                            <td class="b_m">
+                                                <em></em>
+                                                <b></b>
+                                                <div></div>
+                                            </td>
+                                            <td class="b_r"> </td>
+                                        </tr>
+                                    </table>
+                                    <div class="shadow"></div>
+                              	</div>
+                            
+                            
+                            </li>
+                            
+                            <li>
+                            
+                            	<div class="picborder">
+                                    <table class="pictable">
+                                        <tr>
+                                            <td class="t_l"> </td>
+                                            <td class="t_m">
+                                                <div></div>
+                                                <b></b>
+                                                <em></em>
+                                            </td>
+                                            <td class="t_r"> </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="m_l"> </td>
+                                            <td class="m_m">
+                                                
+                                                <div class="mygroup_box">
+                                                
+                                                	<div class="title"><h3>南瓜团</h3></div>
+                                                    <dl class="info">
+                                                    
+                                                    	<dt>
+                                                        
+                                                        	<a href="#"><img src="/images/mall/photo/photo01.png" alt="" /></a>
+                                                        
+                                                        </dt>
+                                                        <dd>
+                                                        
+                                                        	<p>价格：<b>￥10000.00</b></p>
+                                                            <p><strong>20人团</strong></p>
+                                                            <p>已参加15人，还缺<b>5人</b></p>
+                                                            <p>结束时间：<b>3天</b></p>
+                                                        
+                                                        </dd>
+                                                    
+                                                    </dl>
+                                                    <dl class="add_info">
+                                                    
+                                                    	<dt><a class="addgroup_btn" href="#"></a></dt>
+                                                        <dd class="fail"></dd>
+                                                    
+                                                    </dl>
+                                                    
+                                                    <div class="postbox">
+                                                    
+                                                    	<div class="header">团主</div>
+                                                        <dl>
+                                                        
+                                                        	<dt><a href="#"><img src="/images/mall/photo/photo01.png" alt="" /></a></dt>
+                                                            <dd>
+                                                            
+                                                            	<h3><a href="#">melodi</a></h3>
+                                                                <p><span><a href="#">秀场</a>(10000)</span><span><a href="#">体验</a>(10000)</span><span><a href="#">指南</a>(10000)</span></p>
+                                                                <div class="bottom">
+                                                                
+                                                                	<a class="addbtn02 addbtn02_ok" href="#"><em></em>好友</a>
+                                                                    <a class="addbtn02 addbtn02_ok" href="#"><em></em>关注</a>
+                                                                
+                                                                </div>
+                                                            
+                                                            </dd>
+                                                        
+                                                        </dl>
+                                                        <div class="header"><b>10</b>个品友已经购买</div>
+                                                        <div class="friends">
+                                                        
+                                                        	<a href="#"><img src="/images/mall/photo/photo12.png" alt="" /></a>
+                                                            <a href="#"><img src="/images/mall/photo/photo13.png" alt="" /></a>
+                                                            <a href="#"><img src="/images/mall/photo/photo14.png" alt="" /></a>
+                                                        
+                                                        </div>
+                                                    
+                                                    </div>
+                                                
+                                                </div>
+                                                
+                                            </td>
+                                            <td class="m_r"> </td>
+                                        </tr>
+                                        
+                                        <tr>
+                                            <td class="b_l"> </td>
+                                            <td class="b_m">
+                                                <em></em>
+                                                <b></b>
+                                                <div></div>
+                                            </td>
+                                            <td class="b_r"> </td>
+                                        </tr>
+                                    </table>
+                                    <div class="shadow"></div>
+                              	</div>
+                            
+                            
+                            </li>
+                            
+                            <li>
+                            
+                            	<div class="picborder">
+                                    <table class="pictable">
+                                        <tr>
+                                            <td class="t_l"> </td>
+                                            <td class="t_m">
+                                                <div></div>
+                                                <b></b>
+                                                <em></em>
+                                            </td>
+                                            <td class="t_r"> </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="m_l"> </td>
+                                            <td class="m_m">
+                                                
+                                                <div class="mygroup_box">
+                                                
+                                                	<div class="title"><h3>南瓜团</h3></div>
+                                                    <dl class="info">
+                                                    
+                                                    	<dt>
+                                                        
+                                                        	<a href="#"><img src="/images/mall/photo/photo01.png" alt="" /></a>
+                                                        
+                                                        </dt>
+                                                        <dd>
+                                                        
+                                                        	<p>价格：<b>￥10000.00</b></p>
+                                                            <p><strong>20人团</strong></p>
+                                                            <p>已参加15人，还缺<b>5人</b></p>
+                                                            <p>结束时间：<b>3天</b></p>
+                                                        
+                                                        </dd>
+                                                    
+                                                    </dl>
+                                                    <dl class="add_info">
+                                                    
+                                                    	<dt><a class="addgroup_btn" href="#"></a></dt>
+                                                        <dd class="success"></dd>
+                                                    
+                                                    </dl>
+                                                    
+                                                    <div class="postbox">
+                                                    
+                                                    	<div class="header">团主</div>
+                                                        <dl>
+                                                        
+                                                        	<dt><a href="#"><img src="/images/mall/photo/photo01.png" alt="" /></a></dt>
+                                                            <dd>
+                                                            
+                                                            	<h3><a href="#">melodi</a></h3>
+                                                                <p><span><a href="#">秀场</a>(10000)</span><span><a href="#">体验</a>(10000)</span><span><a href="#">指南</a>(10000)</span></p>
+                                                                <div class="bottom">
+                                                                
+                                                                	<a class="addbtn02 addbtn02_ok" href="#"><em></em>好友</a>
+                                                                    <a class="addbtn02 addbtn02_ok" href="#"><em></em>关注</a>
+                                                                
+                                                                </div>
+                                                            
+                                                            </dd>
+                                                        
+                                                        </dl>
+                                                        <div class="header"><b>10</b>个品友已经购买</div>
+                                                        <div class="friends">
+                                                        
+                                                        	<a href="#"><img src="/images/mall/photo/photo12.png" alt="" /></a>
+                                                            <a href="#"><img src="/images/mall/photo/photo13.png" alt="" /></a>
+                                                            <a href="#"><img src="/images/mall/photo/photo14.png" alt="" /></a>
+                                                            <a href="#"><img src="/images/mall/photo/photo12.png" alt="" /></a>
+                                                            <a href="#"><img src="/images/mall/photo/photo13.png" alt="" /></a>
+                                                            <a href="#"><img src="/images/mall/photo/photo14.png" alt="" /></a>
+                                                        
+                                                        </div>
+                                                    
+                                                    </div>
+                                                
+                                                </div>
+                                                
+                                            </td>
+                                            <td class="m_r"> </td>
+                                        </tr>
+                                        
+                                        <tr>
+                                            <td class="b_l"> </td>
+                                            <td class="b_m">
+                                                <em></em>
+                                                <b></b>
+                                                <div></div>
+                                            </td>
+                                            <td class="b_r"> </td>
+                                        </tr>
+                                    </table>
+                                    <div class="shadow"></div>
+                              	</div>
+                            
+                            
+                            </li>
+                            
+                        
+                        </ul>
+                        
+                    </div>
+                
+                </div>
+                
+                
+                <div id="group_buy_tab" class="media_mini_box rows" style="display:none;">
+                    <dl class="tab mygroup_tab">
+                        <dt onmouseover="changeToCombineBuyTab();"></dt>
+                        <dd></dd>
+                    </dl>
+                    
+                    <div class="mygroup_content">
+                    
+                        <div class="infobox">
+                        
+                        	<div class="right">
+                            
+                            	<a href="#">我认识的人</a>
+                                <a href="#">换一组</a>
+                            
+                            </div>
+                        	<a class="mygroup_btn" href="#"></a>
+    
+                        </div>
+                        
+                        <ul class="mygroup_list">
+                        
+                            <li>
+                            
+                            	<div class="picborder">
+                                    <table class="pictable">
+                                        <tr>
+                                            <td class="t_l"> </td>
+                                            <td class="t_m">
+                                                <div></div>
+                                                <b></b>
+                                                <em></em>
+                                            </td>
+                                            <td class="t_r"> </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="m_l"> </td>
+                                            <td class="m_m">
+                                                
+                                                <div class="mygroup_box">
+                                                
+                                                	<div class="title"><h3>南瓜团</h3></div>
+                                                    <dl class="info">
+                                                    
+                                                    	<dt>
+                                                        
+                                                        	<a href="#"><img src="/images/mall/photo/photo01.png" alt="" /></a>
+                                                        
+                                                        </dt>
+                                                        <dd>
+                                                        
+                                                        	<p>价格：<b>￥10000.00</b></p>
+                                                            <p><strong>20人团</strong></p>
+                                                            <p>已参加15人，还缺<b>5人</b></p>
+                                                            <p>结束时间：<b>3天</b></p>
+                                                        
+                                                        </dd>
+                                                    
+                                                    </dl>
+                                                    <dl class="add_info">
+                                                    
+                                                    	<dt><a class="addgroup_btn" href="#"></a></dt>
+                                                        <dd class="success"></dd>
+                                                    
+                                                    </dl>
+                                                    
+                                                    <div class="postbox">
+                                                    
+                                                    	<div class="header">团主</div>
+                                                        <dl>
+                                                        
+                                                        	<dt><a href="#"><img src="/images/mall/photo/photo01.png" alt="" /></a></dt>
+                                                            <dd>
+                                                            
+                                                            	<h3><a href="#">melodi</a></h3>
+                                                                <p><span><a href="#">秀场</a>(10000)</span><span><a href="#">体验</a>(10000)</span><span><a href="#">指南</a>(10000)</span></p>
+                                                                <div class="bottom">
+                                                                
+                                                                	<a class="addbtn02 addbtn02_ok" href="#"><em></em>好友</a>
+                                                                    <a class="addbtn02 addbtn02_ok" href="#"><em></em>关注</a>
+                                                                
+                                                                </div>
+                                                            
+                                                            </dd>
+                                                        
+                                                        </dl>
+                                                        <div class="header"><b>10</b>个品友已经购买</div>
+                                                        <div class="friends">
+                                                        
+                                                        	<a href="#"><img src="/images/mall/photo/photo12.png" alt="" /></a>
+                                                            <a href="#"><img src="/images/mall/photo/photo13.png" alt="" /></a>
+                                                            <a href="#"><img src="/images/mall/photo/photo14.png" alt="" /></a>
+                                                            <a href="#"><img src="/images/mall/photo/photo12.png" alt="" /></a>
+                                                            <a href="#"><img src="/images/mall/photo/photo13.png" alt="" /></a>
+                                                            <a href="#"><img src="/images/mall/photo/photo14.png" alt="" /></a>
+                                                        
+                                                        </div>
+                                                    
+                                                    </div>
+                                                
+                                                </div>
+                                                
+                                            </td>
+                                            <td class="m_r"> </td>
+                                        </tr>
+                                        
+                                        <tr>
+                                            <td class="b_l"> </td>
+                                            <td class="b_m">
+                                                <em></em>
+                                                <b></b>
+                                                <div></div>
+                                            </td>
+                                            <td class="b_r"> </td>
+                                        </tr>
+                                    </table>
+                                    <div class="shadow"></div>
+                              	</div>
+                            
+                            
+                            </li>
+                            
+                            <li>
+                            
+                            	<div class="picborder">
+                                    <table class="pictable">
+                                        <tr>
+                                            <td class="t_l"> </td>
+                                            <td class="t_m">
+                                                <div></div>
+                                                <b></b>
+                                                <em></em>
+                                            </td>
+                                            <td class="t_r"> </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="m_l"> </td>
+                                            <td class="m_m">
+                                                
+                                                <div class="mygroup_box">
+                                                
+                                                	<div class="title"><h3>南瓜团</h3></div>
+                                                    <dl class="info">
+                                                    
+                                                    	<dt>
+                                                        
+                                                        	<a href="#"><img src="/images/mall/photo/photo01.png" alt="" /></a>
+                                                        
+                                                        </dt>
+                                                        <dd>
+                                                        
+                                                        	<p>价格：<b>￥10000.00</b></p>
+                                                            <p><strong>20人团</strong></p>
+                                                            <p>已参加15人，还缺<b>5人</b></p>
+                                                            <p>结束时间：<b>3天</b></p>
+                                                        
+                                                        </dd>
+                                                    
+                                                    </dl>
+                                                    <dl class="add_info">
+                                                    
+                                                    	<dt><a class="addgroup_btn" href="#"></a></dt>
+                                                        <dd class="fail"></dd>
+                                                    
+                                                    </dl>
+                                                    
+                                                    <div class="postbox">
+                                                    
+                                                    	<div class="header">团主</div>
+                                                        <dl>
+                                                        
+                                                        	<dt><a href="#"><img src="/images/mall/photo/photo01.png" alt="" /></a></dt>
+                                                            <dd>
+                                                            
+                                                            	<h3><a href="#">melodi</a></h3>
+                                                                <p><span><a href="#">秀场</a>(10000)</span><span><a href="#">体验</a>(10000)</span><span><a href="#">指南</a>(10000)</span></p>
+                                                                <div class="bottom">
+                                                                
+                                                                	<a class="addbtn02 addbtn02_ok" href="#"><em></em>好友</a>
+                                                                    <a class="addbtn02 addbtn02_ok" href="#"><em></em>关注</a>
+                                                                
+                                                                </div>
+                                                            
+                                                            </dd>
+                                                        
+                                                        </dl>
+                                                        <div class="header"><b>10</b>个品友已经购买</div>
+                                                        <div class="friends">
+                                                        
+                                                        	<a href="#"><img src="/images/mall/photo/photo12.png" alt="" /></a>
+                                                            <a href="#"><img src="/images/mall/photo/photo13.png" alt="" /></a>
+                                                            <a href="#"><img src="/images/mall/photo/photo14.png" alt="" /></a>
+                                                        
+                                                        </div>
+                                                    
+                                                    </div>
+                                                
+                                                </div>
+                                                
+                                            </td>
+                                            <td class="m_r"> </td>
+                                        </tr>
+                                        
+                                        <tr>
+                                            <td class="b_l"> </td>
+                                            <td class="b_m">
+                                                <em></em>
+                                                <b></b>
+                                                <div></div>
+                                            </td>
+                                            <td class="b_r"> </td>
+                                        </tr>
+                                    </table>
+                                    <div class="shadow"></div>
+                              	</div>
+                            
+                            
+                            </li>
+                            
+                            <li>
+                            
+                            	<div class="picborder">
+                                    <table class="pictable">
+                                        <tr>
+                                            <td class="t_l"> </td>
+                                            <td class="t_m">
+                                                <div></div>
+                                                <b></b>
+                                                <em></em>
+                                            </td>
+                                            <td class="t_r"> </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="m_l"> </td>
+                                            <td class="m_m">
+                                                
+                                                <div class="mygroup_box">
+                                                
+                                                	<div class="title"><h3>南瓜团</h3></div>
+                                                    <dl class="info">
+                                                    
+                                                    	<dt>
+                                                        
+                                                        	<a href="#"><img src="/images/mall/photo/photo01.png" alt="" /></a>
+                                                        
+                                                        </dt>
+                                                        <dd>
+                                                        
+                                                        	<p>价格：<b>￥10000.00</b></p>
+                                                            <p><strong>20人团</strong></p>
+                                                            <p>已参加15人，还缺<b>5人</b></p>
+                                                            <p>结束时间：<b>3天</b></p>
+                                                        
+                                                        </dd>
+                                                    
+                                                    </dl>
+                                                    <dl class="add_info">
+                                                    
+                                                    	<dt><a class="addgroup_btn" href="#"></a></dt>
+                                                        <dd class="success"></dd>
+                                                    
+                                                    </dl>
+                                                    
+                                                    <div class="postbox">
+                                                    
+                                                    	<div class="header">团主</div>
+                                                        <dl>
+                                                        
+                                                        	<dt><a href="#"><img src="/images/mall/photo/photo01.png" alt="" /></a></dt>
+                                                            <dd>
+                                                            
+                                                            	<h3><a href="#">melodi</a></h3>
+                                                                <p><span><a href="#">秀场</a>(10000)</span><span><a href="#">体验</a>(10000)</span><span><a href="#">指南</a>(10000)</span></p>
+                                                                <div class="bottom">
+                                                                
+                                                                	<a class="addbtn02 addbtn02_ok" href="#"><em></em>好友</a>
+                                                                    <a class="addbtn02 addbtn02_ok" href="#"><em></em>关注</a>
+                                                                
+                                                                </div>
+                                                            
+                                                            </dd>
+                                                        
+                                                        </dl>
+                                                        <div class="header"><b>10</b>个品友已经购买</div>
+                                                        <div class="friends">
+                                                        
+                                                        	<a href="#"><img src="/images/mall/photo/photo12.png" alt="" /></a>
+                                                            <a href="#"><img src="/images/mall/photo/photo13.png" alt="" /></a>
+                                                            <a href="#"><img src="/images/mall/photo/photo14.png" alt="" /></a>
+                                                            <a href="#"><img src="/images/mall/photo/photo12.png" alt="" /></a>
+                                                            <a href="#"><img src="/images/mall/photo/photo13.png" alt="" /></a>
+                                                            <a href="#"><img src="/images/mall/photo/photo14.png" alt="" /></a>
+                                                        
+                                                        </div>
+                                                    
+                                                    </div>
+                                                
+                                                </div>
+                                                
+                                            </td>
+                                            <td class="m_r"> </td>
+                                        </tr>
+                                        
+                                        <tr>
+                                            <td class="b_l"> </td>
+                                            <td class="b_m">
+                                                <em></em>
+                                                <b></b>
+                                                <div></div>
+                                            </td>
+                                            <td class="b_r"> </td>
+                                        </tr>
+                                    </table>
+                                    <div class="shadow"></div>
+                              	</div>
+                            
+                            
+                            </li>
+                            
+                        
+                        </ul>
+                        
+                    </div>
+                
+                </div>
+<script type="text/javascript">
+function snsTabShow(tabName) {
+	$("#goods_sns_tab > li").removeClass("current");
+	$("#goods_sns_tab").find("."+tabName).parent("li").addClass("current");
+	$("#goods_show").hide();
+	$("#goods_exp").hide();
+	$("#goods_guide").hide();
+	$("#goods_"+tabName).fadeIn();
+}
+</script>                
+                <div class="mall_list_box rows">
+                    <ul id="goods_sns_tab" class="tab">
+                        <li class="current"><a class="show" href="javascript:snsTabShow('show');"></a></li>
+                        <li><a class="exp" href="javascript:snsTabShow('exp');"></a></li>
+                        <li><a class="guide" href="javascript:snsTabShow('guide');"></a></li>
+                    </ul>
+                    
+                    <div id="goods_show" class="listbox">
+                    
+                        <div class="header">
+                        
+                            <a href="#">上一组</a>
+                            <a href="#">下一组</a>
+                        
+                        </div>
+                        
+                        <ul class="show_list">
+                        
+                            <li class="current">
+                            
+                                <dl>
+                                
+                                    <dt><a href="#"><img src="/images/mall/photo/photo02.png" alt="" /></a></dt>
+                                    <dd>
+                                    
+                                        <div class="avatar"><a href="#"><img src="/images/mall/photo/photo03.png" alt="" /></a></div>
+                                        <p><a href="#">花儿多朵朵八强,甜美风达人</a></p>
+                                    
+                                    </dd>
+                                
+                                </dl>
+                            
+                            </li>
+                            <li>
+                            
+                                <dl>
+                                
+                                    <dt><a href="#"><img src="/images/mall/photo/photo02.png" alt="" /></a></dt>
+                                    <dd>
+                                    
+                                        <div class="avatar"><a href="#"><img src="/images/mall/photo/photo03.png" alt="" /></a></div>
+                                        <p><a href="#">花儿多朵朵八强,甜美风达人</a></p>
+                                    
+                                    </dd>
+                                
+                                </dl>
+                            
+                            </li>
+                            <li>
+                            
+                                <dl>
+                                
+                                    <dt><a href="#"><img src="/images/mall/photo/photo02.png" alt="" /></a></dt>
+                                    <dd>
+                                    
+                                        <div class="avatar"><a href="#"><img src="/images/mall/photo/photo03.png" alt="" /></a></div>
+                                        <p><a href="#">花儿多朵朵八强,甜美风达人</a></p>
+                                    
+                                    </dd>
+                                
+                                </dl>
+                            
+                            </li>
+                            <li>
+                            
+                                <dl>
+                                
+                                    <dt><a href="#"><img src="/images/mall/photo/photo02.png" alt="" /></a></dt>
+                                    <dd>
+                                    
+                                        <div class="avatar"><a href="#"><img src="/images/mall/photo/photo03.png" alt="" /></a></div>
+                                        <p><a href="#">花儿多朵朵八强,甜美风达人</a></p>
+                                    
+                                    </dd>
+                                
+                                </dl>
+                            
+                            </li>
+                            <li>
+                            
+                                <dl>
+                                
+                                    <dt><a href="#"><img src="/images/mall/photo/photo02.png" alt="" /></a></dt>
+                                    <dd>
+                                    
+                                        <div class="avatar"><a href="#"><img src="/images/mall/photo/photo03.png" alt="" /></a></div>
+                                        <p><a href="#">花儿多朵朵八强,甜美风达人</a></p>
+                                    
+                                    </dd>
+                                
+                                </dl>
+                            
+                            </li>
+                            <li>
+                            
+                                <dl>
+                                
+                                    <dt><a href="#"><img src="/images/mall/photo/photo02.png" alt="" /></a></dt>
+                                    <dd>
+                                    
+                                        <div class="avatar"><a href="#"><img src="/images/mall/photo/photo03.png" alt="" /></a></div>
+                                        <p><a href="#">花儿多朵朵八强,甜美风达人</a></p>
+                                    
+                                    </dd>
+                                
+                                </dl>
+                            
+                            </li>
+                            <li>
+                            
+                                <dl>
+                                
+                                    <dt><a href="#"><img src="/images/mall/photo/photo02.png" alt="" /></a></dt>
+                                    <dd>
+                                    
+                                        <div class="avatar"><a href="#"><img src="/images/mall/photo/photo03.png" alt="" /></a></div>
+                                        <p><a href="#">花儿多朵朵八强,甜美风达人</a></p>
+                                    
+                                    </dd>
+                                
+                                </dl>
+                            
+                            </li>
+                            <li>
+                            
+                                <dl>
+                                
+                                    <dt><a href="#"><img src="/images/mall/photo/photo02.png" alt="" /></a></dt>
+                                    <dd>
+                                    
+                                        <div class="avatar"><a href="#"><img src="/images/mall/photo/photo03.png" alt="" /></a></div>
+                                        <p><a href="#">花儿多朵朵八强,甜美风达人</a></p>
+                                    
+                                    </dd>
+                                
+                                </dl>
+                            
+                            </li>
+                        
+                        </ul>
+                    
+                    </div>
+                    
+                    <div id="goods_exp" class="listbox" style="display:none;">
+                    
+                        <div class="header">
+                        
+                            <a href="#">上一组</a>
+                            <a href="#">下一组</a>
+                        
+                        </div>
+                        
+                        <ul class="post_list">
+                        
+                        	<li class="current">
+                            
+                            	<div class="post_item">
+                                
+                                	<div class="post">
+                                    
+                                    	<dl class="post_left">
+                                        
+                                        	<dt><a href="#"><img src="/images/mall/photo/photo02.png" alt="" /></a></dt>
+                                            <dd>
+                                               <p>秀场：<span>0</span></p>                                               <p>体验：<span>0</span></p>
+                                               <p>指南：<span>0</span></p>
+                                           	</dd>
+                                        
+                                        </dl>
+                                        
+                                        <div class="post_main">
+                                        
+                                        	<div class="post_header">
+                                                <div class="post_displayName">
+                                                    <a href="#">MichiMak</a>
+                                                </div>
+                                            </div>
+                                            <div class="post_content01">
+                                            	此次发放的礼品卡为达人店铺专用卡，需在达人店铺中购买产品才能使用，但不限只在我的小店购买哦！此次发放...... &nbsp; <a href="#">查看全部</a>
+                                            </div>
+                                            <div class="imglist">
+                                            	<a href="#"><img src="/images/mall/photo/photo15.png" alt="" /></a>
+                                                <a href="#"><img src="/images/mall/photo/photo16.png" alt="" /></a>
+                                                <a href="#"><img src="/images/mall/photo/photo17.png" alt="" /></a>
+                                            </div>
+                                            <div class="post_actions">
+                                            
+                                            	<a href="#">转发(30)</a> | <a href="#">品论(74)</a>
+                                            
+                                            </div>
+                                        
+                                        </div>
+                                    
+                                    </div>
+                                    
+                                    <div class="post_comment">
+                                    
+                                    	<h5>最新评论</h5>
+                                        <dl class="commentbox">
+                                        	
+                                            <dt><a href="#"><img src="/images/mall/photo/photo17.png" alt="" /></a></dt>
+                                            <dd>
+                                            
+                                            	<div class="comment_item_row1">
+                                                    <span class="comment_username">洪洪：</span>
+                                                    <span class="comment_content">不错啊，阿朗，这是你吗？</span>
+                                                </div>
+                                                <div class="comment_item_row2">
+                
+                                                    <div class="comment_time">2011-10-31 20:40</div>
+                                                    
+                                                </div>
+                                            
+                                            </dd>
+                                        
+                                        </dl>
+                                    
+                                    </div>
+                                
+                                </div>
+                            
+                            </li>
+                            
+                            <li>
+                            
+                            	<div class="post_item">
+                                
+                                	<div class="post">
+                                    
+                                    	<dl class="post_left">
+                                        
+                                        	<dt><a href="#"><img src="/images/mall/photo/photo02.png" alt="" /></a></dt>
+                                            <dd>
+                                               <p>秀场：<span>0</span></p>                                               <p>体验：<span>0</span></p>
+                                               <p>指南：<span>0</span></p>
+                                           	</dd>
+                                        
+                                        </dl>
+                                        
+                                        <div class="post_main">
+                                        
+                                        	<div class="post_header">
+                                                <div class="post_displayName">
+                                                    <a href="#">MichiMak</a>
+                                                </div>
+                                            </div>
+                                            <div class="post_content01">
+                                            	此次发放的礼品卡为达人店铺专用卡，需在达人店铺中购买产品才能使用，但不限只在我的小店购买哦！此次发放...... &nbsp; <a href="#">查看全部</a>
+                                            </div>
+                                            <div class="imglist">
+                                            	<a href="#"><img src="/images/mall/photo/photo15.png" alt="" /></a>
+                                                <a href="#"><img src="/images/mall/photo/photo16.png" alt="" /></a>
+                                                <a href="#"><img src="/images/mall/photo/photo17.png" alt="" /></a>
+                                            </div>
+                                            <div class="post_actions">
+                                            
+                                            	<a href="#">转发(30)</a> | <a href="#">品论(74)</a>
+                                            
+                                            </div>
+                                        
+                                        </div>
+                                    
+                                    </div>
+                                    
+                                    <div class="post_comment">
+                                    
+                                    	<h5>最新评论</h5>
+                                        <dl class="commentbox">
+                                        	
+                                            <dt><a href="#"><img src="/images/mall/photo/photo17.png" alt="" /></a></dt>
+                                            <dd>
+                                            
+                                            	<div class="comment_item_row1">
+                                                    <span class="comment_username">洪洪：</span>
+                                                    <span class="comment_content">不错啊，阿朗，这是你吗？</span>
+                                                </div>
+                                                <div class="comment_item_row2">
+                
+                                                    <div class="comment_time">2011-10-31 20:40</div>
+                                                    
+                                                </div>
+                                            
+                                            </dd>
+                                        
+                                        </dl>
+                                    
+                                    </div>
+                                
+                                </div>
+                            
+                            </li>
+                            
+                            <li>
+                            
+                            	<div class="post_item">
+                                
+                                	<div class="post">
+                                    
+                                    	<dl class="post_left">
+                                        
+                                        	<dt><a href="#"><img src="/images/mall/photo/photo02.png" alt="" /></a></dt>
+                                            <dd>
+                                               <p>秀场：<span>0</span></p>                                               <p>体验：<span>0</span></p>
+                                               <p>指南：<span>0</span></p>
+                                           	</dd>
+                                        
+                                        </dl>
+                                        
+                                        <div class="post_main">
+                                        
+                                        	<div class="post_header">
+                                                <div class="post_displayName">
+                                                    <a href="#">MichiMak</a>
+                                                </div>
+                                            </div>
+                                            <div class="post_content01">
+                                            	此次发放的礼品卡为达人店铺专用卡，需在达人店铺中购买产品才能使用，但不限只在我的小店购买哦！此次发放...... &nbsp; <a href="#">查看全部</a>
+                                            </div>
+                                            <div class="imglist">
+                                            	<a href="#"><img src="/images/mall/photo/photo15.png" alt="" /></a>
+                                                <a href="#"><img src="/images/mall/photo/photo16.png" alt="" /></a>
+                                                <a href="#"><img src="/images/mall/photo/photo17.png" alt="" /></a>
+                                            </div>
+                                            <div class="post_actions">
+                                            
+                                            	<a href="#">转发(30)</a> | <a href="#">品论(74)</a>
+                                            
+                                            </div>
+                                        
+                                        </div>
+                                    
+                                    </div>
+                                    
+                                    <div class="post_comment">
+                                    
+                                    	<h5>最新评论</h5>
+                                        <dl class="commentbox">
+                                        	
+                                            <dt><a href="#"><img src="/images/mall/photo/photo17.png" alt="" /></a></dt>
+                                            <dd>
+                                            
+                                            	<div class="comment_item_row1">
+                                                    <span class="comment_username">洪洪：</span>
+                                                    <span class="comment_content">不错啊，阿朗，这是你吗？</span>
+                                                </div>
+                                                <div class="comment_item_row2">
+                
+                                                    <div class="comment_time">2011-10-31 20:40</div>
+                                                    
+                                                </div>
+                                            
+                                            </dd>
+                                        
+                                        </dl>
+                                    
+                                    </div>
+                                
+                                </div>
+                            
+                            </li>
+                            
+                            <li>
+                            
+                            	<div class="post_item">
+                                
+                                	<div class="post">
+                                    
+                                    	<dl class="post_left">
+                                        
+                                        	<dt><a href="#"><img src="/images/mall/photo/photo02.png" alt="" /></a></dt>
+                                            <dd>
+                                               <p>秀场：<span>0</span></p>                                               <p>体验：<span>0</span></p>
+                                               <p>指南：<span>0</span></p>
+                                           	</dd>
+                                        
+                                        </dl>
+                                        
+                                        <div class="post_main">
+                                        
+                                        	<div class="post_header">
+                                                <div class="post_displayName">
+                                                    <a href="#">MichiMak</a>
+                                                </div>
+                                            </div>
+                                            <div class="post_content01">
+                                            	此次发放的礼品卡为达人店铺专用卡，需在达人店铺中购买产品才能使用，但不限只在我的小店购买哦！此次发放...... &nbsp; <a href="#">查看全部</a>
+                                            </div>
+                                            <div class="imglist">
+                                            	<a href="#"><img src="/images/mall/photo/photo15.png" alt="" /></a>
+                                                <a href="#"><img src="/images/mall/photo/photo16.png" alt="" /></a>
+                                                <a href="#"><img src="/images/mall/photo/photo17.png" alt="" /></a>
+                                            </div>
+                                            <div class="post_actions">
+                                            
+                                            	<a href="#">转发(30)</a> | <a href="#">品论(74)</a>
+                                            
+                                            </div>
+                                        
+                                        </div>
+                                    
+                                    </div>
+                                    
+                                    <div class="post_comment">
+                                    
+                                    	<h5>最新评论</h5>
+                                        <dl class="commentbox">
+                                        	
+                                            <dt><a href="#"><img src="/images/mall/photo/photo17.png" alt="" /></a></dt>
+                                            <dd>
+                                            
+                                            	<div class="comment_item_row1">
+                                                    <span class="comment_username">洪洪：</span>
+                                                    <span class="comment_content">不错啊，阿朗，这是你吗？</span>
+                                                </div>
+                                                <div class="comment_item_row2">
+                
+                                                    <div class="comment_time">2011-10-31 20:40</div>
+                                                    
+                                                </div>
+                                            
+                                            </dd>
+                                        
+                                        </dl>
+                                    
+                                    </div>
+                                
+                                </div>
+                            
+                            </li>
+                        
+                        </ul>
+                    
+                    </div>
+                    
+                    <div id="goods_guide" class="listbox" style="display:none;">
+                    
+                        <div class="header">
+                        
+                            <a href="#">上一组</a>
+                            <a href="#">下一组</a>
+                        
+                        </div>
+                        
+                        <ul class="post_list">
+                        
+                        	<li class="current">
+                            
+                            	<div class="post_item">
+                                
+                                	<div class="post">
+                                    
+                                    	<dl class="post_left">
+                                        
+                                        	<dt><a href="#"><img src="/images/mall/photo/photo02.png" alt="" /></a></dt>
+                                            <dd>
+                                               <p>秀场：<span>0</span></p>                                               <p>体验：<span>0</span></p>
+                                               <p>指南：<span>0</span></p>
+                                           	</dd>
+                                        
+                                        </dl>
+                                        
+                                        <div class="post_main">
+                                        
+                                        	<div class="post_header">
+                                                <div class="post_displayName">
+                                                    <a href="#">阿朗</a>
+                                                </div>
+                                                <div class="post_title">
+                                                	<a href="#">真丝围巾的八种用法</a>
+                                                </div>
+                                                <div class="post_type"><a href="#">(鞋帽/女装)</a></div>
+                                            </div>
+                                            <div class="post_content01">
+                                            	此次发放的礼品卡为达人店铺专用卡，需在达人店铺中购买产品才能使用，但不限只在我的小店购买哦！此次发放...... &nbsp; <a href="#">查看全部</a>
+                                            </div>
+                                            <div class="imglist">
+                                            	<a href="#"><img src="/images/mall/photo/photo15.png" alt="" /></a>
+                                                <a href="#"><img src="/images/mall/photo/photo16.png" alt="" /></a>
+                                                <a href="#"><img src="/images/mall/photo/photo17.png" alt="" /></a>
+                                            </div>
+                                            <div class="post_actions">
+                                            
+                                            	<a href="#">转发(30)</a> | <a href="#">品论(74)</a>
+                                            
+                                            </div>
+                                        
+                                        </div>
+                                    
+                                    </div>
+                                    
+                                    <div class="post_comment">
+                                    
+                                    	<h5>最新评论</h5>
+                                        <dl class="commentbox">
+                                        	
+                                            <dt><a href="#"><img src="/images/mall/photo/photo17.png" alt="" /></a></dt>
+                                            <dd>
+                                            
+                                            	<div class="comment_item_row1">
+                                                    <span class="comment_username">洪洪：</span>
+                                                    <span class="comment_content">不错啊，阿朗，这是你吗？</span>
+                                                </div>
+                                                <div class="comment_item_row2">
+                
+                                                    <div class="comment_time">2011-10-31 20:40</div>
+                                                    
+                                                </div>
+                                            
+                                            </dd>
+                                        
+                                        </dl>
+                                    
+                                    </div>
+                                
+                                </div>
+                            
+                            </li>
+                            
+                            <li>
+                            
+                            	<div class="post_item">
+                                
+                                	<div class="post">
+                                    
+                                    	<dl class="post_left">
+                                        
+                                        	<dt><a href="#"><img src="/images/mall/photo/photo02.png" alt="" /></a></dt>
+                                            <dd>
+                                               <p>秀场：<span>0</span></p>                                               <p>体验：<span>0</span></p>
+                                               <p>指南：<span>0</span></p>
+                                           	</dd>
+                                        
+                                        </dl>
+                                        
+                                        <div class="post_main">
+                                        
+                                        	<div class="post_header">
+                                                <div class="post_displayName">
+                                                    <a href="#">阿朗</a>
+                                                </div>
+                                                <div class="post_title">
+                                                	<a href="#">真丝围巾的八种用法</a>
+                                                </div>
+                                                <div class="post_type"><a href="#">(鞋帽/女装)</a></div>
+                                            </div>
+                                            <div class="post_content01">
+                                            	此次发放的礼品卡为达人店铺专用卡，需在达人店铺中购买产品才能使用，但不限只在我的小店购买哦！此次发放...... &nbsp; <a href="#">查看全部</a>
+                                            </div>
+                                            <div class="imglist">
+                                            	<a href="#"><img src="/images/mall/photo/photo15.png" alt="" /></a>
+                                                <a href="#"><img src="/images/mall/photo/photo16.png" alt="" /></a>
+                                                <a href="#"><img src="/images/mall/photo/photo17.png" alt="" /></a>
+                                            </div>
+                                            <div class="post_actions">
+                                            
+                                            	<a href="#">转发(30)</a> | <a href="#">品论(74)</a>
+                                            
+                                            </div>
+                                        
+                                        </div>
+                                    
+                                    </div>
+                                    
+                                    <div class="post_comment">
+                                    
+                                    	<h5>最新评论</h5>
+                                        <dl class="commentbox">
+                                        	
+                                            <dt><a href="#"><img src="/images/mall/photo/photo17.png" alt="" /></a></dt>
+                                            <dd>
+                                            
+                                            	<div class="comment_item_row1">
+                                                    <span class="comment_username">洪洪：</span>
+                                                    <span class="comment_content">不错啊，阿朗，这是你吗？</span>
+                                                </div>
+                                                <div class="comment_item_row2">
+                
+                                                    <div class="comment_time">2011-10-31 20:40</div>
+                                                    
+                                                </div>
+                                            
+                                            </dd>
+                                        
+                                        </dl>
+                                    
+                                    </div>
+                                
+                                </div>
+                            
+                            </li>
+                            
+                            <li>
+                            
+                            	<div class="post_item">
+                                
+                                	<div class="post">
+                                    
+                                    	<dl class="post_left">
+                                        
+                                        	<dt><a href="#"><img src="/images/mall/photo/photo02.png" alt="" /></a></dt>
+                                            <dd>
+                                               <p>秀场：<span>0</span></p>                                               <p>体验：<span>0</span></p>
+                                               <p>指南：<span>0</span></p>
+                                           	</dd>
+                                        
+                                        </dl>
+                                        
+                                        <div class="post_main">
+                                        
+                                        	<div class="post_header">
+                                                <div class="post_displayName">
+                                                    <a href="#">阿朗</a>
+                                                </div>
+                                                <div class="post_title">
+                                                	<a href="#">真丝围巾的八种用法</a>
+                                                </div>
+                                                <div class="post_type"><a href="#">(鞋帽/女装)</a></div>
+                                            </div>
+                                            <div class="post_content01">
+                                            	此次发放的礼品卡为达人店铺专用卡，需在达人店铺中购买产品才能使用，但不限只在我的小店购买哦！此次发放...... &nbsp; <a href="#">查看全部</a>
+                                            </div>
+                                            <div class="imglist">
+                                            	<a href="#"><img src="/images/mall/photo/photo15.png" alt="" /></a>
+                                                <a href="#"><img src="/images/mall/photo/photo16.png" alt="" /></a>
+                                                <a href="#"><img src="/images/mall/photo/photo17.png" alt="" /></a>
+                                            </div>
+                                            <div class="post_actions">
+                                            
+                                            	<a href="#">转发(30)</a> | <a href="#">品论(74)</a>
+                                            
+                                            </div>
+                                        
+                                        </div>
+                                    
+                                    </div>
+                                    
+                                    <div class="post_comment">
+                                    
+                                    	<h5>最新评论</h5>
+                                        <dl class="commentbox">
+                                        	
+                                            <dt><a href="#"><img src="/images/mall/photo/photo17.png" alt="" /></a></dt>
+                                            <dd>
+                                            
+                                            	<div class="comment_item_row1">
+                                                    <span class="comment_username">洪洪：</span>
+                                                    <span class="comment_content">不错啊，阿朗，这是你吗？</span>
+                                                </div>
+                                                <div class="comment_item_row2">
+                
+                                                    <div class="comment_time">2011-10-31 20:40</div>
+                                                    
+                                                </div>
+                                            
+                                            </dd>
+                                        
+                                        </dl>
+                                    
+                                    </div>
+                                
+                                </div>
+                            
+                            </li>
+                            
+                            <li>
+                            
+                            	<div class="post_item">
+                                
+                                	<div class="post">
+                                    
+                                    	<dl class="post_left">
+                                        
+                                        	<dt><a href="#"><img src="/images/mall/photo/photo02.png" alt="" /></a></dt>
+                                            <dd>
+                                               <p>秀场：<span>0</span></p>                                               <p>体验：<span>0</span></p>
+                                               <p>指南：<span>0</span></p>
+                                           	</dd>
+                                        
+                                        </dl>
+                                        
+                                        <div class="post_main">
+                                        
+                                        	<div class="post_header">
+                                                <div class="post_displayName">
+                                                    <a href="#">阿朗</a>
+                                                </div>
+                                                <div class="post_title">
+                                                	<a href="#">真丝围巾的八种用法</a>
+                                                </div>
+                                                <div class="post_type"><a href="#">(鞋帽/女装)</a></div>
+                                            </div>
+                                            <div class="post_content01">
+                                            	此次发放的礼品卡为达人店铺专用卡，需在达人店铺中购买产品才能使用，但不限只在我的小店购买哦！此次发放...... &nbsp; <a href="#">查看全部</a>
+                                            </div>
+                                            <div class="imglist">
+                                            	<a href="#"><img src="/images/mall/photo/photo15.png" alt="" /></a>
+                                                <a href="#"><img src="/images/mall/photo/photo16.png" alt="" /></a>
+                                                <a href="#"><img src="/images/mall/photo/photo17.png" alt="" /></a>
+                                            </div>
+                                            <div class="post_actions">
+                                            
+                                            	<a href="#">转发(30)</a> | <a href="#">品论(74)</a>
+                                            
+                                            </div>
+                                        
+                                        </div>
+                                    
+                                    </div>
+                                    
+                                    <div class="post_comment">
+                                    
+                                    	<h5>最新评论</h5>
+                                        <dl class="commentbox">
+                                        	
+                                            <dt><a href="#"><img src="/images/mall/photo/photo17.png" alt="" /></a></dt>
+                                            <dd>
+                                            
+                                            	<div class="comment_item_row1">
+                                                    <span class="comment_username">洪洪：</span>
+                                                    <span class="comment_content">不错啊，阿朗，这是你吗？</span>
+                                                </div>
+                                                <div class="comment_item_row2">
+                
+                                                    <div class="comment_time">2011-10-31 20:40</div>
+                                                    
+                                                </div>
+                                            
+                                            </dd>
+                                        
+                                        </dl>
+                                    
+                                    </div>
+                                
+                                </div>
+                            
+                            </li>
+                        
+                        </ul>
+                    
+                    </div>
+                
+                </div>
+<script type="text/javascript">
+function goodsDetailsShowTab(tabName) {
+	
+}
+</script>                
+                <div id="goods_details" class="detailbox rows">
+                
+                	<ul class="tab">
+                    	<li class="current"><a href="javascript:goodsDetailsShowTab('detail');">商品详情</a></li>
+                        <li><a href="javascript:goodsDetailsShowTab('question');">商品咨询</a></li>
+                        <li><a href="javascript:goodsDetailsShowTab('buy');">购买记录</a></li>
+                        <li><a href="javascript:goodsDetailsShowTab('pay');">支付方式</a></li>
+                        <li><a href="javascript:goodsDetailsShowTab('aftersale');">售后服务</a></li>
+                    </ul>
+                    
+                    <div id="goods_detail" class="shop_detail_content">
+                    	商品详情内容是由后台编辑产生的.
+                    </div>
+                    
+                    <div id="goods_question" class="shop_answer_content" style="display:none;">
+                    
+                    	<div class="answer_searchbox">
+                        
+                        	<div class="left">
+                            
+                            	<h5>咨询前请先搜索,方便又快捷：</h5>
+                                <div class="searchbox">
+                                    <div class="searchgroup">
+                                        <input id="search" value="问题关键字" />
+                                    </div>
+                                    <a href="#" class="searchbtn"></a>
+                                </div>
+                            
+                            </div>
+                            
+                            <div class="prompt_info">
+                            
+                            	<b>温馨提示：</b>因厂家更改产品包装、产地或者更换随机附件等没有任何提前通知，且每位咨询者购买情况、提问时间等不同，为此以下回复仅对提问者3天内有效，其他网友仅供参考！若由此给您带来不便请多多谅解，谢谢！
+                            
+                            </div>
+                            
+                        </div>
+                        
+                        <div class="answer_list">
+                            
+                            <div class="answer_form">
+                            
+                                <form action="">
+                                
+                                	<h3>我来提问</h3>
+                                
+                                    <textarea></textarea>
+
+                                    <div class="txtarea_bottom">
+                                    
+                                        <div class="face faceimg">
+                                        
+                                            <a href="#"><em></em>表情</a>
+                                        
+                                        </div>
+                                        
+                                        <a class="button" href="#">提问</a>
+                                    
+                                    </div>
+                                
+                                </form>
+                            
+                            </div>
+                            
+                            <div class="answer_list_group">
+                            
+                                <ul class="answer_topic">
+                                
+                                    <li class="answer_title">
+                                    
+                                        <div class="answer_avatar"><img src="/images/mall/photo/photo16.png" alt="" /></div>
+                                        <div class="answer_item_content">
+                                        
+                                            <div class="answer_row1">
+                                            
+                                                <b class="answer_username">洪洪：</b><span class="answer_content">您好!请问CX3和CX4有什么区别.好象参数都差不多的呀!</span>
+                                            
+                                            </div>
+                                            <div class="answer_row2">
+                                            
+                                                <div class="answer_actions">
+                                                
+                                                    <a href="#">我来回答</a> | <a href="#">投诉</a>
+                                                
+                                                </div>
+                                                <span class="answer_time">2010-7-14</span>
+                                            
+                                            </div>
+                                        
+                                        </div>
+                                    
+                                    </li>
+                                    
+                                </ul>
+                                
+                                <ul class="answer_topic">
+                                
+                                    <li class="answer_item answer_good_item">
+                                    
+                                        <div class="flag"><em></em>最佳答案</div>
+                                        <div class="answer_avatar"><img src="/images/mall/photo/photo16.png" alt="" /></div>
+                                        <div class="answer_item_content">
+                                        
+                                            <div class="answer_row1">
+                                            
+                                                <b class="answer_username">洪洪：</b><span class="answer_content">您好!请问CX3和CX4有什么区别.好象参数都差不多的呀!</span>
+                                            
+                                            </div>
+                                            <div class="answer_row2">
+                                            
+                                                <div class="answer_actions">
+                                                
+                                                    <a href="#">品论(3)</a> | <a href="#">投诉</a>
+                                                
+                                                </div>
+                                                <span class="answer_time">2010-7-14</span>
+                                            
+                                            </div>
+                                        
+                                        </div>
+                                    
+                                    </li>
+                                    
+                                    <li class="answer_item_indent">
+                                    
+                                        <div class="answer_avatar"><img src="/images/mall/photo/photo16.png" alt="" /></div>
+                                        <div class="answer_item_content">
+                                        
+                                            <div class="answer_row1">
+                                            
+                                                <b class="answer_username">洪洪：</b><span class="answer_content">您好!请问CX3和CX4有什么区别.好象参数都差不多的呀!</span>
+                                            
+                                            </div>
+                                            <div class="answer_row2">
+                                            
+                                                <div class="answer_actions">
+                                                
+                                                    <a href="#">回复</a> | <a href="#">投诉</a>
+                                                
+                                                </div>
+                                                <span class="answer_time">2010-7-14</span>
+                                            
+                                            </div>
+                                        
+                                        </div>
+                                    
+                                    </li>
+                                    
+                                    <li class="answer_item_indent">
+                                    
+                                        <div class="answer_avatar"><img src="/images/mall/photo/photo16.png" alt="" /></div>
+                                        <div class="answer_item_content">
+                                        
+                                            <div class="answer_row1">
+                                            
+                                                <b class="answer_username">洪洪：</b><span class="answer_content">您好!请问CX3和CX4有什么区别.好象参数都差不多的呀!</span>
+                                            
+                                            </div>
+                                            <div class="answer_row2">
+                                            
+                                                <div class="answer_actions">
+                                                
+                                                    <a href="#">回复</a> | <a href="#">投诉</a>
+                                                
+                                                </div>
+                                                <span class="answer_time">2010-7-14</span>
+                                            
+                                            </div>
+                                        
+                                        </div>
+                                    
+                                    </li>
+                                    
+                                    <li class="answer_item_indent">
+                                    
+                                        <div class="answer_avatar"><img src="/images/mall/photo/photo16.png" alt="" /></div>
+                                        <div class="answer_item_content">
+                                        
+                                            <div class="answer_row1">
+                                            
+                                                <b class="answer_username">洪洪：</b><span class="answer_content">您好!请问CX3和CX4有什么区别.好象参数都差不多的呀!</span>
+                                            
+                                            </div>
+                                            <div class="answer_row2">
+                                            
+                                                <div class="answer_actions">
+                                                
+                                                    <a href="#">回复</a> | <a href="#">投诉</a>
+                                                
+                                                </div>
+                                                <span class="answer_time">2010-7-14</span>
+                                            
+                                            </div>
+                                        
+                                        </div>
+                                    
+                                    </li>
+                                    <li class="answer_more">
+                                    
+                                        <a href="#">显示更多&gt;&gt;</a>	
+                                    
+                                    </li>
+                                
+                                </ul>
+                                
+                                <ul class="answer_topic">
+                                
+                                    <li class="answer_item">
+                                    
+                                        <div class="flag"><em></em>最佳答案</div>
+                                        <div class="answer_avatar"><img src="/images/mall/photo/photo16.png" alt="" /></div>
+                                        <div class="answer_item_content">
+                                        
+                                            <div class="answer_row1">
+                                            
+                                                <b class="answer_username">洪洪：</b><span class="answer_content">您好!请问CX3和CX4有什么区别.好象参数都差不多的呀!</span>
+                                            
+                                            </div>
+                                            <div class="answer_row2">
+                                            
+                                                <div class="answer_actions">
+                                                
+                                                    <a href="#">品论(3)</a> | <a href="#">投诉</a>
+                                                
+                                                </div>
+                                                <span class="answer_time">2010-7-14</span>
+                                            
+                                            </div>
+                                        
+                                        </div>
+                                    
+                                    </li>
+                                
+                                </ul>
+                                
+                                <ul class="answer_topic">
+                                
+                                    <li class="answer_item">
+                                    
+                                        <div class="flag"><em></em>最佳答案</div>
+                                        <div class="answer_avatar"><img src="/images/mall/photo/photo16.png" alt="" /></div>
+                                        <div class="answer_item_content">
+                                        
+                                            <div class="answer_row1">
+                                            
+                                                <b class="answer_username">洪洪：</b><span class="answer_content">您好!请问CX3和CX4有什么区别.好象参数都差不多的呀!</span>
+                                            
+                                            </div>
+                                            <div class="answer_row2">
+                                            
+                                                <div class="answer_actions">
+                                                
+                                                    <a href="#">品论(3)</a> | <a href="#">投诉</a>
+                                                
+                                                </div>
+                                                <span class="answer_time">2010-7-14</span>
+                                            
+                                            </div>
+                                        
+                                        </div>
+                                    
+                                    </li>
+                                
+                                </ul>
+                                
+                            </div>
+                            
+                            <div class="answer_list_group">
+                            
+                                <ul class="answer_topic">
+                                
+                                    <li class="answer_title">
+                                    
+                                        <div class="answer_avatar"><img src="/images/mall/photo/photo16.png" alt="" /></div>
+                                        <div class="answer_item_content">
+                                        
+                                            <div class="answer_row1">
+                                            
+                                                <b class="answer_username">洪洪：</b><span class="answer_content">您好!请问CX3和CX4有什么区别.好象参数都差不多的呀!</span>
+                                            
+                                            </div>
+                                            <div class="answer_row2">
+                                            
+                                                <div class="answer_actions">
+                                                
+                                                    <a href="#">我来回答</a> | <a href="#">投诉</a>
+                                                
+                                                </div>
+                                                <span class="answer_time">2010-7-14</span>
+                                            
+                                            </div>
+                                        
+                                        </div>
+                                    
+                                    </li>
+                                    
+                                    <li class="answer_form">
+                            
+                                        <form action="">
+                                        
+                                            <textarea></textarea>
+        
+                                            <div class="txtarea_bottom">
+                                            
+                                                <div class="face faceimg">
+                                                
+                                                    <a href="#"><em></em>表情</a>
+                                                
+                                                </div>
+                                                <div class="ckgroup">
+                                                
+                                                	<input type="checkbox" /><label>同时发送到我的广播</label>
+                                                
+                                                </div>
+                                                
+                                                <a class="button" href="#">回答</a>
+                                            
+                                            </div>
+                                        
+                                        </form>
+                                    
+                                    </li>
+                                    
+                                </ul>
+                                
+                                <ul class="answer_topic">
+                                
+                                    <li class="answer_item answer_good_item">
+                                    
+                                        <div class="flag"><em></em>最佳答案</div>
+                                        <div class="answer_avatar"><img src="/images/mall/photo/photo16.png" alt="" /></div>
+                                        <div class="answer_item_content">
+                                        
+                                            <div class="answer_row1">
+                                            
+                                                <b class="answer_username">洪洪：</b><span class="answer_content">您好!请问CX3和CX4有什么区别.好象参数都差不多的呀!</span>
+                                            
+                                            </div>
+                                            <div class="answer_row2">
+                                            
+                                                <div class="answer_actions">
+                                                
+                                                    <a href="#">品论(3)</a> | <a href="#">投诉</a>
+                                                
+                                                </div>
+                                                <span class="answer_time">2010-7-14</span>
+                                            
+                                            </div>
+                                        
+                                        </div>
+                                    
+                                    </li>
+                                    
+                                    <li class="answer_item_indent">
+                                    
+                                        <div class="answer_avatar"><img src="/images/mall/photo/photo16.png" alt="" /></div>
+                                        <div class="answer_item_content">
+                                        
+                                            <div class="answer_row1">
+                                            
+                                                <b class="answer_username">洪洪：</b><span class="answer_content">您好!请问CX3和CX4有什么区别.好象参数都差不多的呀!</span>
+                                            
+                                            </div>
+                                            <div class="answer_row2">
+                                            
+                                                <div class="answer_actions">
+                                                
+                                                    <a href="#">回复</a> | <a href="#">投诉</a>
+                                                
+                                                </div>
+                                                <span class="answer_time">2010-7-14</span>
+                                            
+                                            </div>
+                                        
+                                        </div>
+                                    
+                                    </li>
+                                    
+                                    <li class="answer_item_indent">
+                                    
+                                        <div class="answer_avatar"><img src="/images/mall/photo/photo16.png" alt="" /></div>
+                                        <div class="answer_item_content">
+                                        
+                                            <div class="answer_row1">
+                                            
+                                                <b class="answer_username">洪洪：</b><span class="answer_content">您好!请问CX3和CX4有什么区别.好象参数都差不多的呀!</span>
+                                            
+                                            </div>
+                                            <div class="answer_row2">
+                                            
+                                                <div class="answer_actions">
+                                                
+                                                    <a href="#">回复</a> | <a href="#">投诉</a>
+                                                
+                                                </div>
+                                                <span class="answer_time">2010-7-14</span>
+                                            
+                                            </div>
+                                        
+                                        </div>
+                                    
+                                    </li>
+                                    
+                                    <li class="answer_item_indent">
+                                    
+                                        <div class="answer_avatar"><img src="/images/mall/photo/photo16.png" alt="" /></div>
+                                        <div class="answer_item_content">
+                                        
+                                            <div class="answer_row1">
+                                            
+                                                <b class="answer_username">洪洪：</b><span class="answer_content">您好!请问CX3和CX4有什么区别.好象参数都差不多的呀!</span>
+                                            
+                                            </div>
+                                            <div class="answer_row2">
+                                            
+                                                <div class="answer_actions">
+                                                
+                                                    <a href="#">回复</a> | <a href="#">投诉</a>
+                                                
+                                                </div>
+                                                <span class="answer_time">2010-7-14</span>
+                                            
+                                            </div>
+                                        
+                                        </div>
+                                    
+                                    </li>
+                                    
+                                    <li class="answer_form answer_subform">
+                            
+                                        <form action="">
+                                        
+                                            <textarea></textarea>
+        
+                                            <div class="txtarea_bottom">
+                                            
+                                                <div class="face faceimg">
+                                                
+                                                    <a href="#"><em></em>表情</a>
+                                                
+                                                </div>
+                                                <div class="ckgroup">
+                                                
+                                                	<input type="checkbox" /><label>同时发送到我的广播</label>
+                                                
+                                                </div>
+                                                
+                                                <a class="button" href="#">回复</a>
+                                            
+                                            </div>
+                                        
+                                        </form>
+                                    
+                                    </li>
+                                    
+                                    
+                                    <li class="answer_more">
+                                    
+                                        <a href="#">显示更多&gt;&gt;</a>	
+                                    
+                                    </li>
+                                
+                                </ul>
+                                
+                                <ul class="answer_topic">
+                                
+                                    <li class="answer_item">
+                                    
+                                        <div class="flag"><em></em>最佳答案</div>
+                                        <div class="answer_avatar"><img src="/images/mall/photo/photo16.png" alt="" /></div>
+                                        <div class="answer_item_content">
+                                        
+                                            <div class="answer_row1">
+                                            
+                                                <b class="answer_username">洪洪：</b><span class="answer_content">您好!请问CX3和CX4有什么区别.好象参数都差不多的呀!</span>
+                                            
+                                            </div>
+                                            <div class="answer_row2">
+                                            
+                                                <div class="answer_actions">
+                                                
+                                                    <a href="#">品论(3)</a> | <a href="#">投诉</a>
+                                                
+                                                </div>
+                                                <span class="answer_time">2010-7-14</span>
+                                            
+                                            </div>
+                                        
+                                        </div>
+                                    
+                                    </li>
+                                
+                                </ul>
+                                
+                                <ul class="answer_topic">
+                                
+                                    <li class="answer_item">
+                                    
+                                        <div class="flag"><em></em>最佳答案</div>
+                                        <div class="answer_avatar"><img src="/images/mall/photo/photo16.png" alt="" /></div>
+                                        <div class="answer_item_content">
+                                        
+                                            <div class="answer_row1">
+                                            
+                                                <b class="answer_username">洪洪：</b><span class="answer_content">您好!请问CX3和CX4有什么区别.好象参数都差不多的呀!</span>
+                                            
+                                            </div>
+                                            <div class="answer_row2">
+                                            
+                                                <div class="answer_actions">
+                                                
+                                                    <a href="#">品论(3)</a> | <a href="#">投诉</a>
+                                                
+                                                </div>
+                                                <span class="answer_time">2010-7-14</span>
+                                            
+                                            </div>
+                                        
+                                        </div>
+                                    
+                                    </li>
+                                
+                                </ul>
+                                
+                            </div>
+                            
+                            <div class="psf_page">
+                                <span class="prev_next prev disabled"><em></em><i>上一页</i></span>
+                                <span class="current">1</span>
+                                <a href="#index_tab" onclick="javascript:loadPostList(-1,-1,-1,2);">2</a>
+                                <a href="#index_tab" onclick="javascript:loadPostList(-1,-1,-1,3);">3</a>
+                                <span class="dots">…</span>
+                                <a href="#index_tab" onclick="javascript:loadPostList(-1,-1,-1,15);">15</a>
+                                <a class="prev_next next" href="#index_tab" onclick="javascript:loadPostList(-1,-1,-1,2);"><i>下一页</i><em></em></a>
+                            </div>
+                        
+                        </div>
+                    
+                    </div>
+                    
+                    <div id="goods_buy" class="buy_record_content" style="display:none;">
+                    
+                    	<table cellpadding="0">
+                        
+                        	<tr>
+                            	
+                                <th>品友</th>
+                                <th>数量</th>
+                                <th>成交时间</th>
+                                <th class="actions">相关体验及秀场</th>
+                            
+                            </tr>
+                            
+                            <tr>
+                            
+                            	<td class="name">麻袋</td>
+                                <td class="num">1</td>
+                                <td class="time">2011年10月30日</td>
+                                <td class="actions"><a href="#">体验(20人评论)</a> <a href="#">秀场(15人评论)</a></td>
+                            
+                            </tr>
+                            
+                            <tr>
+                            
+                            	<td class="name">麻**</td>
+                                <td class="num">1</td>
+                                <td class="time">2011年10月30日</td>
+                                <td class="actions"></td>
+                            
+                            </tr>
+                        
+                        </table>
+                        
+                        <div class="psf_page">
+                            <span class="prev_next prev disabled"><em></em><i>上一页</i></span>
+                            <span class="current">1</span>
+                            <a href="#index_tab" onclick="javascript:loadPostList(-1,-1,-1,2);">2</a>
+                            <a href="#index_tab" onclick="javascript:loadPostList(-1,-1,-1,3);">3</a>
+                            <span class="dots">…</span>
+                            <a href="#index_tab" onclick="javascript:loadPostList(-1,-1,-1,15);">15</a>
+                            <a class="prev_next next" href="#index_tab" onclick="javascript:loadPostList(-1,-1,-1,2);"><i>下一页</i><em></em></a>
+                        </div>
+                    
+                    </div>
+                    
+                    <div id="goods_pay" class="pay_mode_content" style="display:none;">
+                    
+                    	<div class="msgbox">
+                        
+                        	<p><b>货到付款：</b>我们在以下省市开通了货到付款(其他城市正陆续开通),你可使用现金、移动POS机（部分地区支持刷卡）当前付款收货,点击城市名可查看详细配送范围及运费：</p>
+                            <p class="city">
+                            	<a href="#">北京</a>
+                                <a href="#">上海</a>
+                                <a href="#">广州</a>
+                                <a href="#">广东（不含广州）</a>
+                                <a href="#">天津</a>
+                                <a href="#">杭州</a>
+                                <a href="#">山东</a>
+                                <a href="#">厦门</a>
+                                <a href="#">武汉</a>
+                                <a href="#">成都</a>
+                                <a href="#">深州</a>
+                                <a href="#">西安</a>
+                                <a href="#">宁波</a>
+                                <a href="#">东莞</a>
+                                <a href="#">沈阳</a>
+                                <a href="#">福州</a>
+                                <a href="#">北京</a>
+                                <a href="#">上海</a>
+                                <a href="#">广州</a>
+                                <a href="#">重庆</a>
+                                <a href="#">天津</a>
+                                <a href="#">杭州</a>
+                                <a href="#">山东</a>
+                                <a href="#">厦门</a>
+                                <a href="#">武汉</a>
+                                <a href="#">成都</a>
+                                <a href="#">深州</a>
+                                <a href="#">西安</a>
+                                <a href="#">宁波</a>
+                                <a href="#">东莞</a>
+                                <a href="#">沈阳</a>
+                                <a href="#">福州</a>
+                                <a href="#">杭州</a>
+                                <a href="#">山东</a>
+                                <a href="#">厦门</a>
+                                <a href="#">武汉</a>
+                                <a href="#">成都</a>
+                                <a href="#">深州</a>
+                                <a href="#">西安</a>
+                                <a href="#">宁波</a>
+                                <a href="#">东莞</a>
+                                <a href="#">沈阳</a>
+                                <a href="#">福州</a>
+                            </p>
+                            <p><b>在线支付：</b>我们为您提供几乎全部银行的银行卡及信用卡在线支付，只要您开通了"网上支付"功能,即可进行在线支付，无需手续费，实时到帐，方便快捷，<a href="#">支付限额说明&gt;&gt;</a></p>
+                        
+                        </div>
+                        
+                        <div class="bankbox">
+                        
+                        	<div class="banklist">
+                            
+                            	<a href="#"><img src="/images/mall/photo/bank01.png" alt="" /></a>
+                                <a href="#"><img src="/images/mall/photo/bank02.png" alt="" /></a>
+                                <a href="#"><img src="/images/mall/photo/bank03.png" alt="" /></a>
+                                <a href="#"><img src="/images/mall/photo/bank04.png" alt="" /></a>
+                                <a href="#"><img src="/images/mall/photo/bank05.png" alt="" /></a>
+                                <a href="#"><img src="/images/mall/photo/bank06.png" alt="" /></a>
+                                <a href="#"><img src="/images/mall/photo/bank07.png" alt="" /></a>
+                                <a href="#"><img src="/images/mall/photo/bank08.png" alt="" /></a>
+                                <a href="#"><img src="/images/mall/photo/bank09.png" alt="" /></a>
+                                <a href="#"><img src="/images/mall/photo/bank10.png" alt="" /></a>
+                                <a href="#"><img src="/images/mall/photo/bank11.png" alt="" /></a>
+                                <a href="#"><img src="/images/mall/photo/bank12.png" alt="" /></a>
+                            
+                            </div>
+                            
+                            <p>您还可以使用以下支付平台进行在线支付及帐户余额付款：<a href="#"><img src="/images/mall/photo/bank13.png" alt="" /></a> <a href="#"><img src="/images/mall/photo/bank14.png" alt="" /></a></p>
+                        
+                        </div>
+                        
+                        <div class="msgbox">
+                        
+                        	<p><b>来京东自提：</b>我们在以下省市开通了自提点(其他城市正陆续开通),您可就近选择自提点当面付款提货，无需支付运费，点击城市名可查看详细地点及公交线路：</p>
+                            <p class="city">
+                            	<a href="#">北京</a>
+                                <a href="#">上海</a>
+                                <a href="#">广州</a>
+                                <a href="#">广东（不含广州）</a>
+                                <a href="#">天津</a>
+                                <a href="#">杭州</a>
+                                <a href="#">山东</a>
+                                <a href="#">厦门</a>
+                                <a href="#">武汉</a>
+                                <a href="#">成都</a>
+                                <a href="#">深州</a>
+                                <a href="#">西安</a>
+                                <a href="#">宁波</a>
+                                <a href="#">东莞</a>
+                                <a href="#">沈阳</a>
+                                <a href="#">福州</a>
+                                <a href="#">北京</a>
+                                <a href="#">上海</a>
+                                <a href="#">广州</a>
+                                <a href="#">重庆</a>
+                                <a href="#">天津</a>
+                                <a href="#">杭州</a>
+                                <a href="#">山东</a>
+                                <a href="#">厦门</a>
+                                <a href="#">武汉</a>
+                                <a href="#">成都</a>
+                                <a href="#">深州</a>
+                                <a href="#">西安</a>
+                                <a href="#">宁波</a>
+                                <a href="#">东莞</a>
+                                <a href="#">沈阳</a>
+                                <a href="#">福州</a>
+                                <a href="#">杭州</a>
+                                <a href="#">山东</a>
+                                <a href="#">厦门</a>
+                                <a href="#">武汉</a>
+                                <a href="#">成都</a>
+                                <a href="#">深州</a>
+                                <a href="#">西安</a>
+                                <a href="#">宁波</a>
+                                <a href="#">东莞</a>
+                                <a href="#">沈阳</a>
+                                <a href="#">福州</a>
+                            </p>
+                            <p><b>分期付款：</b>单个商品价格在500元以上，可使用中国银行、招商银行发行的信用卡申请分期付款，支付3期、6期、12期付款，<a href="#">查看详细说明&gt;&gt;</a></p>
+                        	<p><b>公司转帐：</b>您可以向京东公司的三个公司帐户汇款，到帐时间一般为款汇出后的1-5个工作日，<a href="#">查看公司帐户&gt;&gt;</a></p>
+                            <p><b>邮局汇款：</b>您可通过邮局向京东商城付款，到帐时间一般为款汇出后的1-5个工作日，<a href="#">查看汇款地址&gt;&gt;</a></p>
+                        
+                        </div>
+                    
+                    </div>
+                    
+                    <div class="service_content" style="display:none;">
+                    
+                    	<div class="msgbox">
+                        
+                        	<h5>货到付款：</h5>
+                            <p>本产品全国联保，享受三包服务，质保期为：一年质保</p>
+                            <p>如因质量问题或故障，凭厂商维修中心或特约维修点的质量检测证明，享受7日内退货，15日内换货，15日以上在质保期内享受免费保修等三包服务！</p>
+                            <p>您可以查询本品牌在各地售后服务中心的联系方式，<a href="#">请点这儿查询.....</a></p>
+                            <p>售后服务电话：800-810-8888</p>
+                            <p>品牌官方网站：<a href="#">http://www.lenovo.com.cn/</a></p>
+                        
+                        </div>
+                        
+                        <div class="msgbox">
+                        
+                        	<h5>品上承诺：</h5>
+                            <p>品上丰100向您保证所售商品均为正品，保证假一赔三，与您亲临商城选购的商品享受相同的质量保证．</p>
+                            <p>品上丰100还为您提供具有竞争力的商品价格和奖励政策，请您放心购买！</p><br />
+                            <p>注：因厂家会在没有任何提前通知的情况下更改产品包装、产地或者一些附件，本司不能确保客户收到的货物与商城图片、产地、附件说明完全一致．只能确保为正品正货！并且保证与当时市场上同样主流新品一致．若本商城没有及时更新，请大家谅解！</p>
+                        
+                        </div>
+                        
+                        <div class="msgbox">
+                        
+                        	<h5>特别说明：</h5>
+                            <p>品上丰100所有商品信息、客户评价、商品咨询、网友评论等内容，是品上丰100重要的经营资源，未经许可，禁止非法转载使用</p>
+                        
+                        </div>
+                    
+                    </div>
+                
+                </div>
+                
+            </div>
+        
+        </div>
+    
+    </div>
+    
+</div>
+
+<div id="footer"><div class="container">
+	<div class="footer_help_list">
+    	<dl class="guide">
+        	<dt><em></em></dt>
+            <dd>
+                <h5><a href="#">新手指南</a></h5>
+                <p><a href="#">注册新用户</a></p>
+                <p><a href="#">网站订购流程</a></p>
+                <p><a href="#">网站地图</a></p>
+            </dd>
+        </dl>
+        <dl class="pay">
+        	<dt><em></em></dt>
+            <dd>
+                <h5><a href="#">如何付款与退款</a></h5>
+                <p><a href="#">支付方式</a></p>
+                <p><a href="#">如何办理腿退款</a></p>
+                <p><a href="#">发票制度说明</a></p>
+            </dd>
+        </dl>
+        <dl class="distribution">
+        	<dt><em></em></dt>
+            <dd>
+                <h5><a href="#">配送方式</a></h5>
+                <p><a href="#">支付方式</a></p>
+                <p><a href="#">如何办理腿退款</a></p>
+                <p><a href="#">发票制度说明</a></p>
+            </dd>
+        </dl>
+        <dl class="service">
+        	<dt><em></em></dt>
+            <dd>
+                <h5><a href="#">售后服务</a></h5>
+                <p><a href="#">退换货政策</a></p>
+                <p><a href="#">如何办理退换货</a></p>
+            </dd>
+        </dl>
+        <dl class="help">
+        	<dt><em></em></dt>
+            <dd>
+                <h5><a href="#">帮助中心</a></h5>
+                <p><a href="#">常见热点问题</a></p>
+                <p><a href="#">联系我们</a></p>
+                <p><a href="#">投诉与建议</a></p>
+            </dd>
+        </dl>
+    </div>
+    
+    <div class="bottom">
+    	<center><img src="/images/mall/kefu.png" alt="" /></center>
+    </div>
+
+</div></div>
+
+</body>
+</html>

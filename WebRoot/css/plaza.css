@@ -1,0 +1,18 @@
+#show_right{background:#F5F5EA;padding:10px;width:274px;line-height:20px;}
+#show_right .hotShow{border-bottom:1px dashed #ccc;margin-top:10px;}
+#show_right h3{display:block;height:20px;width:100%;font-size:16px;margin-bottom:20px;margin-top:20px;}
+#show_right .title{font-size:14px;color:#DD450C;font-weight:bold;margin-bottom:10px;}
+#show_right .from{width:175px;overflow:hidden;float:left;}
+#show_right .aboutNews{border-top:1px solid #ccc;margin-top:-1px;line-height:30px;}
+#show_right .aboutNews dd span{color:#846F3C;}
+#show_right .aboutNews dd .hot{color:#ccc;}
+#show_right .aboutNews dt{height:50px;line-height:50px;width:100%;font-size:16px;font-weight:bold;}
+#show_banner{background:#F5F5EA;width:173;height:40px;padding-top:53px;padding-left:520px;}
+#show_banner .show{width:148px;height:20px;background:url(/images/index/index.png) no-repeat -445px -150px;}
+#show_banner .guide{width:148px;height:20px;background:url(/images/index/index.png) no-repeat -445px -180px;}
+#show_banner .exp{width:148px;height:20px;background:url(/images/index/index.png) no-repeat -491px -120px;}
+#show_right .proPic{margin-bottom:20px;width:275px;overflow:hidden;}
+#show_right .proPic li{width:91px;float:left; height:123px;}
+#show_right .proPic li img{width:91px;height:123px;}
+
+

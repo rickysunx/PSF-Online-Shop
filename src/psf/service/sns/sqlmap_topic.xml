@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+	"../../../sql-map-2.dtd">
+<sqlMap>
+ 
+	<insert id="topic.insertTopic" parameterClass="psf.entity.TTopic">
+		insert into t_topic (topicid,topictitle,topictype,groupid,uid,postcount,addtime,delflag) values (#topicid#,#topictitle#,#topictype#,#groupid#,#uid#,#postcount#,#addtime#,#delflag#)
+		<selectKey resultClass="Integer" keyProperty="topicid">
+			select last_insert_id()
+		</selectKey>
+	</insert>
+	
+	<update id="topic.delTopic" parameterClass="java.lang.Integer">
+		update t_topic set delflag = 1 where topicid=#topicid#
+	</update>
+	
+	<select id="topic.queryTopicCount" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select count(1) from t_topic where delflag=0
+		<isNotNull property="topictype" prepend="AND">
+			topictype = #topictype#
+		</isNotNull>
+		<isNotNull property="groupid" prepend="AND">
+			groupid = #groupid#
+		</isNotNull>
+	</select>
+	
+	<select id="topic.countTopicVOByUid" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select count(1) from t_topic t where t.delflag=0
+		<isNotNull property="topictype" prepend="AND">
+			t.topictype = #topictype#
+		</isNotNull>
+		<isEqual property="type" compareValue="1" prepend="AND">
+			t.uid = #uid#
+		</isEqual>
+		<isEqual property="type" compareValue="2" prepend="AND">
+			(exists (select null from t_friend where friendid=t.uid and uid=#uid#)
+			or exists (select null from t_follow where t.uid=followuid and uid=#uid#)
+			or exists (select null from t_follow where t.uid=uid and followuid=#uid#))
+		</isEqual>
+		<isNotNull property="groupid" prepend="AND">
+			t.groupid = #groupid#
+		</isNotNull>
+		<isNotEmpty property="keyword" prepend="AND">
+			topictitle like concat('%',#keyword#,'%')
+		</isNotEmpty> 
+	</select>
+	<select id="topic.queryTopicVOByUid" parameterClass="java.util.Map" resultClass="psf.vo.sns.TopicVO">
+		select t.*,u.username from t_topic t,t_user u where t.uid=u.uid and t.delflag=0
+		<isNotNull property="topictype" prepend="AND">
+			t.topictype = #topictype#
+		</isNotNull>
+		<isEqual property="type" compareValue="1" prepend="AND">
+			t.uid = #uid#
+		</isEqual>
+		<isEqual property="type" compareValue="2" prepend="AND">
+			(exists (select null from t_friend where friendid=t.uid and uid=#uid#)
+			or exists (select null from t_follow where t.uid=followuid and uid=#uid#)
+			or exists (select null from t_follow where t.uid=uid and followuid=#uid#))
+		</isEqual>
+		<isNotNull property="groupid" prepend="AND">
+			t.groupid = #groupid#
+		</isNotNull>
+		<isNotEmpty property="keyword" prepend="AND">
+			topictitle like concat('%',#keyword#,'%')
+		</isNotEmpty> 
+		<isEqual property="orderby" compareValue="1">
+			order by t.addtime desc, t.postcount desc
+		</isEqual>
+		<isEqual property="orderby" compareValue="2">
+			order by t.postcount desc, t.addtime desc
+		</isEqual>
+		limit #offset#, #pageSize#
+	</select>
+	
+	<select id="topic.queryTopicById" parameterClass="java.lang.Integer" resultClass="psf.vo.sns.TopicVO">
+		select t.*,u.username from t_topic t,t_user u where t.uid=u.uid and t.topicid = #topicid# and delflag = 0 
+	</select>
+	
+	<update id="topic.updateTopicPostCount" parameterClass="java.lang.Integer">
+		update t_topic set postcount = (select count(1) from t_post_topic where topicid=#topicid#) where topicid=#topicid#
+	</update>
+	
+	<select id="topic.queryPostTopicByPostId" parameterClass="java.lang.Integer" resultClass="psf.entity.TPostTopic">
+		select postid, topicid from t_post_topic where postid=#postid#
+	</select>
+	
+	<delete id="topic.delPostTopic" parameterClass="psf.entity.TPostTopic">
+		delete from t_post_topic where postid=#postid# and topicid=#topicid#
+	</delete>
+	
+	<select id="topic.queryTopicIdByTitle" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select t.topicid from t_topic t,t_post_topic pt where t.topicid=pt.topicid and pt.postid=#postid# and t.topictitle=#title#
+	</select>
+	
+	<select id="topic.queryTopicByRange" parameterClass="java.util.Map" resultClass="psf.entity.TTopic">
+		select * from t_topic where topictitle=#title# and topictype=#topictype# 
+		<isEqual property="topictype" compareValue="1" prepend="AND">
+			groupid=#groupid#
+		</isEqual>
+		and delflag=0
+	</select>
+	
+	<select id="topic.queryTopicByGroupId" parameterClass="java.util.Map" resultClass="psf.vo.sns.TopicVO">
+		select t.*,u.username from t_topic t,t_user u where t.uid=u.uid and groupid=#groupid# and topictitle=#title# and delflag=0
+	</select>
+	
+	<select id="post.queryTopicVOByIds" parameterClass="java.util.Map" resultClass="psf.vo.sns.TopicVO">
+		select t.*,u.username from t_topic t,t_user u where t.uid=u.uid 
+		and t.topicid in <iterate property="topicids" conjunction="," open="(" close=")">#topicids[]#</iterate>
+		and t.delflag = 0
+		<isEqual property="orderby" compareValue="1">
+			order by t.addtime desc, t.postcount desc
+		</isEqual>
+		<isEqual property="orderby" compareValue="2">
+			order by t.postcount desc, t.addtime desc
+		</isEqual>
+		limit #offset#, #pageSize#
+	</select>
+</sqlMap>

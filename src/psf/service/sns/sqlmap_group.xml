@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+	"../../../sql-map-2.dtd">
+<sqlMap>
+
+	<update id="group.delGroup" parameterClass="java.lang.Integer">
+		update t_group set delflag=1 where groupid=#groupid#
+	</update>
+	<select id="group.queryById" parameterClass="java.lang.Integer" resultClass="psf.entity.TGroup">
+		select * from t_group where groupid=#groupid# and delflag=0
+	</select>
+	<delete id="group.delGroupMember" parameterClass="java.util.Map">
+		delete from t_group_member where groupid=#groupid# and uid=#uid#
+	</delete>
+	<update id="group.updateGroupMember" parameterClass="psf.entity.TGroupMember">
+		update t_group_member set groupid=#groupid#,uid=#uid#,nickname=#nickname#,role=#role#,addtime=#addtime#,lasttime=#lasttime#,postcount=#postcount# 
+		where groupid = #groupid# and uid=#uid#
+	</update>
+	<select id="group.queryGroupMemberById" parameterClass="java.util.Map" resultClass="psf.entity.TGroupMember">
+		select * from t_group_member where groupid=#groupid# and uid=#uid#
+	</select>
+	
+	<select id="group.countGroupsRecommend" parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+		select count(1) from t_group gps where gps.grouptype!=4 and 
+		groupclassid in (select groupclassid from t_group g where exists (select null from t_group_member where g.groupid=groupid and uid=#uid#)) 
+		and not exists (select null from t_group_member gm where gps.groupid=groupid and uid =#uid#) and delflag=0
+	</select>
+	<select id="group.queryGroupsRecommend" parameterClass="java.util.Map" resultClass="psf.vo.sns.GroupVO">
+		select * from t_group gps where gps.grouptype!=4 and 
+		groupclassid in (select groupclassid from t_group g where exists (select null from t_group_member where g.groupid=groupid and uid=#uid#)) 
+		and not exists (select null from t_group_member gm where gps.groupid=groupid and uid =#uid#) and delflag=0
+		order by membercount desc 
+		limit #offset#, #pageSize#
+	</select>
+	<select id="group.countHotByUid" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select count(1) from t_group g where g.grouptype!=4 and not exists (select null from t_group_member where g.groupid=groupid 
+		<isNotNull property="uid" prepend="AND">
+			uid=#uid#
+		</isNotNull>
+		) and delflag=0
+	</select>
+	<select id="group.queryHotByUid" parameterClass="java.util.Map" resultClass="psf.vo.sns.GroupVO">
+		select * from t_group g where g.grouptype!=4 and not exists (select null from t_group_member where g.groupid=groupid 
+		<isNotNull property="uid" prepend="AND">
+			uid=#uid#
+		</isNotNull>
+		) and delflag=0
+		<isEqual property="orderby" compareValue="1">
+			order by membercount desc, addtime desc
+		</isEqual>
+		<isEqual property="orderby" compareValue="2">
+			order by addtime desc, membercount desc 
+		</isEqual>
+		limit #offset#, #pageSize#
+	</select>
+	
+	<select id="group.countJoinGroupByUid" parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+		select count(1) from t_group p where exists (select null from t_group_member where p.groupid=groupid and uid=#uid#) and p.delflag=0
+	</select> 
+	<select id="group.queryJoinGroupByUid" parameterClass="java.util.Map" resultClass="psf.vo.sns.GroupVO">
+		select * from t_group p where exists (select null from t_group_member where p.groupid=groupid and uid=#uid#) and p.delflag=0
+		order by membercount desc limit #offset#,#pageSize#
+	</select>
+	<select id="group.queryForwardGroupList" parameterClass="java.util.Map" resultClass="psf.entity.TGroup">
+		select groupid,groupname from t_group p where exists (select null from t_group_member where p.groupid=groupid and uid=#uid#) and p.delflag=0
+		order by membercount desc limit #offset#,#pageSize#
+	</select>
+	
+	<select id="group.queryGroupClass" parameterClass="java.util.Map" resultClass="psf.entity.TGroupClass">
+		select * from t_group_class
+		<isNotNull property="groupclassid">
+			where groupclassid = #groupclassid#
+		</isNotNull>
+	</select>
+	
+	<select id="group.countGroupByUid" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select count(1) from t_group g where exists (select null from t_group_member where g.groupid=groupid and uid=#uid#
+		<isEqual property="type" compareValue="2" prepend="AND">
+			role=2
+		</isEqual>
+		) 
+		<isNotEmpty property="keyword" prepend="AND">
+			(g.groupname like concat('%',#keyword#,'%') or g.intro like concat('%',#keyword#,'%'))
+		</isNotEmpty>
+		and delflag=0
+	</select>
+	<select id="group.queryGroupByUid" parameterClass="java.util.Map" resultClass="psf.vo.sns.GroupVO">
+		select g.* from t_group g where exists (select null from t_group_member where g.groupid=groupid and uid=#uid#
+		<isEqual property="type" compareValue="2" prepend="AND">
+			role=2
+		</isEqual>
+		) 
+		<isNotEmpty property="keyword" prepend="AND">
+			(g.groupname like concat('%',#keyword#,'%') or g.intro like concat('%',#keyword#,'%'))
+		</isNotEmpty>
+		and delflag=0
+		<isEqual property="orderby" compareValue="1">
+			order by addtime desc,membercount desc
+		</isEqual>
+		<isEqual property="orderby" compareValue="2">
+			order by membercount desc,addtime desc
+		</isEqual>
+		limit #offset#,#pageSize#
+	</select>
+	
+	<select id="group.queryMemberCount" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select count(distinct gm.uid) from t_user u,t_group_member gm where u.uid=gm.uid and groupid=#groupid#
+		<isNotNull property="type" prepend="AND">
+			<isEqual property="type" compareValue="1">
+				(exists (select null from t_friend where gm.uid=friendid and uid=#uid#) 
+				or exists (select null from t_follow where gm.uid=followuid and uid=#uid#) 
+				or exists (select null from t_follow where gm.uid=uid and followuid=#uid#))
+			</isEqual>
+			<isEqual property="type" compareValue="2">
+				exists (select null from t_friend where gm.uid=friendid and uid=#uid#)
+			</isEqual>
+			<isEqual property="type" compareValue="3">
+				exists (select null from t_follow where gm.uid=followuid and uid=#uid#)
+			</isEqual>
+			<isEqual property="type" compareValue="4">
+				exists (select null from t_follow where gm.uid=uid and followuid=#uid#)
+			</isEqual>
+			<isEqual property="type" compareValue="5">
+				gm.role = 0
+			</isEqual>
+			<isEqual property="type" compareValue="6">
+				gm.role = 1
+			</isEqual>
+			<isEqual property="type" compareValue="7">
+				gm.role = 2
+			</isEqual>
+		</isNotNull>
+		<isNotEmpty property="keyword" prepend="AND">
+			u.username like concat('%',#keyword#,'%')
+		</isNotEmpty>
+	</select>
+	<select id="group.queryGroupMember" parameterClass="java.util.Map" resultClass="psf.vo.sns.LikeUserVO">
+		select distinct gm.uid,u.username,gm.addtime,gm.lasttime,gm.role,gm.postcount from t_user u,t_group_member gm where u.uid=gm.uid and groupid=#groupid#
+		<isNotNull property="type" prepend="AND">
+			<isEqual property="type" compareValue="1">
+				(exists (select null from t_friend where gm.uid=friendid and uid=#uid#) 
+				or exists (select null from t_follow where gm.uid=followuid and uid=#uid#) 
+				or exists (select null from t_follow where gm.uid=uid and followuid=#uid#))
+			</isEqual>
+			<isEqual property="type" compareValue="2">
+				exists (select null from t_friend where gm.uid=friendid and uid=#uid#)
+			</isEqual>
+			<isEqual property="type" compareValue="3">
+				exists (select null from t_follow where gm.uid=followuid and uid=#uid#)
+			</isEqual>
+			<isEqual property="type" compareValue="4">
+				exists (select null from t_follow where gm.uid=uid and followuid=#uid#)
+			</isEqual>
+			<isEqual property="type" compareValue="5">
+				gm.role = 0
+			</isEqual>
+			<isEqual property="type" compareValue="6">
+				gm.role = 1
+			</isEqual>
+			<isEqual property="type" compareValue="7">
+				gm.role = 2
+			</isEqual>
+		</isNotNull>
+		<isNotEmpty property="keyword" prepend="AND">
+			u.username like concat('%',#keyword#,'%')
+		</isNotEmpty>
+		<isEqual property="orderby" compareValue="1">
+			order by addtime desc,lasttime desc
+		</isEqual>
+		<isEqual property="orderby" compareValue="2">
+			order by lasttime desc,addtime desc
+		</isEqual>
+		<isEqual property="orderby" compareValue="3">
+			order by gm.role desc,addtime desc
+		</isEqual>
+		<isEqual property="orderby" compareValue="4">
+			order by gm.postcount desc,addtime desc
+		</isEqual>
+		limit #offset#, #pageSize#
+	</select>
+	
+	<select id="group.countGroupByUserType" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select count(1) from t_group g where delflag = 0 
+		<isNotNull property="type" prepend="AND">
+			<isEqual property="type" compareValue="1">
+				exists (select null from t_friend where g.uid=friendid and uid=#uid#)
+			</isEqual>
+			<isEqual property="type" compareValue="2">
+				exists (select null from t_follow where g.uid=followuid and uid=#uid#)
+			</isEqual>
+			<isEqual property="type" compareValue="3">
+				exists (select null from t_follow where g.uid=uid and followuid=#uid#)
+			</isEqual>
+		</isNotNull>
+	</select>
+	<select id="group.queryGroupByUserType" parameterClass="java.util.Map" resultClass="psf.vo.sns.GroupVO">
+		select * from t_group g  where delflag=0 
+		<isNotNull property="type" prepend="AND">
+			<isEqual property="type" compareValue="1">
+				exists (select null from t_friend where g.uid=friendid and uid=#uid#)
+			</isEqual>
+			<isEqual property="type" compareValue="2">
+				exists (select null from t_follow where g.uid=followuid and uid=#uid#)
+			</isEqual>
+			<isEqual property="type" compareValue="3">
+				exists (select null from t_follow where g.uid=uid and followuid=#uid#)
+			</isEqual>
+		</isNotNull>
+		order by membercount desc limit #offset#,#pageSize#
+	</select>
+	
+	<select id="group.countGroupByClass" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select count(1) from t_group g where delflag=0 
+		<isNotNull property="classid" prepend="AND">
+			groupclassid=#classid#
+		</isNotNull>
+		<isNotEmpty property="keyword" prepend="AND">
+			(g.groupname like concat('%',#keyword#,'%') or g.intro like concat('%',#keyword#,'%') or g.grouptag like concat('%',#keyword#,'%'))
+		</isNotEmpty>
+	</select>
+	<select id="group.queryGroupByClass" parameterClass="java.util.Map" resultClass="psf.vo.sns.GroupVO">
+		select * from t_group where delflag=0 
+		<isNotNull property="classid" prepend="AND">
+			groupclassid=#classid#
+		</isNotNull>
+		<isNotEmpty property="keyword" prepend="AND">
+			(g.groupname like concat('%',#keyword#,'%') or g.intro like concat('%',#keyword#,'%') or g.grouptag like concat('%',#keyword#,'%'))
+		</isNotEmpty>
+		order by membercount desc limit #offset#,#pageSize#
+	</select>
+	
+	<select id="group.queryGroupById" parameterClass="java.lang.Integer" resultClass="psf.vo.sns.GroupVO">
+		select * from t_group g where groupid=#groupid# and delflag = 0
+	</select>
+	
+	<select id="group.queryRoleInGroup" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select role from t_group_member where groupid=#groupid# and uid=#uid#
+	</select>
+	
+	<update id="group.updateMemberCount" parameterClass="java.lang.Integer">
+		update t_group set membercount = (select count(1) from t_group_member where groupid=#groupid#) where groupid=#groupid#
+	</update>
+	
+	<select id="group.countInviteUserByType" resultClass="java.lang.Integer" parameterClass="java.util.Map">
+		select count(1) from t_user u where not exists (select null from t_group_member gm where u.uid=gm.uid and gm.groupid=#groupid#) 
+		<isNotNull property="type" prepend="AND">
+			<isEqual property="type" compareValue="1">
+				exists (select null from t_friend where u.uid=friendid and uid=#uid#)
+			</isEqual>
+			<isEqual property="type" compareValue="2">
+				exists (select null from t_follow where u.uid=uid and followuid=#uid#)
+			</isEqual>
+			<isEqual property="type" compareValue="3">
+				(exists (select null from t_friend where u.uid=friendid and uid=#uid#) 
+				or exists (select null from t_follow where u.uid=uid and followuid=#uid#))
+			</isEqual>
+		</isNotNull>
+		<isNotEmpty property="keyword" prepend="AND">
+			u.username like concat('%',#keyword#,'%')
+		</isNotEmpty>
+	</select>
+	<select id="group.queryInviteUserByType" parameterClass="java.util.Map" resultClass="psf.vo.sns.LikeUserVO">
+		select u.uid,u.username,concat(p.picid,'.',p.filetype) as avatarFileName from t_user u left join t_pic p on u.avatarid=p.picid 
+		where not exists (select null from t_group_member gm where u.uid=gm.uid and gm.groupid=#groupid#) 
+		<isNotNull property="type" prepend="AND">
+			<isEqual property="type" compareValue="1">
+				exists (select null from t_friend where u.uid=friendid and uid=#uid#)
+			</isEqual>
+			<isEqual property="type" compareValue="2">
+				exists (select null from t_follow where u.uid=uid and followuid=#uid#)
+			</isEqual>
+			<isEqual property="type" compareValue="3">
+				(exists (select null from t_friend where u.uid=friendid and uid=#uid#) 
+				or exists (select null from t_follow where u.uid=uid and followuid=#uid#))
+			</isEqual>
+		</isNotNull>
+		<isNotEmpty property="keyword" prepend="AND">
+			u.username like concat('%',#keyword#,'%')
+		</isNotEmpty>
+		limit #offset#,#pageSize#
+	</select>
+	
+	<select id="group.queryInvitedUserById" parameterClass="java.util.Map" resultClass="psf.vo.sns.LikeUserVO">
+		select u.uid,u.username,concat(p.picid,'.',p.filetype) as avatarFileName from t_user u left join t_pic p on u.avatarid=p.picid 
+		where u.uid in <iterate property="uids" conjunction="," open="(" close=")">#uids[]#</iterate>
+		limit #offset#,#pageSize#
+	</select>
+	
+	<select id="group.countRecommendGroupByGroupId" parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+		select count(groupid) from t_group where groupclassid = (select groupclassid from t_group where groupid=#groupid#) and groupid!=#groupid# and delflag=0
+	</select>
+	<select id="group.queryRecommendGroupByGroupId" parameterClass="java.util.Map" resultClass="psf.vo.sns.RightGroupVO">
+		select groupid,groupname,concat(pic.picid,'.',pic.filetype) as logo,grouptype from t_group g,t_pic pic 
+		where g.picid=pic.picid and g.groupclassid = (select groupclassid from t_group where groupid=#groupid#) and g.groupid!=#groupid# and g.delflag=0
+		order by g.membercount desc
+		limit #offset#,#pageSize#
+	</select>
+	
+	<select id="group.querySearchGroupByIds" parameterClass="java.util.Map" resultClass="psf.vo.sns.GroupVO">
+		select g.groupid,concat(g.picid,'.',p.filetype) as logo,g.groupname,gc.groupclassname as groupclass,g.uid,g.grouptype,g.addtime,g.membercount,
+		g.intro,g.grouptag,g.zoneid,u.username as displayName 		 
+		from t_group g,t_pic p,t_group_class gc,t_user u
+		where g.picid=p.picid and g.groupclassid=gc.groupclassid and g.uid=u.uid
+		and g.groupid in <iterate property="groupids" conjunction="," open="(" close=")">#groupids[]#</iterate>
+		and g.delflag = 0
+		<isEqual property="orderby" compareValue="1">
+			order by addtime desc,membercount desc
+		</isEqual>
+		<isEqual property="orderby" compareValue="2">
+			order by membercount desc,addtime desc
+		</isEqual>
+		limit #offset#,#pageSize#
+	</select>
+</sqlMap>
